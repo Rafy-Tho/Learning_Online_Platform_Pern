@@ -11,6 +11,9 @@ import {
   SESSION_INTERVAL_SEC,
   SESSION_MAX_AGE_SEC,
 } from "./constants/constants.js";
+import errorHandler from "./middlewares/errorHandler.js";
+import notFoundUrl from "./utils/notFoundUrl.js";
+import userRoute from "./routes/userRoute.js";
 
 // configure variable
 const app = express();
@@ -46,6 +49,10 @@ app.use(
 );
 // configure middleware static
 app.use(express.static(path.join(__dirname, "../uploads")));
-
+// configure middleware routes
+app.use("/api/users", userRoute);
+// configure middleware handle error
+app.use(notFoundUrl);
+app.use(errorHandler);
 // export default app;
 export default app;
