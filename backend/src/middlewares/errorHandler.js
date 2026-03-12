@@ -1,4 +1,4 @@
-import StatusCode from "../constants/statusCode.js";
+import StatusCode from "../constants/StatusCode.js";
 // eslint-disable-next-line no-unused-vars
 function errorHandler(err, req, res, next) {
   let statusCode = err.statusCode || StatusCode.INTERNAL_SERVER_ERROR;

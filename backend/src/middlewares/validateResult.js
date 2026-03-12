@@ -1,6 +1,6 @@
 import { validationResult } from "express-validator";
 import ApiError from "../utils/ApiError.js";
-import StatusCode from "../constants/statusCode.js";
+import StatusCode from "../constants/StatusCode.js";
 
 export const validateResult = (req, res, next) => {
   const errors = validationResult(req);

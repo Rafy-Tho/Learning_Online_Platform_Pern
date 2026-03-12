@@ -1,4 +1,4 @@
-import StatusCode from "../constants/statusCode.js";
+import StatusCode from "../constants/StatusCode.js";
 import ApiError from "./ApiError.js";
 
 const notFoundUrl = (req, res, next) => {
