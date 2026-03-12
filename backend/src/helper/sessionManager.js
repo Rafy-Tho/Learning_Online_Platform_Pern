@@ -6,8 +6,8 @@ class SessionManager {
       req.session.regenerate((err) => {
         if (err) return reject(err);
         req.session.user = {
-          user_id: userData.user_id,
-          name: userData.username,
+          user_id: userData.id,
+          name: userData.name,
           login_at: new Date(),
           role: userData.role,
           userAgent: req.headers["user-agent"],

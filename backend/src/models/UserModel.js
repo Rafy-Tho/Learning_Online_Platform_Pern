@@ -1,16 +1,16 @@
 import pgPool from "../configs/database.js";
 
 class UserModel {
-  async register(data) {
-    const { email, password, name } = data;
-    const query = `INSERT INTO users (email, password, name)
-      VALUES ($1, $2, $3)
+  async createUser(data) {
+    const { email, password, name, imageUrl } = data;
+    const query = `INSERT INTO users (email, password, name, image_url)
+      VALUES ($1, $2, $3, $4)
       RETURNING id, email, role`;
-    const values = [email, password, name];
+    const values = [email, password, name, imageUrl];
     const result = await pgPool.query(query, values);
     return result.rows[0];
   }
-  async login(data) {
+  async findUserByEmail(data) {
     const { email } = data;
     const query = `SELECT id, email, role, password FROM users WHERE email = $1`;
     const values = [email];
@@ -49,10 +49,15 @@ class UserModel {
     return result.rows[0];
   }
   async getAllInfo(userId) {
-    const query = `SELECT u.id, u.email, u.name, u.image_url, up.about, up.head_line, up.website_url, up.youtube_url, up.twitter_url, up.linkedin_url FROM users u LEFT JOIN user_profiles up ON u.id = up.user_id WHERE u.id = $1`;
+    const query = `SELECT u.id, u.email, u.name, u.image_url, up.about, up.head_line, up.website_url, up.youtube_url, up.twitter_url, up.linkedin_url , u.role FROM users u LEFT JOIN user_profiles up ON u.id = up.user_id WHERE u.id = $1`;
     const values = [userId];
     const result = await pgPool.query(query, values);
     return result.rows[0];
+  }
+  async updatePassword(userId, passwordHash) {
+    const query = `UPDATE users SET password = $1 WHERE id = $2`;
+    const values = [passwordHash, userId];
+    await pgPool.query(query, values);
   }
 }
 
