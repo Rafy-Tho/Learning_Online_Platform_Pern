@@ -3,10 +3,10 @@ import pgPool from "../configs/database.js";
 class UserModel {
   async register(data) {
     const { email, password, name } = data;
-    const query = `INSERT INTO users (email, password)
-      VALUES ($1, $2)
+    const query = `INSERT INTO users (email, password, name)
+      VALUES ($1, $2, $3)
       RETURNING id, email, role`;
-    const values = [email, password];
+    const values = [email, password, name];
     const result = await pgPool.query(query, values);
     return result.rows[0];
   }
