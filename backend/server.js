@@ -3,7 +3,7 @@ import ENV from "./src/configs/Env.js";
 import app from "./src/app.js";
 
 const server = createServer(app);
-console.log(ENV);
+
 server.listen(ENV.PORT, () => {
   console.log(`Server is running on port ${ENV.PORT}`);
 });

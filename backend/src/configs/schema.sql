@@ -94,6 +94,20 @@ BEFORE UPDATE ON user_profiles
 FOR EACH ROW
 EXECUTE FUNCTION set_updated_at();
 
+CREATE TABLE password_reset_codes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  code VARCHAR(6) NOT NULL,
+  attempts INTEGER DEFAULT 0,
+  expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TRIGGER trg_password_reset_codes_updated_at
+BEFORE UPDATE ON password_reset_codes
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();
 -- ========================
 -- CATEGORIES
 -- =========================

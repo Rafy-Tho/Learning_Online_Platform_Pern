@@ -1,102 +1,47 @@
 import { checkSchema } from "express-validator";
-const email = {
-  in: ["body"],
-  trim: true,
-  notEmpty: {
-    errorMessage: "Email is required",
-    bail: true,
-  },
-  isEmail: {
-    errorMessage: "Email must be a valid email address",
-  },
-};
-const password = {
-  in: ["body"],
-  notEmpty: {
-    errorMessage: "Password is required",
-    bail: true,
-  },
-  isLength: {
-    options: { min: 8 },
-    errorMessage: "Password must be at least 8 characters long",
-    bail: true,
-  },
-  isStrongPassword: {
-    errorMessage: "Password must be strong",
-  },
-};
-const name = {
-  in: ["body"],
-  trim: true,
-  notEmpty: {
-    errorMessage: "Name is required",
-    bail: true,
-  },
-  isLength: {
-    options: { min: 3, max: 50 },
-    errorMessage: "Name must be between 3 and 50 characters long",
-  },
-};
+import {
+  codeValidator,
+  emailValidator,
+  longTextValidator,
+  passwordValidator,
+  shortTextValidator,
+  urlValidator,
+} from "./common.validator.js";
+
+// validateRegister
 export const validateRegister = checkSchema({
-  name,
-  email,
-  password,
+  name: shortTextValidator("Name"),
+  email: emailValidator("Email"),
+  password: passwordValidator("Password"),
 });
-
+// validateLogin
 export const validateLogin = checkSchema({
-  email,
-  password,
+  email: emailValidator("Email"),
+  password: passwordValidator("Password"),
 });
-
+// validateUpdateProfile
+export const validateUpdateProfile = checkSchema({
+  name: shortTextValidator("Name", true),
+  email: emailValidator("Email", true),
+  bio: longTextValidator("Bio", true),
+  twitterUrl: urlValidator("Twitter URL", true),
+  websiteUrl: urlValidator("Website URL", true),
+  youtubeUrl: urlValidator("YouTube URL", true),
+  headLine: longTextValidator("Headline", true),
+  linkedInUrl: urlValidator("LinkedIn URL", true),
+});
+// validateUpdatePassword
 export const validateUpdatePassword = checkSchema({
-  oldPassword: {
-    in: ["body"],
-    notEmpty: {
-      errorMessage: "Old password is required",
-      bail: true,
-    },
-    isLength: {
-      options: { min: 8 },
-      errorMessage: "Old password must be at least 8 characters long",
-      bail: true,
-    },
-    isStrongPassword: {
-      errorMessage: "Old password must be strong",
-    },
-  },
-  newPassword: {
-    in: ["body"],
-    notEmpty: {
-      errorMessage: "New password is required",
-      bail: true,
-    },
-    isLength: {
-      options: { min: 8 },
-      errorMessage: "New password must be at least 8 characters long",
-      bail: true,
-    },
-    isStrongPassword: {
-      errorMessage: "New password must be strong",
-    },
-  },
+  oldPassword: passwordValidator("Old Password"),
+  newPassword: passwordValidator("New Password"),
 });
-
+// validateResetPassword
 export const validateResetPassword = checkSchema({
-  code: {
-    in: ["body"],
-    notEmpty: {
-      errorMessage: "Reset code is required",
-      bail: true,
-    },
-    isLength: {
-      options: { min: 6, max: 6 },
-      errorMessage: "Reset code must be 6 characters long",
-    },
-  },
-  email,
-  password,
+  code: codeValidator("Reset Code"),
+  email: emailValidator("Email"),
+  password: passwordValidator("Password"),
 });
-
+// validateEmailResetCode
 export const validateEmailResetCode = checkSchema({
-  email,
+  email: emailValidator("Email"),
 });

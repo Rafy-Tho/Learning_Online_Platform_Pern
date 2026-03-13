@@ -1,5 +1,5 @@
 import StatusCode from "../constants/StatusCode.js";
-import sessionManager from "../helper/sessionManager.js";
+import sessionService from "../services/SessionService.js";
 import ApiError from "../utils/ApiError.js";
 
 function requireAuth(req, res, next) {
@@ -11,7 +11,7 @@ function requireAuth(req, res, next) {
       ),
     );
   }
-  const isValidSession = sessionManager.validateSession(req);
+  const isValidSession = sessionService.validate(req);
   if (!isValidSession) {
     return next(
       new ApiError(

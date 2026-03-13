@@ -1,4 +1,20 @@
 import express from "express";
+import {
+  getProfile,
+  login,
+  logout,
+  register,
+  resetPassword,
+  sendPasswordResetCode,
+  updatePassword,
+  updateProfile,
+} from "../controllers/userControllers.js";
+import { upload } from "../middlewares/multer.js";
+import {
+  codeAttemptsLimiter,
+  passwordResetLimiter,
+} from "../middlewares/rateLimitMiddlewares.js";
+import requireAuth from "../middlewares/requireAuth.js";
 import { validateResult } from "../middlewares/validateResult.js";
 import {
   validateEmailResetCode,
@@ -6,40 +22,48 @@ import {
   validateRegister,
   validateResetPassword,
   validateUpdatePassword,
+  validateUpdateProfile,
 } from "../validators/userValidators.js";
-import {
-  getUserInfo,
-  login,
-  logout,
-  register,
-  resetPassword,
-  sendPasswordResetCode,
-  updatePassword,
-  updateUserInfo,
-} from "../controllers/userControllers.js";
-import requireAuth from "../middlewares/requireAuth.js";
+
 const userRoute = express.Router();
 
+// @desc    Register a new user
 userRoute.post("/register", validateRegister, validateResult, register);
+// @desc    Login a user
 userRoute.post("/login", validateLogin, validateResult, login);
+// @desc    Logout a user
 userRoute.post("/logout", requireAuth, logout);
-userRoute.get("/my-info", requireAuth, getUserInfo);
-userRoute.patch("/update-info", requireAuth, updateUserInfo);
+// @desc    Get user profile
+userRoute.get("/me", requireAuth, getProfile);
+// @desc    Update user profile
+userRoute.patch(
+  "/me",
+  requireAuth,
+  upload.single("image"),
+  validateUpdateProfile,
+  validateResult,
+  updateProfile,
+);
+// @desc    Update user password
 userRoute.post(
-  "/update-password",
+  "/password",
   requireAuth,
   validateUpdatePassword,
   validateResult,
   updatePassword,
 );
+// @desc    Send password reset code
 userRoute.post(
   "/password-reset-code",
+  passwordResetLimiter,
   validateEmailResetCode,
   validateResult,
   sendPasswordResetCode,
 );
+// @desc    Reset user password
 userRoute.post(
   "/reset-password",
+  codeAttemptsLimiter,
   validateResetPassword,
   validateResult,
   resetPassword,

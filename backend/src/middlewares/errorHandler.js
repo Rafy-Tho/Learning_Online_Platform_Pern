@@ -3,7 +3,6 @@ import StatusCode from "../constants/StatusCode.js";
 function errorHandler(err, req, res, next) {
   let statusCode = err.statusCode || StatusCode.INTERNAL_SERVER_ERROR;
   let message = err.message || "Internal Server Error";
-
   // PostgreSQL error codes
   if (err.code) {
     switch (err.code) {
@@ -29,15 +28,16 @@ function errorHandler(err, req, res, next) {
 
       default:
         statusCode = StatusCode.INTERNAL_SERVER_ERROR;
-        message = "Database error";
+        message = "Server error. Please try again later.";
     }
   }
-
+  const show = process.env.NODE_ENV === "development";
   res.status(statusCode).json({
     success: false,
     statusCode,
     message,
-    stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
+    stack: show ? err.stack : undefined,
+    defaultError: show ? err : undefined,
   });
 }
 

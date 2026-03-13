@@ -1,10 +1,12 @@
 import ENV from "../configs/Env.js";
 import StatusCode from "../constants/StatusCode.js";
-import passwordHelper from "../helper/passwordHelper.js";
-import sessionManager from "../helper/sessionManager.js";
+import createRandomCode from "../helper/createRadomCode.js";
 import Code from "../models/CodeModel.js";
 import User from "../models/UserModel.js";
-import { sendEmail } from "../services/sendEmail.js";
+import emailService from "../services/EmailService.js";
+import hashCode from "../services/HashCode.js";
+import hashService from "../services/HashService.js";
+import sessionService from "../services/SessionService.js";
 import ApiError from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
@@ -13,35 +15,33 @@ import asyncHandler from "../utils/asyncHandler.js";
 // @access  Public
 export const register = asyncHandler(async (req, res, next) => {
   const { email, password, name } = req.body;
-
-  const userExists = await User.findUserByEmail({ email });
-
+  // check if user already exists
+  const userExists = await User.findByEmail(email);
   if (userExists)
     return next(new ApiError(StatusCode.BAD_REQUEST, "User already exists"));
-
-  const hashedPassword = await passwordHelper.hashPassword(password);
+  // hash password
+  const hashedPassword = await hashService.hash(password);
+  // put default profile image
   const imageUrl = `${ENV.BASE_URL}/profile.jpg`;
-
-  const user = await User.createUser({
+  // create user
+  const user = await User.create({
     email,
     password: hashedPassword,
     name,
     imageUrl,
   });
-
-  await User.createProfile(user.id, { imageUrl });
-
-  const AllUserInfo = await User.getAllInfo(user.id);
-
-  await sessionManager.createSession(req, user);
-
-  AllUserInfo.password = undefined;
-
+  // create user profile
+  await User.createProfile(user.id);
+  // find user with profile
+  const userProfile = await User.profile(user.id);
+  // create session
+  await sessionService.create(req, user);
+  // send response
   res.status(StatusCode.CREATED).json({
     success: true,
     statusCode: StatusCode.CREATED,
     message: "User registered successfully",
-    data: AllUserInfo,
+    data: userProfile,
   });
 });
 // @desc    Login a user
@@ -49,46 +49,41 @@ export const register = asyncHandler(async (req, res, next) => {
 // @access  Public
 export const login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
-
-  const user = await User.findUserByEmail({ email });
-
+  // check if user exists
+  const user = await User.findByEmail(email);
   if (!user)
     return next(new ApiError(StatusCode.BAD_REQUEST, "Invalid credentials"));
-
-  const isPasswordMatch = await passwordHelper.comparePassword(
-    password,
-    user.password,
-  );
-
+  // verify password
+  const isPasswordMatch = await hashService.verify(password, user.password);
+  // check if password is valid
   if (!isPasswordMatch)
     return next(new ApiError(StatusCode.BAD_REQUEST, "Invalid credentials"));
-  const AllUserInfo = await User.getAllInfo(user.id);
-
-  await sessionManager.createSession(req, user);
-
-  AllUserInfo.password = undefined;
-
+  // find user with profile
+  const userProfile = await User.profile(user.id);
+  // create session
+  await sessionService.create(req, user);
+  // send response
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
     message: "User logged in successfully",
-    data: AllUserInfo,
+    data: userProfile,
   });
 });
 // @desc    Logout a user
 // @route   POST /api/users/logout
-// @access  Public
+// @access  Private
 export const logout = asyncHandler(async (req, res, next) => {
   const userId = req.session.user.id;
-
-  const user = await User.getAllInfo(userId);
-
-  if (!user) return next(new ApiError(StatusCode.NOT_FOUND, "User not found"));
-
-  await sessionManager.destroySession(req);
-
+  //  check if user exists
+  const user = await User.findById(userId);
+  if (!user)
+    return next(new ApiError(StatusCode.NOT_FOUND, "User Doesn't Exist"));
+  //  destroy session
+  await sessionService.destroy(req);
+  //  clear cookie
   res.clearCookie(ENV.COOKIE_NAME);
-
+  //  send response
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
@@ -96,15 +91,14 @@ export const logout = asyncHandler(async (req, res, next) => {
   });
 });
 // @desc    Get user info
-// @route   GET /api/users/my-info
+// @route   GET /api/users/me
 // @access  Private
-export const getUserInfo = asyncHandler(async (req, res, next) => {
+export const getProfile = asyncHandler(async (req, res, next) => {
   const userId = req.session.user.id;
-
-  const user = await User.getAllInfo(userId);
-
+  //  check if user exists
+  const user = await User.profile(userId);
   if (!user) return next(new ApiError(StatusCode.NOT_FOUND, "User not found"));
-
+  //  send response
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
@@ -115,39 +109,54 @@ export const getUserInfo = asyncHandler(async (req, res, next) => {
 // @desc    Update user info
 // @route   PATCH /api/users/update-info
 // @access  Private
-export const updateUserInfo = asyncHandler(async (req, res, next) => {
+export const updateProfile = asyncHandler(async (req, res, next) => {
   const userId = req.session.user.id;
-
-  const { name, email, bio, headLine, youtubeUrl, twitterUrl, websiteUrl } =
-    req.body;
-
-  const imageUrl = req.file
-    ? `${ENV.BASE_URL}/${req.file.filename}`
-    : `${ENV.BASE_URL}/profile.jpg`;
-
-  const user = await User.updateInfo(userId, {
+  const {
     name,
     email,
-    imageUrl,
-  });
-
-  if (!user) return next(new ApiError(StatusCode.NOT_FOUND, "User not found"));
-
-  await User.updateProfile(userId, {
     bio,
     headLine,
     youtubeUrl,
     twitterUrl,
     websiteUrl,
+    linkedInUrl,
+  } = req.body;
+
+  console.log(req.body);
+  console.log(name);
+  //  check if user exists
+  const user = await User.findById(userId);
+  if (!user) return next(new ApiError(StatusCode.NOT_FOUND, "User not found"));
+  console.log(user);
+  //  update image url
+  const imageUrl = req.file
+    ? `${ENV.BASE_URL}/${req.file.filename}`
+    : user.image_url;
+
+  //  update user info
+  await User.update(userId, {
+    name: name || user.name,
+    email: email || user.email,
+    imageUrl,
   });
+  //  update user profile
 
-  const userInfo = await User.getAllInfo(userId);
-
+  await User.updateProfile(userId, {
+    bio: bio || user.bio,
+    headLine: headLine || user.headline,
+    youtubeUrl: youtubeUrl || user.youtube_url,
+    twitterUrl: twitterUrl || user.twitter_url,
+    websiteUrl: websiteUrl || user.website_url,
+    linkedInUrl: linkedInUrl || user.linkedin_url,
+  });
+  //  find user with profile
+  const userProfile = await User.profile(userId);
+  //  send response
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
     message: "User info updated successfully",
-    data: userInfo,
+    data: userProfile,
   });
 });
 
@@ -156,22 +165,23 @@ export const updateUserInfo = asyncHandler(async (req, res, next) => {
 // @access  Public
 export const sendPasswordResetCode = asyncHandler(async (req, res, next) => {
   const { email } = req.body;
-
   // check if user exists
-  const user = await User.findUserByEmail({ email });
-  if (!user) return next(new ApiError(StatusCode.NOT_FOUND, "User not found"));
-
+  const user = await User.findByEmail(email);
+  if (!user)
+    return next(new ApiError(StatusCode.NOT_FOUND, "User Doesn't Exist"));
+  // delete all previous codes
+  await Code.delete(user.id);
   // 2. Generate 6-digit numeric code
-  const code = Math.floor(100000 + Math.random() * 900000).toString();
-
-  const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
-
+  const code = createRandomCode();
+  // 3. Set expiration time (e.g., 10 minutes from now)
+  const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+  //  hash code
+  const hashedCode = hashCode(code);
+  console.log({ code, hashedCode });
   // save password reset code to user
-  await Code.addCode(code, user.id, expiresAt);
-
+  await Code.create(hashedCode, user.id, expiresAt);
   // send password reset code to user
-  await sendEmail(email, "Password Reset Code", code);
-
+  await emailService.sendResetCode(email, code);
   // send response
   res.status(200).json({
     message: "Password reset code sent successfully",
@@ -182,27 +192,29 @@ export const sendPasswordResetCode = asyncHandler(async (req, res, next) => {
 // @access  Public
 export const resetPassword = asyncHandler(async (req, res, next) => {
   const { email, code, password } = req.body;
-
-  const user = await User.findUserByEmail({ email });
-  if (!user) return next(new ApiError(StatusCode.NOT_FOUND, "User not found"));
+  // check if user exists
+  const user = await User.findByEmail(email);
+  if (!user)
+    return next(new ApiError(StatusCode.NOT_FOUND, "User Doesn't Exist"));
+  // hash code
+  const hashedCode = hashCode(code);
+  // track attempt used
+  const attempt = await Code.incrementAttempt(user.id);
+  if (attempt > 5)
+    return next(new ApiError(StatusCode.BAD_REQUEST, "Too many attempts"));
   // check if code exists
-  const codeRecord = await Code.verifyCode(code, user.id);
-
-  if (!codeRecord)
-    return next(new ApiError(StatusCode.NOT_FOUND, "Code not found"));
-
-  if (codeRecord.expires_at < new Date())
+  const codeExist = await Code.findCode(hashedCode, user.id);
+  if (!codeExist)
+    return next(new ApiError(StatusCode.NOT_FOUND, "Code Doesn't Exist"));
+  // check if code expired
+  if (codeExist.expires_at < new Date())
     return next(new ApiError(StatusCode.BAD_REQUEST, "Code expired"));
-
   // hash password
-  const passwordHash = await passwordHelper.hashPassword(password);
-
+  const passwordHash = await hashService.hash(password);
   // update user password
   await User.updatePassword(user.id, passwordHash);
-
-  // delete code
-  await Code.deleteCode(code, user.id);
-
+  // delete codes
+  await Code.delete(user.id);
   // send response
   res.status(StatusCode.OK).json({
     message: "Password reset successfully",
@@ -216,16 +228,14 @@ export const updatePassword = asyncHandler(async (req, res, next) => {
   const { oldPassword, newPassword } = req.body;
   // check if user exists
   const user = await User.findById(userId);
-  if (!user) return next(new ApiError(StatusCode.NOT_FOUND, "User not found"));
+  if (!user)
+    return next(new ApiError(StatusCode.NOT_FOUND, "User Doesn't Exist"));
   // check if old password is correct
-  const isMatch = await passwordHelper.comparePassword(
-    oldPassword,
-    user.password,
-  );
+  const isMatch = await hashService.verify(oldPassword, user.password);
   if (!isMatch)
     return next(new ApiError(StatusCode.BAD_REQUEST, "Invalid credentials"));
   // hash new password
-  const passwordHash = await passwordHelper.hashPassword(newPassword);
+  const passwordHash = await hashService.hash(newPassword);
   // update user password
   await User.updatePassword(userId, passwordHash);
   // send response
