@@ -1,0 +1,52 @@
+[
+  {
+    "name": "John Carter",
+    "email": "john.carter@example.com",
+    "password": "Password123!"
+  },
+  {
+    "name": "Emma Watson",
+    "email": "emma.watson@example.com",
+    "password": "Password123!"
+  },
+  {
+    "name": "Michael Brown",
+    "email": "michael.brown@example.com",
+    "password": "Password123!"
+  },
+  {
+    "name": "Sophia Davis",
+    "email": "sophia.davis@example.com",
+    "password": "Password123!"
+  },
+  {
+    "name": "Daniel Wilson",
+    "email": "daniel.wilson@example.com",
+    "password": "Password123!"
+  },
+  {
+    "name": "Olivia Martinez",
+    "email": "olivia.martinez@example.com",
+    "password": "Password123!"
+  },
+  {
+    "name": "James Anderson",
+    "email": "james.anderson@example.com",
+    "password": "Password123!"
+  },
+  {
+    "name": "Isabella Thomas",
+    "email": "isabella.thomas@example.com",
+    "password": "Password123!"
+  },
+  {
+    "name": "William Taylor",
+    "email": "william.taylor@example.com",
+    "password": "Password123!"
+  },
+  {
+    "name": "Mia Harris",
+    "email": "mia.harris@example.com",
+    "password": "Password123!"
+  }
+]

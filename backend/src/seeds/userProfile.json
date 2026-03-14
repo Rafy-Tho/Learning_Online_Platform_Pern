@@ -1,0 +1,82 @@
+[
+  {
+    "bio": "Full-stack developer passionate about web technologies.",
+    "headLine": "Full Stack Developer",
+    "youtubeUrl": "https://youtube.com/@devchannel1",
+    "twitterUrl": "https://twitter.com/devuser1",
+    "websiteUrl": "https://devuser1.com",
+    "linkedInUrl": "https://linkedin.com/in/devuser1"
+  },
+  {
+    "bio": "Backend engineer focused on scalable APIs.",
+    "headLine": "Backend Developer",
+    "youtubeUrl": "https://youtube.com/@backendguru",
+    "twitterUrl": "https://twitter.com/backendguru",
+    "websiteUrl": "https://backendguru.dev",
+    "linkedInUrl": "https://linkedin.com/in/backendguru"
+  },
+  {
+    "bio": "JavaScript enthusiast and open-source contributor.",
+    "headLine": "JavaScript Developer",
+    "youtubeUrl": "https://youtube.com/@jsworld",
+    "twitterUrl": "https://twitter.com/jsworld",
+    "websiteUrl": "https://jsworld.dev",
+    "linkedInUrl": "https://linkedin.com/in/jsworld"
+  },
+  {
+    "bio": "Frontend developer creating beautiful UI.",
+    "headLine": "Frontend Developer",
+    "youtubeUrl": "https://youtube.com/@frontendpro",
+    "twitterUrl": "https://twitter.com/frontendpro",
+    "websiteUrl": "https://frontendpro.io",
+    "linkedInUrl": "https://linkedin.com/in/frontendpro"
+  },
+  {
+    "bio": "Cloud engineer specializing in AWS infrastructure.",
+    "headLine": "Cloud Engineer",
+    "youtubeUrl": "https://youtube.com/@cloudtech",
+    "twitterUrl": "https://twitter.com/cloudtech",
+    "websiteUrl": "https://cloudtech.dev",
+    "linkedInUrl": "https://linkedin.com/in/cloudtech"
+  },
+  {
+    "bio": "DevOps specialist automating deployments.",
+    "headLine": "DevOps Engineer",
+    "youtubeUrl": "https://youtube.com/@devopsdaily",
+    "twitterUrl": "https://twitter.com/devopsdaily",
+    "websiteUrl": "https://devopsdaily.io",
+    "linkedInUrl": "https://linkedin.com/in/devopsdaily"
+  },
+  {
+    "bio": "Software engineer building scalable systems.",
+    "headLine": "Software Engineer",
+    "youtubeUrl": "https://youtube.com/@softeng",
+    "twitterUrl": "https://twitter.com/softeng",
+    "websiteUrl": "https://softeng.dev",
+    "linkedInUrl": "https://linkedin.com/in/softeng"
+  },
+  {
+    "bio": "Tech educator sharing coding tutorials.",
+    "headLine": "Programming Instructor",
+    "youtubeUrl": "https://youtube.com/@codeteacher",
+    "twitterUrl": "https://twitter.com/codeteacher",
+    "websiteUrl": "https://codeteacher.dev",
+    "linkedInUrl": "https://linkedin.com/in/codeteacher"
+  },
+  {
+    "bio": "Node.js developer building REST APIs.",
+    "headLine": "Node.js Developer",
+    "youtubeUrl": "https://youtube.com/@nodeacademy",
+    "twitterUrl": "https://twitter.com/nodeacademy",
+    "websiteUrl": "https://nodeacademy.dev",
+    "linkedInUrl": "https://linkedin.com/in/nodeacademy"
+  },
+  {
+    "bio": "Tech blogger writing about modern development.",
+    "headLine": "Tech Blogger",
+    "youtubeUrl": "https://youtube.com/@techblogger",
+    "twitterUrl": "https://twitter.com/techblogger",
+    "websiteUrl": "https://techblogger.dev",
+    "linkedInUrl": "https://linkedin.com/in/techblogger"
+  }
+]

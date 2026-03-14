@@ -121,13 +121,9 @@ export const updateProfile = asyncHandler(async (req, res, next) => {
     websiteUrl,
     linkedInUrl,
   } = req.body;
-
-  console.log(req.body);
-  console.log(name);
   //  check if user exists
   const user = await User.findById(userId);
   if (!user) return next(new ApiError(StatusCode.NOT_FOUND, "User not found"));
-  console.log(user);
   //  update image url
   const imageUrl = req.file
     ? `${ENV.BASE_URL}/${req.file.filename}`
@@ -177,7 +173,6 @@ export const sendPasswordResetCode = asyncHandler(async (req, res, next) => {
   const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
   //  hash code
   const hashedCode = hashCode(code);
-  console.log({ code, hashedCode });
   // save password reset code to user
   await Code.create(hashedCode, user.id, expiresAt);
   // send password reset code to user
