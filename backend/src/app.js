@@ -1,13 +1,14 @@
 import cookieParser from "cookie-parser";
 import express from "express";
+import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
 import errorHandler from "./middlewares/errorHandler.js";
 import { globalLimiter } from "./middlewares/rateLimitMiddlewares.js";
 import sessionMiddleware from "./middlewares/sessionMiddleware.js";
+import categoryRoute from "./routes/categoryRoute.js";
 import userRoute from "./routes/userRoute.js";
 import notFoundUrl from "./utils/notFoundUrl.js";
-import morgan from "morgan";
 
 // configure variable
 const app = express();
@@ -25,6 +26,7 @@ app.use(sessionMiddleware);
 app.use(express.static(path.join(__dirname, "../uploads")));
 // configure middleware routes
 app.use("/api/v1/users", userRoute);
+app.use("/api/v1/categories", categoryRoute);
 // configure middleware handle error
 app.use(notFoundUrl);
 app.use(errorHandler);

@@ -121,3 +121,14 @@ export const codeValidator = (fieldName) => ({
     errorMessage: `${fieldName} must be 6 characters long`,
   },
 });
+
+export const uuidValidator = (fieldName) => ({
+  in: ["body"],
+  notEmpty: {
+    errorMessage: `${fieldName} is required`,
+    bail: true,
+  },
+  isUUID: {
+    errorMessage: `${fieldName} must be a valid UUID`,
+  },
+});

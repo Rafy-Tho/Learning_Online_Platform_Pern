@@ -55,4 +55,5 @@ class PasswordResetCodeRepository {
   }
 }
 
-export default new PasswordResetCodeRepository();
+const PasswordResetCode = new PasswordResetCodeRepository();
+export default PasswordResetCode;

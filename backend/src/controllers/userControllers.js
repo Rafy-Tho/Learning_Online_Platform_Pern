@@ -1,15 +1,14 @@
 import ENV from "../configs/Env.js";
 import StatusCode from "../constants/StatusCode.js";
 import createRandomCode from "../helper/createRadomCode.js";
-import Code from "../models/CodeModel.js";
-import User from "../models/UserModel.js";
+import PasswordResetCode from "../repositories/PasswordResetCodeRepository.js";
+import User from "../repositories/UserRepository.js";
 import emailService from "../services/EmailService.js";
 import hashCode from "../services/HashCode.js";
 import hashService from "../services/HashService.js";
 import sessionService from "../services/SessionService.js";
 import ApiError from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
-
 // @desc    Register a new user
 // @route   POST /api/users/register
 // @access  Public
@@ -60,6 +59,8 @@ export const login = asyncHandler(async (req, res, next) => {
     return next(new ApiError(StatusCode.BAD_REQUEST, "Invalid credentials"));
   // find user with profile
   const userProfile = await User.profile(user.id);
+  // update last login
+  await User.updateLastLogin(user.id, new Date());
   // create session
   await sessionService.create(req, user);
   // send response
@@ -166,7 +167,7 @@ export const sendPasswordResetCode = asyncHandler(async (req, res, next) => {
   if (!user)
     return next(new ApiError(StatusCode.NOT_FOUND, "User Doesn't Exist"));
   // delete all previous codes
-  await Code.delete(user.id);
+  await PasswordResetCode.delete(user.id);
   // 2. Generate 6-digit numeric code
   const code = createRandomCode();
   // 3. Set expiration time (e.g., 10 minutes from now)
@@ -174,7 +175,7 @@ export const sendPasswordResetCode = asyncHandler(async (req, res, next) => {
   //  hash code
   const hashedCode = hashCode(code);
   // save password reset code to user
-  await Code.create(hashedCode, user.id, expiresAt);
+  await PasswordResetCode.create(hashedCode, user.id, expiresAt);
   // send password reset code to user
   await emailService.sendResetCode(email, code);
   // send response
@@ -194,11 +195,11 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
   // hash code
   const hashedCode = hashCode(code);
   // track attempt used
-  const attempt = await Code.incrementAttempt(user.id);
+  const attempt = await PasswordResetCode.incrementAttempt(user.id);
   if (attempt > 5)
     return next(new ApiError(StatusCode.BAD_REQUEST, "Too many attempts"));
   // check if code exists
-  const codeExist = await Code.findCode(hashedCode, user.id);
+  const codeExist = await PasswordResetCode.findCode(hashedCode, user.id);
   if (!codeExist)
     return next(new ApiError(StatusCode.NOT_FOUND, "Code Doesn't Exist"));
   // check if code expired
@@ -209,7 +210,7 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
   // update user password
   await User.updatePassword(user.id, passwordHash);
   // delete codes
-  await Code.delete(user.id);
+  await PasswordResetCode.delete(user.id);
   // send response
   res.status(StatusCode.OK).json({
     message: "Password reset successfully",

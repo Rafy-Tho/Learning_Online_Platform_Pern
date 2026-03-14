@@ -1,0 +1,52 @@
+[
+  {
+    "name": "Web Development",
+    "slug": "web-development",
+    "description": "Learn modern web development technologies"
+  },
+  {
+    "name": "Mobile Development",
+    "slug": "mobile-development",
+    "description": "Build mobile applications for Android and iOS"
+  },
+  {
+    "name": "Data Science",
+    "slug": "data-science",
+    "description": "Learn data analysis, machine learning, and AI"
+  },
+  {
+    "name": "Programming Fundamentals",
+    "slug": "programming-fundamentals",
+    "description": "Learn the basics of programming"
+  },
+  {
+    "name": "Database",
+    "slug": "database",
+    "description": "Learn SQL and database design"
+  },
+  {
+    "name": "DevOps",
+    "slug": "devops",
+    "description": "Learn CI/CD, Docker, and cloud deployment"
+  },
+  {
+    "name": "Cyber Security",
+    "slug": "cyber-security",
+    "description": "Learn ethical hacking and security"
+  },
+  {
+    "name": "UI UX Design",
+    "slug": "ui-ux-design",
+    "description": "Learn modern UI and UX design principles"
+  },
+  {
+    "name": "Game Development",
+    "slug": "game-development",
+    "description": "Learn how to build games"
+  },
+  {
+    "name": "Cloud Computing",
+    "slug": "cloud-computing",
+    "description": "Learn AWS, Azure, and cloud architecture"
+  }
+]

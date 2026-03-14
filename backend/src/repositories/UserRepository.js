@@ -123,6 +123,14 @@ class UserRepository {
     const result = await pgPool.query(query, [userId]);
     return result.rows[0];
   }
+  async updateLastLogin(userId, lastLogin) {
+    const query = `
+      UPDATE users
+      SET last_login = $1
+      WHERE id = $2
+    `;
+    await pgPool.query(query, [lastLogin, userId]);
+  }
 }
-
-export default new UserRepository();
+const User = new UserRepository();
+export default User;
