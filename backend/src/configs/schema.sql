@@ -134,10 +134,10 @@ CREATE TABLE courses(
   category_id UUID NOT NULL REFERENCES categories(id) ON DELETE RESTRICT,
   name VARCHAR(255) NOT NULL,
   slug TEXT UNIQUE NOT NULL,
-  description TEXT,
-  image_url TEXT,
-  status content_status DEFAULT 'DRAFT',
-  price NUMERIC(10,2) DEFAULT 0 CHECK (price >= 0),
+  description TEXT NOT NULL,
+  image_url TEXT NOT NULL,
+  status content_status DEFAULT 'DRAFT' NOT NULL,
+  price NUMERIC(10,2) DEFAULT 0 CHECK (price >= 0) NOT NULL,
   position INTEGER,
   deleted_at TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -162,11 +162,11 @@ CREATE INDEX idx_course_tags_tag ON course_tags(tag_id);
 CREATE TABLE modules(
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
-  position INTEGER NOT NULL,
+  position INTEGER ,
   name VARCHAR(255) NOT NULL,
   description TEXT,
   icon_name VARCHAR(255),
-  status content_status DEFAULT 'DRAFT',
+  status content_status DEFAULT 'DRAFT' NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -184,12 +184,11 @@ EXECUTE FUNCTION set_updated_at();
 
 CREATE TABLE chapters(
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
   module_id UUID NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
-  position INTEGER NOT NULL,
+  position INTEGER ,
   name VARCHAR(255) NOT NULL,
   description TEXT,
-  status content_status DEFAULT 'DRAFT',
+  status content_status DEFAULT 'DRAFT' NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -208,22 +207,17 @@ EXECUTE FUNCTION set_updated_at();
 
 CREATE TABLE lessons(
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
-  module_id UUID NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
   chapter_id UUID NOT NULL REFERENCES chapters(id) ON DELETE CASCADE,
-  position INTEGER NOT NULL,
+  position INTEGER ,
   name VARCHAR(255) NOT NULL,
   description TEXT,
   type lesson_type NOT NULL,
-  status content_status DEFAULT 'DRAFT',
-  xp_points INTEGER DEFAULT 5,
+  status content_status DEFAULT 'DRAFT' NOT NULL,
+  xp_points INTEGER DEFAULT 5 CHECK (xp_points >= 0),
   duration_minutes INTEGER CHECK (duration_minutes >= 0),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
-
-CREATE INDEX idx_lessons_course ON lessons(course_id);
-CREATE INDEX idx_lessons_module ON lessons(module_id);
 CREATE INDEX idx_lessons_chapter ON lessons(chapter_id);
 
 CREATE TRIGGER trg_lessons_updated_at

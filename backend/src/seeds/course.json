@@ -1,0 +1,349 @@
+{
+  "courses": [
+    {
+      "name": "JavaScript Fundamentals",
+      "slug": "javascript-fundamentals",
+      "description": "Learn JavaScript from beginner to intermediate level.",
+      "image_url": "https://example.com/js-course.jpg",
+      "status": "PUBLISHED",
+      "price": 29.99,
+      "position": 1,
+      "modules": [
+        {
+          "position": 1,
+          "name": "JavaScript Basics",
+          "description": "Introduction to JavaScript and environment setup",
+          "icon_name": "code",
+          "chapters": [
+            {
+              "position": 1,
+              "name": "Introduction to JavaScript",
+              "lessons": [
+                {
+                  "position": 1,
+                  "name": "What is JavaScript?",
+                  "type": "VIDEO",
+                  "duration_minutes": 8,
+                  "xp_points": 5,
+                  "lesson_links": [
+                    {
+                      "name": "JavaScript Documentation",
+                      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
+                      "link_type": "REFERENCE"
+                    }
+                  ],
+                  "quiz": {
+                    "question": "Which keyword declares a block-scoped variable in JavaScript?",
+                    "explanation": "let and const are block scoped while var is function scoped.",
+                    "options": [
+                      { "text": "let", "is_correct": true },
+                      { "text": "var", "is_correct": false },
+                      { "text": "function", "is_correct": false },
+                      { "text": "define", "is_correct": false }
+                    ]
+                  }
+                },
+                {
+                  "position": 2,
+                  "name": "History of JavaScript",
+                  "type": "TEXT",
+                  "duration_minutes": 5,
+                  "xp_points": 5
+                }
+              ]
+            },
+            {
+              "position": 2,
+              "name": "Setting Up Environment",
+              "lessons": [
+                {
+                  "position": 1,
+                  "name": "Install Node.js",
+                  "type": "VIDEO",
+                  "duration_minutes": 10,
+                  "xp_points": 5
+                },
+                {
+                  "position": 2,
+                  "name": "Running JavaScript in Browser",
+                  "type": "TEXT",
+                  "duration_minutes": 7,
+                  "xp_points": 5
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "position": 2,
+          "name": "Core Concepts",
+          "description": "Learn variables, functions, and scope",
+          "icon_name": "layers",
+          "chapters": [
+            {
+              "position": 1,
+              "name": "Variables and Data Types",
+              "lessons": [
+                {
+                  "position": 1,
+                  "name": "Understanding Variables",
+                  "type": "VIDEO",
+                  "duration_minutes": 9,
+                  "xp_points": 5
+                },
+                {
+                  "position": 2,
+                  "name": "Primitive Data Types",
+                  "type": "TEXT",
+                  "duration_minutes": 6,
+                  "xp_points": 5
+                }
+              ]
+            },
+            {
+              "position": 2,
+              "name": "Functions",
+              "lessons": [
+                {
+                  "position": 1,
+                  "name": "Function Basics",
+                  "type": "VIDEO",
+                  "duration_minutes": 10,
+                  "xp_points": 5,
+                  "lesson_links": [
+                    {
+                      "name": "JavaScript Functions Guide",
+                      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions",
+                      "link_type": "REFERENCE"
+                    }
+                  ]
+                },
+                {
+                  "position": 2,
+                  "name": "Arrow Functions",
+                  "type": "VIDEO",
+                  "duration_minutes": 8,
+                  "xp_points": 5
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Node.js Backend Development",
+      "slug": "nodejs-backend-development",
+      "description": "Learn to build scalable backend APIs using Node.js and Express.",
+      "image_url": "https://example.com/nodejs-course.jpg",
+      "status": "PUBLISHED",
+      "price": 49.99,
+      "position": 2,
+      "modules": [
+        {
+          "position": 1,
+          "name": "Node.js Fundamentals",
+          "description": "Understand Node.js architecture and runtime",
+          "icon_name": "server",
+          "chapters": [
+            {
+              "position": 1,
+              "name": "Introduction to Node.js",
+              "lessons": [
+                {
+                  "position": 1,
+                  "name": "What is Node.js",
+                  "type": "VIDEO",
+                  "duration_minutes": 10,
+                  "xp_points": 5
+                },
+                {
+                  "position": 2,
+                  "name": "Installing Node.js",
+                  "type": "VIDEO",
+                  "duration_minutes": 7,
+                  "xp_points": 5
+                }
+              ]
+            },
+            {
+              "position": 2,
+              "name": "Node.js Modules",
+              "lessons": [
+                {
+                  "position": 1,
+                  "name": "Understanding Modules",
+                  "type": "TEXT",
+                  "duration_minutes": 6,
+                  "xp_points": 5
+                },
+                {
+                  "position": 2,
+                  "name": "Creating Modules",
+                  "type": "TEXT",
+                  "duration_minutes": 8,
+                  "xp_points": 5
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "position": 2,
+          "name": "Building REST APIs",
+          "description": "Create APIs using Express.js",
+          "icon_name": "api",
+          "chapters": [
+            {
+              "position": 1,
+              "name": "Express Basics",
+              "lessons": [
+                {
+                  "position": 1,
+                  "name": "Express Setup",
+                  "type": "VIDEO",
+                  "duration_minutes": 9,
+                  "xp_points": 5
+                },
+                {
+                  "position": 2,
+                  "name": "Creating a Server",
+                  "type": "VIDEO",
+                  "duration_minutes": 12,
+                  "xp_points": 5
+                }
+              ]
+            },
+            {
+              "position": 2,
+              "name": "Building REST Endpoints",
+              "lessons": [
+                {
+                  "position": 1,
+                  "name": "REST API Concepts",
+                  "type": "TEXT",
+                  "duration_minutes": 7,
+                  "xp_points": 5
+                },
+                {
+                  "position": 2,
+                  "name": "Building API Routes",
+                  "type": "VIDEO",
+                  "duration_minutes": 10,
+                  "xp_points": 5
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "PostgreSQL Database Mastery",
+      "slug": "postgresql-database-mastery",
+      "description": "Master SQL queries and relational database design.",
+      "image_url": "https://example.com/postgres-course.jpg",
+      "status": "PUBLISHED",
+      "price": 39.99,
+      "position": 3,
+      "modules": [
+        {
+          "position": 1,
+          "name": "PostgreSQL Basics",
+          "description": "Learn SQL fundamentals",
+          "icon_name": "database",
+          "chapters": [
+            {
+              "position": 1,
+              "name": "Introduction to PostgreSQL",
+              "lessons": [
+                {
+                  "position": 1,
+                  "name": "Installing PostgreSQL",
+                  "type": "VIDEO",
+                  "duration_minutes": 8,
+                  "xp_points": 5
+                },
+                {
+                  "position": 2,
+                  "name": "Using psql CLI",
+                  "type": "TEXT",
+                  "duration_minutes": 6,
+                  "xp_points": 5
+                }
+              ]
+            },
+            {
+              "position": 2,
+              "name": "Basic SQL Queries",
+              "lessons": [
+                {
+                  "position": 1,
+                  "name": "SELECT Queries",
+                  "type": "VIDEO",
+                  "duration_minutes": 9,
+                  "xp_points": 5
+                },
+                {
+                  "position": 2,
+                  "name": "Filtering Data",
+                  "type": "TEXT",
+                  "duration_minutes": 7,
+                  "xp_points": 5
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "position": 2,
+          "name": "Advanced Queries",
+          "description": "Master joins, indexes, and performance",
+          "icon_name": "chart",
+          "chapters": [
+            {
+              "position": 1,
+              "name": "Joins",
+              "lessons": [
+                {
+                  "position": 1,
+                  "name": "INNER JOIN",
+                  "type": "VIDEO",
+                  "duration_minutes": 8,
+                  "xp_points": 5
+                },
+                {
+                  "position": 2,
+                  "name": "LEFT JOIN",
+                  "type": "VIDEO",
+                  "duration_minutes": 7,
+                  "xp_points": 5
+                }
+              ]
+            },
+            {
+              "position": 2,
+              "name": "Indexes",
+              "lessons": [
+                {
+                  "position": 1,
+                  "name": "Understanding Indexes",
+                  "type": "TEXT",
+                  "duration_minutes": 6,
+                  "xp_points": 5
+                },
+                {
+                  "position": 2,
+                  "name": "Creating Indexes",
+                  "type": "VIDEO",
+                  "duration_minutes": 8,
+                  "xp_points": 5
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

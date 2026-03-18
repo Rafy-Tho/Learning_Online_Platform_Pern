@@ -26,7 +26,7 @@ export const createCategory = asyncHandler(async (req, res, next) => {
 // @access  Public
 // eslint-disable-next-line no-unused-vars
 export const getAllCategories = asyncHandler(async (req, res, next) => {
-  const categories = await Category.find();
+  const categories = await Category.findAll();
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,

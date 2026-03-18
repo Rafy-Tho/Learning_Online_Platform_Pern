@@ -10,3 +10,5 @@ export const DB_IDLE_TIMEOUT = 30_000; // 30 seconds
 export const DB_CONNECTION_TIMEOUT = 2000; // 2 seconds
 export const ADMIN = "ADMIN";
 export const INSTRUCTOR = "INSTRUCTOR";
+export const CONTENT_STATUS = ["DRAFT", "PUBLISHED"];
+export const LESSON_TYPE = ["VIDEO", "TEXT", "QUIZ", "ASSIGNMENT"];

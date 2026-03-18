@@ -1,6 +1,8 @@
 export const emailValidator = (field, optional = false) => ({
   in: ["body"],
   trim: true,
+  escape: true,
+  toLowerCase: true,
   normalizeEmail: true,
   ...(optional && {
     optional: {
@@ -44,9 +46,10 @@ export const passwordValidator = (field) => ({
   },
 });
 
-export const shortTextValidator = (field, optional = false) => ({
+export const textValidator = (field, optional = false, maxLength = 50) => ({
   in: ["body"],
   trim: true,
+  escape: true,
   ...(optional && {
     optional: {
       options: { nullable: true, checkFalsy: true },
@@ -59,27 +62,8 @@ export const shortTextValidator = (field, optional = false) => ({
     },
   }),
   isLength: {
-    options: { min: 3, max: 50 },
-    errorMessage: `${field} must be between 3 and 50 characters`,
-  },
-});
-export const longTextValidator = (field, optional = false) => ({
-  in: ["body"],
-  trim: true,
-  ...(optional && {
-    optional: {
-      options: { nullable: true, checkFalsy: true },
-    },
-  }),
-  ...(!optional && {
-    notEmpty: {
-      errorMessage: `${field} is required`,
-      bail: true,
-    },
-  }),
-  isLength: {
-    options: { min: 3, max: 200 },
-    errorMessage: `${field} must be between 3 and 200 characters`,
+    options: { min: 3, max: maxLength },
+    errorMessage: `${field} must be between 3 and ${maxLength} characters`,
   },
 });
 // validateUrl
@@ -112,8 +96,14 @@ export const urlValidator = (field, optional = false) => ({
 
 export const codeValidator = (fieldName) => ({
   in: ["body"],
+  trim: true,
+  escape: true,
   notEmpty: {
     errorMessage: `${fieldName} is required`,
+    bail: true,
+  },
+  isNumeric: {
+    errorMessage: `${fieldName} must be a number`,
     bail: true,
   },
   isLength: {
@@ -124,11 +114,68 @@ export const codeValidator = (fieldName) => ({
 
 export const uuidValidator = (fieldName) => ({
   in: ["body"],
+  trim: true,
+  escape: true,
   notEmpty: {
     errorMessage: `${fieldName} is required`,
     bail: true,
   },
   isUUID: {
     errorMessage: `${fieldName} must be a valid UUID`,
+  },
+});
+
+export const numberValidator = (fieldName, option = false) => ({
+  in: ["body"],
+  trim: true,
+  escape: true,
+  toInt: true,
+  ...(option && {
+    optional: {
+      options: { nullable: true, checkFalsy: true },
+    },
+  }),
+  ...(!option && {
+    notEmpty: {
+      errorMessage: `${fieldName} is required`,
+      bail: true,
+    },
+  }),
+  isInt: {
+    options: { min: 0, max: 1_000_000_000 },
+    errorMessage: `${fieldName} must be between 0 and 1000,000,000`,
+  },
+});
+
+export const floatValidator = (fieldName) => ({
+  in: ["body"],
+  trim: true,
+  escape: true,
+  toFloat: true,
+  notEmpty: {
+    errorMessage: `${fieldName} is required`,
+    bail: true,
+  },
+  isFloat: {
+    options: { min: 0, max: 1_000_000_000 },
+    errorMessage: `${fieldName} must be between 0 and 1000,000,000`,
+  },
+});
+
+export const EnumValidator = (fieldName, values) => ({
+  in: ["body"],
+  trim: true,
+  escape: true,
+  notEmpty: {
+    errorMessage: `${fieldName} is required`,
+    bail: true,
+  },
+  isIn: {
+    options: [values],
+    errorMessage: `${fieldName} must be either ${values.join(" or ")}`,
+  },
+  isLength: {
+    options: { min: 1, max: 100 },
+    errorMessage: `${fieldName} must be between 1 and 100 characters`,
   },
 });

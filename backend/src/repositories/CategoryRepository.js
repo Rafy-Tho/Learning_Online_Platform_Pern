@@ -2,8 +2,7 @@ import pgPool from "../configs/database.js";
 
 class CategoryRepository {
   async findAll() {
-    const query = `
-      SELECT *
+    const query = `SELECT *
       FROM categories
     `;
     const result = await pgPool.query(query);
@@ -11,8 +10,7 @@ class CategoryRepository {
   }
   async create(data) {
     const { name, slug, description } = data;
-    const query = `
-      INSERT INTO categories (name,slug,description)
+    const query = `INSERT INTO categories (name,slug,description)
       VALUES ($1,$2,$3)
       RETURNING *
     `;
@@ -20,8 +18,7 @@ class CategoryRepository {
     return result.rows[0];
   }
   async findById(categoryId) {
-    const query = `
-      SELECT *
+    const query = `SELECT *
       FROM categories
       WHERE id = $1
     `;
@@ -29,8 +26,7 @@ class CategoryRepository {
     return result.rows[0];
   }
   async findBySlug(slug) {
-    const query = `
-      SELECT *
+    const query = `SELECT *
       FROM categories
       WHERE slug = $1
     `;
@@ -39,8 +35,7 @@ class CategoryRepository {
   }
   async update(categoryId, data) {
     const { name, slug, description } = data;
-    const query = `
-      UPDATE categories
+    const query = `UPDATE categories
       SET name = $1, slug = $2, description = $3
       WHERE id = $4
       RETURNING *
@@ -54,8 +49,7 @@ class CategoryRepository {
     return result.rows[0];
   }
   async delete(categoryId) {
-    const query = `
-      DELETE FROM categories
+    const query = `DELETE FROM categories
       WHERE id = $1
     `;
     await pgPool.query(query, [categoryId]);

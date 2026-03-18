@@ -2,15 +2,14 @@ import { checkSchema } from "express-validator";
 import {
   codeValidator,
   emailValidator,
-  longTextValidator,
   passwordValidator,
-  shortTextValidator,
+  textValidator,
   urlValidator,
 } from "./common.validator.js";
 
 // validateRegister
 export const validateRegister = checkSchema({
-  name: shortTextValidator("Name"),
+  name: textValidator("Name"),
   email: emailValidator("Email"),
   password: passwordValidator("Password"),
 });
@@ -21,13 +20,13 @@ export const validateLogin = checkSchema({
 });
 // validateUpdateProfile
 export const validateUpdateProfile = checkSchema({
-  name: shortTextValidator("Name", true),
+  name: textValidator("Name", true),
   email: emailValidator("Email", true),
-  bio: longTextValidator("Bio", true),
+  bio: textValidator("Bio", true, 200),
   twitterUrl: urlValidator("Twitter URL", true),
   websiteUrl: urlValidator("Website URL", true),
   youtubeUrl: urlValidator("YouTube URL", true),
-  headLine: longTextValidator("Headline", true),
+  headLine: textValidator("Headline", true, 200),
   linkedInUrl: urlValidator("LinkedIn URL", true),
 });
 // validateUpdatePassword
