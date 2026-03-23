@@ -5,25 +5,23 @@ import asyncHandler from "../utils/asyncHandler.js";
 // @desc Create a new course
 // @route POST /api/v1/courses
 // @access Private/Instructor
+// eslint-disable-next-line no-unused-vars
 export const createCourse = asyncHandler(async (req, res, next) => {
   const instructorId = req.session.user.id;
   const { categoryId, name, slug, description, status, price, position } =
     req.body;
-  const imageUrl = req?.file?.filename;
-  if (!imageUrl)
-    return next(new ApiError(StatusCode.BAD_REQUEST, "Image is required"));
-  const courseData = {
+
+  const course = await Course.create({
     instructorId,
     categoryId,
     name,
     slug,
     description,
-    imageUrl,
     status,
     price,
     position,
-  };
-  const course = await Course.create(courseData);
+  });
+
   res.status(201).json({
     success: true,
     statusCode: StatusCode.CREATED,
@@ -114,8 +112,7 @@ export const updateCourse = asyncHandler(async (req, res, next) => {
       ),
     );
   // Update the course
-  const imageUrl = req?.file?.filename || course.image_url;
-  const courseData = {
+  const updatedCourse = await Course.update({
     id,
     instructorId,
     categoryId,
@@ -125,9 +122,7 @@ export const updateCourse = asyncHandler(async (req, res, next) => {
     status,
     price,
     position,
-    imageUrl,
-  };
-  const updatedCourse = await Course.update(courseData);
+  });
 
   res.status(200).json({
     success: true,

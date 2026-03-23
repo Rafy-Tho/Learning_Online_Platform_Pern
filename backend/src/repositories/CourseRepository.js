@@ -8,7 +8,7 @@ class CourseRepository {
       name,
       slug,
       description,
-      imageUrl,
+
       status,
       price,
       position,
@@ -20,12 +20,11 @@ class CourseRepository {
         name,
         slug,
         description,
-        image_url,
         status,
         price,
         position
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
       RETURNING *
     `;
     const values = [
@@ -34,7 +33,6 @@ class CourseRepository {
       name,
       slug,
       description,
-      imageUrl,
       status,
       price,
       position,
@@ -50,7 +48,6 @@ class CourseRepository {
       name,
       slug,
       description,
-      imageUrl,
       status,
       price,
       position,
@@ -63,11 +60,10 @@ class CourseRepository {
         name = $3,
         slug = $4,
         description = $5,
-        image_url = $6,
-        status = $7,
-        price = $8,
-        position = $9
-      WHERE id = $10
+        status = $6,
+        price = $7,
+        position = $8
+      WHERE id = $9
       RETURNING *
     `;
     const values = [
@@ -76,7 +72,6 @@ class CourseRepository {
       name,
       slug,
       description,
-      imageUrl,
       status,
       price,
       position,
