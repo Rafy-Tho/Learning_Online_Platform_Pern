@@ -3,14 +3,13 @@ import Footer from "./Footer";
 import Navigation from "./Navigation";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Don't forget this!
-import SpinnerLoader from "../ui/SpinnerLoader";
 function AppLayout() {
   return (
-    <div className="min-w-sm">
+    <div className="min-w-sm bg-slate-100 dark:bg-slate-900">
       <Navigation />
 
       <Outlet />
-      <Footer />
+      {/* <Footer /> */}
       <ToastContainer
         position="top-right"
         autoClose={3000}

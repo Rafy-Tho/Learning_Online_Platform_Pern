@@ -101,6 +101,13 @@ const Login = () => {
             <EmailInput register={register} errors={errors} />
             {/* Password Input */}
             <PasswordInput register={register} errors={errors} />
+            {/* Reset Password Link */}
+            <Link
+              to="/reset-password"
+              className="text-right block text-sm text-blue-600 hover:underline font-medium cursor-pointer"
+            >
+              Forgot password?
+            </Link>
             {/* Terms Checkbox */}
             <TermCheck register={register} errors={errors} />
             {/* Submit Button */}

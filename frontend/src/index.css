@@ -5,6 +5,43 @@
 * {
   @apply transition-all duration-300;
 }
+
+/* Custom scrollbar styling */
 ::-webkit-scrollbar {
-  @apply hidden;
+  width: 8px;
+  height: 0px; /* Hide horizontal scrollbar */
 }
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 dark:bg-slate-700 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-400 dark:bg-slate-600;
+}
+
+/* Firefox scrollbar styling */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: theme("colors.slate.300") transparent;
+  /* overflow-x: hidden; Hide horizontal overflow */
+}
+
+.dark * {
+  scrollbar-color: theme("colors.slate.700") transparent;
+}
+
+/* Optional: For smoother scrolling */
+html {
+  scroll-behavior: smooth;
+  /* overflow-x: hidden; Hide horizontal overflow on html */
+}
+
+/* Optional: Remove the transition-all from * if it causes performance issues */
+/* * {
+  @apply transition-all duration-300;
+} */

@@ -5,7 +5,6 @@ import Guide from "../components/home/Guide";
 import Hero from "../components/home/Hero";
 import StartLearning from "../components/home/StartLearning";
 import Testimonial from "../components/home/Testimonial";
-import ErrorMessage from "../ui/ErrorMessage";
 const Home = () => {
   return (
     <div
@@ -13,7 +12,6 @@ const Home = () => {
     >
       {/* ========== HERO SECTION (e-learning) ========== */}
       <Hero />
-      <ErrorMessage />
       {/*  ========== FEATURES SECTION (e-learning themed) ========== */}
       <Feature />
       {/* ========== COURSES SECTION (e-learning themed) ========== */}
