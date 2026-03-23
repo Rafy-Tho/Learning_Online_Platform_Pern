@@ -44,3 +44,8 @@ export const validateResetPassword = checkSchema({
 export const validateEmailResetCode = checkSchema({
   email: emailValidator("Email"),
 });
+// validateSendResetPasswordCode
+export const validateSendResetPasswordCode = checkSchema({
+  email: emailValidator("Email"),
+  code: codeValidator("Reset Code"),
+});

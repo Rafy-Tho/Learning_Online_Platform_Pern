@@ -89,6 +89,7 @@ export const logout = asyncHandler(async (req, res, next) => {
     success: true,
     statusCode: StatusCode.OK,
     message: "User logged out successfully",
+    data: null,
   });
 });
 // @desc    Get user info
@@ -180,7 +181,41 @@ export const sendPasswordResetCode = asyncHandler(async (req, res, next) => {
   await emailService.sendResetCode(email, code);
   // send response
   res.status(200).json({
+    success: true,
+    statusCode: StatusCode.OK,
     message: "Password reset code sent successfully",
+    data: null,
+  });
+});
+// @desc    Verify password reset code
+// @route   POST /api/users/verify-password-reset-code
+// @access  Public
+export const verifyPasswordResetCode = asyncHandler(async (req, res, next) => {
+  const { email, code } = req.body;
+  // check if user exists
+  const user = await User.findByEmail(email);
+  if (!user)
+    return next(new ApiError(StatusCode.NOT_FOUND, "User Doesn't Exist"));
+  // hash code
+  const hashedCode = hashCode(code);
+  // track attempt used
+  const attempt = await PasswordResetCode.incrementAttempt(user.id);
+  if (attempt > 5)
+    return next(new ApiError(StatusCode.BAD_REQUEST, "Too many attempts"));
+  // check if code exists
+  const codeExist = await PasswordResetCode.findCode(hashedCode, user.id);
+  if (!codeExist)
+    return next(new ApiError(StatusCode.NOT_FOUND, "Code Doesn't Exist"));
+  // check if code expired
+  if (codeExist.expires_at < new Date())
+    return next(new ApiError(StatusCode.BAD_REQUEST, "Code expired"));
+
+  // send response
+  res.status(StatusCode.OK).json({
+    success: true,
+    statusCode: StatusCode.OK,
+    message: "Verification successful",
+    data: null,
   });
 });
 // @desc    Reset password
@@ -214,6 +249,9 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
   // send response
   res.status(StatusCode.OK).json({
     message: "Password reset successfully",
+    success: true,
+    statusCode: StatusCode.OK,
+    data: null,
   });
 });
 // @desc    Update password
@@ -237,5 +275,8 @@ export const updatePassword = asyncHandler(async (req, res, next) => {
   // send response
   res.status(StatusCode.OK).json({
     message: "Password updated successfully",
+    success: true,
+    statusCode: StatusCode.OK,
+    data: null,
   });
 });

@@ -8,6 +8,7 @@ import {
   sendPasswordResetCode,
   updatePassword,
   updateProfile,
+  verifyPasswordResetCode,
 } from "../controllers/userControllers.js";
 import { upload } from "../middlewares/multer.js";
 import {
@@ -21,6 +22,7 @@ import {
   validateLogin,
   validateRegister,
   validateResetPassword,
+  validateSendResetPasswordCode,
   validateUpdatePassword,
   validateUpdateProfile,
 } from "../validators/userValidators.js";
@@ -59,6 +61,14 @@ userRoute.post(
   validateEmailResetCode,
   validateResult,
   sendPasswordResetCode,
+);
+// @desc    Verify password reset code
+userRoute.post(
+  "/verify-password-reset-code",
+  codeAttemptsLimiter,
+  validateSendResetPasswordCode,
+  validateResult,
+  verifyPasswordResetCode,
 );
 // @desc    Reset user password
 userRoute.post(

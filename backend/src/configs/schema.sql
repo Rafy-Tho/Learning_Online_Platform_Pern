@@ -11,7 +11,7 @@ CREATE TYPE user_status AS ENUM ('ACTIVE','INACTIVE','SUSPENDED');
 
 CREATE TYPE content_status AS ENUM ('DRAFT','PUBLISHED');
 
-CREATE TYPE lesson_type AS ENUM ('VIDEO','TEXT','QUIZ','ASSIGNMENT');
+CREATE TYPE lesson_type AS ENUM ('TEXT','QUIZ');
 
 CREATE TYPE lesson_link_type AS ENUM ('RESOURCE','REFERENCE','DOWNLOAD');
 
@@ -218,6 +218,7 @@ CREATE TABLE lessons(
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
 CREATE INDEX idx_lessons_chapter ON lessons(chapter_id);
 
 CREATE TRIGGER trg_lessons_updated_at
@@ -228,21 +229,20 @@ FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 -- LESSON LINKS
 -- =========================
 
-CREATE TABLE lesson_links(
+CREATE TABLE lesson_content(
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   lesson_id UUID NOT NULL REFERENCES lessons(id) ON DELETE CASCADE,
   position INTEGER,
   name VARCHAR(255) NOT NULL,
-  url TEXT NOT NULL,
-  link_type lesson_link_type NOT NULL,
+  content TEXT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_lesson_links_lesson ON lesson_links(lesson_id);
+CREATE INDEX idx_lesson_content_lesson ON lesson_content(lesson_id);
 
-CREATE TRIGGER trg_lesson_links_updated_at
-BEFORE UPDATE ON lesson_links
+CREATE TRIGGER trg_lesson_content_updated_at
+BEFORE UPDATE ON lesson_content
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 -- =========================
