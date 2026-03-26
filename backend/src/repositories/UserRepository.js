@@ -25,7 +25,7 @@ class UserRepository {
     return result.rows[0];
   }
 
-  async update(userId, { email, name, imageUrl }) {
+  async update({ userId, email, name, imageUrl }) {
     const query = `
       UPDATE users
       SET email = $1, name = $2, image_url = $3
@@ -49,10 +49,15 @@ class UserRepository {
     return result.rows[0];
   }
 
-  async updateProfile(userId, profile) {
-    const { bio, headLine, websiteUrl, youtubeUrl, twitterUrl, linkedInUrl } =
-      profile;
-
+  async updateProfile({
+    userId,
+    bio,
+    headLine,
+    websiteUrl,
+    youtubeUrl,
+    twitterUrl,
+    linkedInUrl,
+  }) {
     const query = `
       UPDATE user_profiles
       SET
@@ -104,7 +109,7 @@ class UserRepository {
     return result.rows[0];
   }
 
-  async updatePassword(userId, passwordHash) {
+  async updatePassword({ userId, passwordHash }) {
     const query = `
       UPDATE users
       SET password = $1
@@ -123,7 +128,7 @@ class UserRepository {
     const result = await pgPool.query(query, [userId]);
     return result.rows[0];
   }
-  async updateLastLogin(userId, lastLogin) {
+  async updateLastLogin({ userId, lastLogin }) {
     const query = `
       UPDATE users
       SET last_login = $1

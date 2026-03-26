@@ -1,3 +1,4 @@
+import DOMPurify from "isomorphic-dompurify";
 export const emailValidator = (field, optional = false) => ({
   in: ["body"],
   trim: true,
@@ -177,5 +178,32 @@ export const EnumValidator = (fieldName, values) => ({
   isLength: {
     options: { min: 1, max: 100 },
     errorMessage: `${fieldName} must be between 1 and 100 characters`,
+  },
+});
+
+export const htmlValidator = (fieldName) => ({
+  in: ["body"],
+  trim: true,
+  notEmpty: {
+    errorMessage: `${fieldName} is required`,
+    bail: true,
+  },
+  custom: {
+    options: (value, { req }) => {
+      const hasTag = /<\/?[a-z][\s\S]*>/i.test(value);
+
+      if (!hasTag) {
+        throw new Error(`${fieldName} must contain valid HTML`);
+      }
+
+      // sanitize and attach to request
+      req.body[fieldName] = DOMPurify.sanitize(value);
+
+      return true;
+    },
+  },
+  isLength: {
+    options: { max: 1_000_000 },
+    errorMessage: `${fieldName} must be at most 1,000,000 characters`,
   },
 });

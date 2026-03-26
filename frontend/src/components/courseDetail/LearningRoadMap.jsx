@@ -159,7 +159,7 @@ export default function LearningRoadmap() {
                   </p>
                 )}
               </div>
-              <div className="flex-shrink-0 ml-4">
+              <div className="shrink-0 ml-4">
                 {expandedSections.includes(section.id) ? (
                   <ChevronUp className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                 ) : (

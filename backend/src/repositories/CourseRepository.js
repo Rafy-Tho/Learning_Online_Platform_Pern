@@ -1,19 +1,17 @@
 import pgPool from "../configs/database.js";
 
 class CourseRepository {
-  async create(courseData) {
-    const {
-      instructorId,
-      categoryId,
-      name,
-      slug,
-      description,
-
-      status,
-      price,
-      position,
-    } = courseData;
-
+  async create({
+    instructorId,
+    categoryId,
+    name,
+    slug,
+    description,
+    level,
+    accessType,
+    status,
+    position,
+  }) {
     const query = `INSERT INTO courses (
         instructor_id,
         category_id,
@@ -21,10 +19,11 @@ class CourseRepository {
         slug,
         description,
         status,
-        price,
-        position
+        position,
+        level,
+        access_type
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       RETURNING *
     `;
     const values = [
@@ -34,47 +33,46 @@ class CourseRepository {
       slug,
       description,
       status,
-      price,
       position,
+      level,
+      accessType,
     ];
     const result = await pgPool.query(query, values);
     return result.rows[0];
   }
-  async update(courseData) {
-    const {
-      id,
-      instructorId,
-      categoryId,
-      name,
-      slug,
-      description,
-      status,
-      price,
-      position,
-    } = courseData;
-
+  async update({
+    id,
+    categoryId,
+    name,
+    slug,
+    description,
+    status,
+    position,
+    level,
+    accessType,
+  }) {
     const query = `UPDATE courses
       SET
-        instructor_id = $1,
-        category_id = $2,
-        name = $3,
-        slug = $4,
-        description = $5,
-        status = $6,
-        price = $7,
-        position = $8
+        category_id = $1,
+        name = $2,
+        slug = $3,
+        description = $4,
+        status = $5,
+        position = $6,
+        level = $7,
+        access_type = $8
       WHERE id = $9
       RETURNING *
     `;
     const values = [
-      instructorId,
       categoryId,
       name,
       slug,
       description,
       status,
-      price,
       position,
+      level,
+      accessType,
       id,
     ];
     const result = await pgPool.query(query, values);
@@ -114,12 +112,12 @@ class CourseRepository {
     const result = await pgPool.query(query, values);
     return result.rows;
   }
-  async findByInstructorId(instructor_id) {
+  async findByInstructorId(instructorId) {
     const query = `SELECT * FROM courses
       WHERE instructor_id = $1
       AND deleted_at IS NULL
     `;
-    const values = [instructor_id];
+    const values = [instructorId];
     const result = await pgPool.query(query, values);
     return result.rows;
   }

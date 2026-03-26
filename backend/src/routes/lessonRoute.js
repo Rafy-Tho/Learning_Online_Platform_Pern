@@ -9,8 +9,11 @@ import {
   deleteLesson,
   updateLesson,
 } from "../controllers/lessonControllers.js";
+import lessonContentRoute from "./lessonContentRoute.js";
 
 const lessonRoute = express.Router({ mergeParams: true });
+
+lessonRoute.use("/:id/contents", lessonContentRoute);
 
 lessonRoute
   .route("/")

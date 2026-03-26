@@ -8,8 +8,16 @@ import asyncHandler from "../utils/asyncHandler.js";
 // eslint-disable-next-line no-unused-vars
 export const createCourse = asyncHandler(async (req, res, next) => {
   const instructorId = req.session.user.id;
-  const { categoryId, name, slug, description, status, price, position } =
-    req.body;
+  const {
+    categoryId,
+    name,
+    slug,
+    description,
+    status,
+    position,
+    level,
+    accessType,
+  } = req.body;
 
   const course = await Course.create({
     instructorId,
@@ -18,8 +26,9 @@ export const createCourse = asyncHandler(async (req, res, next) => {
     slug,
     description,
     status,
-    price,
     position,
+    level,
+    accessType,
   });
 
   res.status(201).json({
@@ -98,8 +107,17 @@ export const getCoursesByInstructorId = asyncHandler(async (req, res, next) => {
 export const updateCourse = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const instructorId = req.session.user.id;
-  const { categoryId, name, slug, description, status, price, position } =
-    req.body;
+  const {
+    categoryId,
+    name,
+    slug,
+    description,
+    status,
+    price,
+    position,
+    level,
+    accessType,
+  } = req.body;
   // Check if the course exists
   const course = await Course.findById(id);
   if (!course)
@@ -114,7 +132,6 @@ export const updateCourse = asyncHandler(async (req, res, next) => {
   // Update the course
   const updatedCourse = await Course.update({
     id,
-    instructorId,
     categoryId,
     name,
     slug,
@@ -122,6 +139,8 @@ export const updateCourse = asyncHandler(async (req, res, next) => {
     status,
     price,
     position,
+    level,
+    accessType,
   });
 
   res.status(200).json({

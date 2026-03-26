@@ -1,17 +1,17 @@
 import pgPool from "../configs/database.js";
 
 class LessonRepository {
-  async create(lessonData) {
-    const {
-      chapterId,
-      position,
-      name,
-      description,
-      type,
-      status,
-      xpPoints,
-      durationMinutes,
-    } = lessonData;
+  async create({
+    chapterId,
+    position,
+    name,
+    description,
+    type,
+    status,
+    xpPoints,
+    accessType,
+    durationMinutes,
+  }) {
     const query = `INSERT INTO lessons (
       chapter_id,
       position,
@@ -20,13 +20,11 @@ class LessonRepository {
       type,
       status,
       xp_points,
+      access_type,
       duration_minutes
-    )
-    VALUES (
-      $1, $2, $3, $4, $5, $6, $7, $8
-    )
-    RETURNING *
-  `;
+    ) 
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
+    RETURNING * `;
     const values = [
       chapterId,
       position,
@@ -35,23 +33,24 @@ class LessonRepository {
       type,
       status,
       xpPoints,
+      accessType,
       durationMinutes,
     ];
     const result = await pgPool.query(query, values);
     return result.rows[0];
   }
-  async update(lessonData) {
-    const {
-      id,
-      chapterId,
-      position,
-      name,
-      description,
-      type,
-      status,
-      xpPoints,
-      durationMinutes,
-    } = lessonData;
+  async update({
+    lessonId,
+    chapterId,
+    position,
+    name,
+    description,
+    type,
+    status,
+    xpPoints,
+    accessType,
+    durationMinutes,
+  }) {
     const query = `UPDATE lessons
     SET
       chapter_id = $1,
@@ -62,9 +61,9 @@ class LessonRepository {
       status = $6,
       xp_points = $7,
       duration_minutes = $8,
-      updated_at = CURRENT_TIMESTAMP
+      access_type = $9,
     WHERE
-      id = $9
+      id = $10
     RETURNING *
   `;
     const values = [
@@ -76,7 +75,8 @@ class LessonRepository {
       status,
       xpPoints,
       durationMinutes,
-      id,
+      accessType,
+      lessonId,
     ];
     const result = await pgPool.query(query, values);
     return result.rows[0];

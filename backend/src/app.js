@@ -15,6 +15,8 @@ import chapterRoute from "./routes/chapterRoute.js";
 import lessonRoute from "./routes/lessonRoute.js";
 import cors from "cors";
 import ENV from "./configs/Env.js";
+import courseObjectiveRoute from "./routes/courseObjectiveRoute.js";
+import lessonContentRoute from "./routes/lessonContentRoute.js";
 
 // configure variable
 const app = express();
@@ -41,9 +43,11 @@ app.use(express.static(path.join(__dirname, "../public")));
 app.use("/api/v1/users", userRoute);
 app.use("/api/v1/categories", categoryRoute);
 app.use("/api/v1/courses", courseRoute);
+app.use("/api/v1/objectives", courseObjectiveRoute);
 app.use("/api/v1/modules", moduleRoute);
 app.use("/api/v1/chapters", chapterRoute);
 app.use("/api/v1/lessons", lessonRoute);
+app.use("/api/v1/contents", lessonContentRoute);
 // configure middleware handle error
 app.use(notFoundUrl);
 app.use(errorHandler);

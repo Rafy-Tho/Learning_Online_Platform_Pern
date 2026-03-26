@@ -1,8 +1,7 @@
 import pgPool from "../configs/database.js";
 
 class ChapterRepository {
-  async create(chapterData) {
-    const { moduleId, position, name, description, status } = chapterData;
+  async create({ moduleId, position, name, description, status }) {
     const result = await pgPool.query(
       "INSERT INTO chapters (module_id, position, name, description, status) VALUES ($1, $2, $3, $4, $5) RETURNING *",
       [moduleId, position, name, description, status],
@@ -22,8 +21,7 @@ class ChapterRepository {
     );
     return result.rows;
   }
-  async update(chapterData) {
-    const { id, position, name, description, status } = chapterData;
+  async update({ id, position, name, description, status }) {
     const result = await pgPool.query(
       "UPDATE chapters SET position = $1, name = $2, description = $3, status = $4 WHERE id = $5 RETURNING *",
       [position, name, description, status, id],

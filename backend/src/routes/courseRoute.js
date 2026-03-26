@@ -12,11 +12,12 @@ import { courseValidator } from "../validators/courseValidators.js";
 import { validateResult } from "../middlewares/validateResult.js";
 import { upload } from "../middlewares/multer.js";
 import moduleRoute from "./moduleRoute.js";
+import courseObjectiveRoute from "./courseObjectiveRoute.js";
 
 const courseRoute = express.Router();
 
 courseRoute.use("/:id/modules", moduleRoute);
-
+courseRoute.use("/:id/objectives", courseObjectiveRoute);
 // @desc Create a course
 courseRoute
   .route("/")

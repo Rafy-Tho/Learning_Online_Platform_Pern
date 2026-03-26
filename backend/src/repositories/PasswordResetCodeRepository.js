@@ -1,7 +1,7 @@
 import pgPool from "../configs/database.js";
 
 class PasswordResetCodeRepository {
-  async create(code, userId, expiresAt) {
+  async create({ code, userId, expiresAt }) {
     const result = await pgPool.query(
       `INSERT INTO password_reset_codes (code, user_id, expires_at)
        VALUES ($1, $2, $3)
@@ -13,7 +13,7 @@ class PasswordResetCodeRepository {
     return result.rows[0];
   }
 
-  async findCode(code, userId) {
+  async findCode({ code, userId }) {
     const result = await pgPool.query(
       `SELECT *
        FROM password_reset_codes

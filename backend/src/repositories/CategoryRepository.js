@@ -8,8 +8,7 @@ class CategoryRepository {
     const result = await pgPool.query(query);
     return result.rows;
   }
-  async create(data) {
-    const { name, slug, description } = data;
+  async create({ name, slug, description }) {
     const query = `INSERT INTO categories (name,slug,description)
       VALUES ($1,$2,$3)
       RETURNING *
@@ -33,8 +32,7 @@ class CategoryRepository {
     const result = await pgPool.query(query, [slug]);
     return result.rows[0];
   }
-  async update(categoryId, data) {
-    const { name, slug, description } = data;
+  async update({ categoryId, name, slug, description }) {
     const query = `UPDATE categories
       SET name = $1, slug = $2, description = $3
       WHERE id = $4

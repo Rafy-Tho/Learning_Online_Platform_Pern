@@ -1,28 +1,24 @@
 import pgPool from "../configs/database.js";
 
 class ModuleRepository {
-  async create(moduleData) {
-    const { courseId, name, description, position, iconName, status } =
-      moduleData;
+  async create({ courseId, name, description, position, status }) {
     const result = await pgPool.query(
-      `INSERT INTO modules (course_id,name,description,position,icon_name,status)
-        VALUES ($1,$2,$3,$4,$5,$6)
+      `INSERT INTO modules (course_id,name,description,position,status)
+        VALUES ($1,$2,$3,$4,$5)
         RETURNING *
       `,
-      [courseId, name, description, position, iconName, status],
+      [courseId, name, description, position, status],
     );
     return result.rows[0];
   }
-  async update(moduleData) {
-    const { id, courseId, name, description, position, iconName, status } =
-      moduleData;
+  async update({ id, courseId, name, description, position, status }) {
     const result = await pgPool.query(
       `UPDATE modules
-        SET course_id=$1,name=$2,description=$3,position=$4,icon_name=$5,status=$6
-        WHERE id=$7
+        SET course_id=$1,name=$2,description=$3,position=$4,status=$5
+        WHERE id=$6
         RETURNING *
       `,
-      [courseId, name, description, position, iconName, status, id],
+      [courseId, name, description, position, status, id],
     );
     return result.rows[0];
   }

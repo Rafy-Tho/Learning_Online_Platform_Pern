@@ -8,7 +8,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 // @route POST /api/v1/chapters/:id/lessons
 // @access Private
 export const createLesson = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
+  const id = req.params.id;
   const {
     name,
     description,
@@ -16,6 +16,7 @@ export const createLesson = asyncHandler(async (req, res, next) => {
     xpPoints,
     durationMinutes,
     position,
+    accessType,
     type,
   } = req.body;
   const chapter = await Chapter.findById(id);
@@ -30,6 +31,7 @@ export const createLesson = asyncHandler(async (req, res, next) => {
     position,
     type,
     chapterId: id,
+    accessType,
   });
   res.status(StatusCode.CREATED).json({
     success: true,

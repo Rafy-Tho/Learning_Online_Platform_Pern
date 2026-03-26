@@ -9,38 +9,24 @@ CREATE TYPE user_role AS ENUM ('LEARNER','INSTRUCTOR','ADMIN');
 
 CREATE TYPE user_status AS ENUM ('ACTIVE','INACTIVE','SUSPENDED');
 
+CREATE TYPE course_level AS ENUM ('BEGINNER','INTERMEDIATE','ADVANCED');
+
 CREATE TYPE content_status AS ENUM ('DRAFT','PUBLISHED');
 
 CREATE TYPE lesson_type AS ENUM ('TEXT','QUIZ');
 
-CREATE TYPE lesson_link_type AS ENUM ('RESOURCE','REFERENCE','DOWNLOAD');
-
-CREATE TYPE enrollment_status AS ENUM ('ACTIVE','EXPIRED','CANCELLED');
-
-CREATE TYPE subscription_plan AS ENUM ('BASIC','STANDARD','PREMIUM');
-
-CREATE TYPE subscription_status AS ENUM ('ACTIVE','EXPIRED','CANCELLED','PAUSED');
-
-CREATE TYPE subscription_duration AS ENUM ('1_MONTH','3_MONTHS','6_MONTHS','1_YEAR','2_YEARS', 'LIFETIME');
+CREATE TYPE subscription_status AS ENUM ('ACTIVE','EXPIRED','CANCELLED');
 
 CREATE TYPE payment_status AS ENUM ('PENDING','COMPLETED','FAILED','REFUNDED');
 
 CREATE TYPE refund_status AS ENUM ('PENDING','COMPLETED','FAILED');
-
-CREATE TYPE review_report_reason AS ENUM (
-  'INAPPROPRIATE_CONTENT',
-  'SPAM',
-  'OFFENSIVE_LANGUAGE',
-  'OTHER'
-);
 
 -- Create enum for discount types
 CREATE TYPE discount_type AS ENUM ('PERCENTAGE', 'FIXED_AMOUNT');
 
 CREATE TYPE coupon_status AS ENUM ('ACTIVE', 'EXPIRED', 'DISABLED', 'DEPLETED');
 
-CREATE TYPE coupon_target_type AS ENUM ('COURSE','CATEGORY','INSTRUCTOR','SUBSCRIPTION');
-
+CREATE TYPE access_course_type AS ENUM ('FREE','SUBSCRIPTION');
 -- ========================
 -- UTILITY: AUTO-UPDATE update_at
 -- ========================
@@ -135,9 +121,10 @@ CREATE TABLE courses(
   name VARCHAR(255) NOT NULL,
   slug TEXT UNIQUE NOT NULL,
   description TEXT NOT NULL,
-  image_url TEXT NOT NULL,
   status content_status DEFAULT 'DRAFT' NOT NULL,
   price NUMERIC(10,2) DEFAULT 0 CHECK (price >= 0) NOT NULL,
+  level course_level DEFAULT 'BEGINNER' NOT NULL,
+  access_type access_course_type DEFAULT 'FREE',
   position INTEGER,
   deleted_at TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -150,11 +137,22 @@ FOR EACH ROW
 EXECUTE FUNCTION set_updated_at();
 
 -- =========================
--- COURSE TAGS
+-- COURSE OBJECTIVES
 -- =========================
+CREATE TABLE course_objectives (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  course_id UUID NOT NULL 
+  REFERENCES courses(id) ON DELETE CASCADE,
+  content TEXT NOT NULL, -- the objective text
+  position INTEGER DEFAULT 1, -- ordering
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
 
-CREATE INDEX idx_course_tags_tag ON course_tags(tag_id);
-
+create TRIGGER trg_course_objectives_updated_at
+BEFORE UPDATE ON course_objectives
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();
 -- =========================
 -- MODULES
 -- =========================
@@ -172,7 +170,6 @@ CREATE TABLE modules(
 );
 
 CREATE INDEX idx_modules_course ON modules(course_id);
-
 CREATE TRIGGER trg_modules_updated_at
 BEFORE UPDATE ON modules
 FOR EACH ROW
@@ -192,10 +189,7 @@ CREATE TABLE chapters(
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
-
-CREATE INDEX idx_chapters_course ON chapters(course_id);
 CREATE INDEX idx_chapters_module ON chapters(module_id);
-
 CREATE TRIGGER trg_chapters_updated_at
 BEFORE UPDATE ON chapters
 FOR EACH ROW
@@ -218,9 +212,7 @@ CREATE TABLE lessons(
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
-
 CREATE INDEX idx_lessons_chapter ON lessons(chapter_id);
-
 CREATE TRIGGER trg_lessons_updated_at
 BEFORE UPDATE ON lessons
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
@@ -238,9 +230,7 @@ CREATE TABLE lesson_content(
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
-
 CREATE INDEX idx_lesson_content_lesson ON lesson_content(lesson_id);
-
 CREATE TRIGGER trg_lesson_content_updated_at
 BEFORE UPDATE ON lesson_content
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
@@ -314,10 +304,9 @@ CREATE TABLE enrollments(
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
-  expires_at DATE,
-  total_price NUMERIC(10,2) DEFAULT 0 CHECK (total_price >= 0),
-  status enrollment_status DEFAULT 'ACTIVE',
-  enrolled_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  access_type access_course_type DEFAULT 'FREE',
+  enrolled_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP, 
+  expires_at TIMESTAMP WITH TIME ZONE,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT unique_user_course UNIQUE(user_id, course_id)
 );
@@ -330,87 +319,48 @@ BEFORE UPDATE ON enrollments
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 -- =========================
--- PAYMENTS (Stripe Friendly)
+-- SUBSCRIPTION PLANS
 -- =========================
-
-CREATE TABLE enrollment_payments(
+CREATE TABLE subscription_plans (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  enrollment_id UUID NOT NULL REFERENCES enrollments(id) ON DELETE CASCADE,
-  amount NUMERIC(10,2) NOT NULL CHECK (amount >= 0),
-  status payment_status DEFAULT 'PENDING',
-  stripe_payment_intent_id TEXT UNIQUE,
-  stripe_charge_id TEXT UNIQUE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE INDEX idx_enrollment_payment_enrollment ON enrollment_payments(enrollment_id);
-
-CREATE TRIGGER trg_enrollment_payments_updated_at
-BEFORE UPDATE ON enrollment_payments
-FOR EACH ROW EXECUTE FUNCTION set_updated_at();
-
--- ========================
--- ENROLLMENT REFUNDS
--- ========================
-CREATE TABLE enrollment_refunds(
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  enrollment_id UUID NOT NULL REFERENCES enrollments(id) ON DELETE CASCADE,
-  refund_status refund_status DEFAULT 'PENDING',
-  refund_amount NUMERIC(10,2) NOT NULL CHECK (refund_amount >= 0),
-  confirm BOOLEAN DEFAULT FALSE,
-  refund_reason TEXT,
-  stripe_refund_id TEXT UNIQUE,
-  refunded_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE INDEX idx_enrollment_refund_enrollment ON enrollment_refunds(enrollment_id);
-
-CREATE TRIGGER trg_enrollment_refunds_updated_at
-BEFORE UPDATE ON enrollment_refunds
-FOR EACH ROW EXECUTE FUNCTION set_updated_at();
-
--- =========================
--- SUBSCRIPTIONS
--- =========================
-CREATE TABLE subscriptions (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name subscription_plan NOT NULL,
-  duration subscription_duration NOT NULL,
-  price NUMERIC(10,2) NOT NULL,
+  name VARCHAR(50) NOT NULL, -- STANDARD, PREMIUM, etc.
+  duration_name VARCHAR(20) NOT NULL, -- MONTHLY, YEARLY
+  duration_days INT NOT NULL, -- 30, 365, etc.
+  price NUMERIC(10,2) NOT NULL CHECK (price >= 0),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT unique_plan_duration UNIQUE(name, duration)
+  CONSTRAINT unique_plan_duration UNIQUE(name, duration_days)
 );
 
-CREATE TRIGGER trg_subscriptions_updated_at
-BEFORE UPDATE ON subscriptions
+CREATE TRIGGER trg_subscription_plans_updated_at
+BEFORE UPDATE ON subscription_plans
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
-CREATE TABLE user_subscriptions(
+-- =========================
+-- USER SUBSCRIPTIONS
+-- =========================
+CREATE TABLE user_subscriptions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  subscription_id UUID NOT NULL REFERENCES subscriptions(id) ON DELETE CASCADE,
-  start_date DATE NOT NULL,
-  end_date DATE,
-  paused_at DATE,
+  plan_id UUID NOT NULL REFERENCES subscription_plans(id) ON DELETE CASCADE,
+  start_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  end_date TIMESTAMP WITH TIME ZONE NOT NULL,
   status subscription_status DEFAULT 'ACTIVE',
-  CONSTRAINT unique_user_subscription UNIQUE(user_id, subscription_id),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Only ONE active subscription per user
 CREATE UNIQUE INDEX one_active_subscription_per_user
-  ON user_subscriptions(user_id)
-  WHERE status = 'ACTIVE';
+ON user_subscriptions(user_id)
+WHERE status = 'ACTIVE';
 
-CREATE INDEX idx_user_subscriptions_user ON user_subscriptions(user_id);
+CREATE INDEX idx_user_subscriptions_user 
+ON user_subscriptions(user_id);
 
 CREATE TRIGGER trg_user_subscriptions_updated_at
 BEFORE UPDATE ON user_subscriptions
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
-
 -- ========================
 -- SUBSCRIPTION PAYMENTS
 -- =========================
@@ -418,11 +368,11 @@ FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 CREATE TABLE subscription_payments(
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_subscription_id UUID NOT NULL REFERENCES user_subscriptions(id) ON DELETE CASCADE,
-  amount NUMERIC(10,2) NOT NULL,
+  amount NUMERIC(10,2) NOT NULL CHECK (amount >= 0),
   payment_status payment_status DEFAULT 'PENDING',
   stripe_payment_intent_id TEXT UNIQUE,
   stripe_invoice_id TEXT UNIQUE,
-  paid_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -442,7 +392,7 @@ CREATE TABLE subscription_refunds(
   confirm BOOLEAN DEFAULT FALSE,
   refund_status refund_status DEFAULT 'PENDING',
   stripe_refund_id TEXT UNIQUE,
-  refunded_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -466,7 +416,7 @@ CREATE TABLE coupons(
   per_user_limit INTEGER DEFAULT 1,
   times_used INTEGER DEFAULT 0,
   first_time_only BOOLEAN DEFAULT FALSE,
-  apply_to_all_courses BOOLEAN DEFAULT FALSE,
+  apply_to_all_subscriptions BOOLEAN DEFAULT FALSE,
   status coupon_status DEFAULT 'ACTIVE',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   expires_at TIMESTAMP WITH TIME ZONE NOT NULL CHECK (expires_at >= created_at),
@@ -487,23 +437,13 @@ FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 CREATE TABLE coupon_targets (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   coupon_id UUID UNIQUE NOT NULL REFERENCES coupons(id) ON DELETE CASCADE,
-  target_type coupon_target_type NOT NULL,
-  target_course_id UUID REFERENCES courses(id) ON DELETE CASCADE,
-  target_category_id UUID REFERENCES categories(id) ON DELETE CASCADE,
-  target_instructor_id UUID REFERENCES users(id) ON DELETE CASCADE,
-  target_subscription_id UUID REFERENCES subscriptions(id) ON DELETE CASCADE,
+  target_id UUID REFERENCES subscription_plans(id) ON DELETE CASCADE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  -- Ensure exactly one target is specified
-  CONSTRAINT chk_only_one_target CHECK (
-    (CASE WHEN target_course_id IS NOT NULL THEN 1 ELSE 0 END +
-     CASE WHEN target_category_id IS NOT NULL THEN 1 ELSE 0 END +
-     CASE WHEN target_instructor_id IS NOT NULL THEN 1 ELSE 0 END +
-     CASE WHEN target_subscription_id IS NOT NULL THEN 1 ELSE 0 END) = 1
-  )
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_coupon_targets_coupon ON coupon_targets(coupon_id);
-CREATE INDEX idx_coupon_targets_lookup ON coupon_targets(target_type, target_course_id, target_category_id, target_instructor_id, target_subscription_id);
+CREATE INDEX idx_coupon_targets_lookup ON coupon_targets(target_id);
 
 -- ========================
 -- COUPON REDEMPTIONS
@@ -562,7 +502,7 @@ CREATE TABLE review_reports(
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   review_id UUID NOT NULL REFERENCES course_reviews(id) ON DELETE CASCADE,
-  reason review_report_reason NOT NULL,
+  reason  VARCHAR(255) NOT NULL,
   description TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT unique_user_report UNIQUE(user_id, review_id)

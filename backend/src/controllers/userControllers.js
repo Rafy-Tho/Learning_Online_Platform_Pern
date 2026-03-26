@@ -60,7 +60,7 @@ export const login = asyncHandler(async (req, res, next) => {
   // find user with profile
   const userProfile = await User.profile(user.id);
   // update last login
-  await User.updateLastLogin(user.id, new Date());
+  await User.updateLastLogin({ userId: user.id, lastLogin: new Date() });
   // create session
   await sessionService.create(req, user);
   // send response
@@ -104,7 +104,7 @@ export const getProfile = asyncHandler(async (req, res, next) => {
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
-    message: "User info retrieved successfully",
+    message: "User info retrie  ved successfully",
     data: user,
   });
 });
@@ -243,7 +243,7 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
   // hash password
   const passwordHash = await hashService.hash(password);
   // update user password
-  await User.updatePassword(user.id, passwordHash);
+  await User.updatePassword({ userId: user.id, passwordHash });
   // delete codes
   await PasswordResetCode.delete(user.id);
   // send response
@@ -271,7 +271,7 @@ export const updatePassword = asyncHandler(async (req, res, next) => {
   // hash new password
   const passwordHash = await hashService.hash(newPassword);
   // update user password
-  await User.updatePassword(userId, passwordHash);
+  await User.updatePassword({ userId, passwordHash });
   // send response
   res.status(StatusCode.OK).json({
     message: "Password updated successfully",
