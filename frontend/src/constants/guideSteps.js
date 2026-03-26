@@ -1,4 +1,4 @@
-const guideSteps = [
+export const guideSteps = [
   {
     title: "Pick a Course",
     description: "Browse 20+ categories and choose what excites you.",
@@ -12,4 +12,3 @@ const guideSteps = [
     description: "Complete the course and share your certificate.",
   },
 ];
-export default guideSteps;

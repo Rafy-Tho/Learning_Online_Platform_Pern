@@ -9,7 +9,6 @@ import LoginSignupBtn from "./LoginSignupBtn";
 
 const Navigation = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [pricingOpen, setPricingOpen] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
   const { user } = useAuth();
   const navRef = useRef(null);
@@ -18,7 +17,6 @@ const Navigation = () => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (navRef.current && !navRef.current.contains(event.target)) {
-        setPricingOpen(false);
         setAvatarOpen(false);
         setMobileMenuOpen(false);
       }
@@ -31,26 +29,17 @@ const Navigation = () => {
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
     if (!mobileMenuOpen) {
-      setPricingOpen(false);
       setAvatarOpen(false);
     }
-  };
-
-  const togglePricing = (e) => {
-    e.stopPropagation();
-    setPricingOpen(!pricingOpen);
-    setAvatarOpen(false);
   };
 
   const toggleAvatar = (e) => {
     e.stopPropagation();
     setAvatarOpen(!avatarOpen);
-    setPricingOpen(false);
   };
 
   const closeAll = () => {
     setMobileMenuOpen(false);
-    setPricingOpen(false);
     setAvatarOpen(false);
   };
 
@@ -64,11 +53,7 @@ const Navigation = () => {
           {/* Logo */}
           <Logo />
           {/* Desktop Navigation */}
-          <Desktop
-            closeAll={closeAll}
-            togglePricing={togglePricing}
-            pricingOpen={pricingOpen}
-          />
+          <Desktop closeAll={closeAll} />
           {/* Right side actions */}
           <div className="flex items-center gap-2">
             {/* Avatar */}
@@ -91,8 +76,6 @@ const Navigation = () => {
         <Mobile
           mobileMenuOpen={mobileMenuOpen}
           closeAll={closeAll}
-          togglePricing={togglePricing}
-          pricingOpen={pricingOpen}
           avatarOpen={avatarOpen}
           toggleAvatar={toggleAvatar}
         />

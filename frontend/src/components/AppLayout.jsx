@@ -9,7 +9,7 @@ function AppLayout() {
       <Navigation />
 
       <Outlet />
-      {/* <Footer /> */}
+      <Footer />
       <ToastContainer
         position="top-right"
         autoClose={3000}

@@ -1,4 +1,4 @@
-export const footerSections = [
+export const footerLinks = [
   {
     title: "Quick Links",
     links: [

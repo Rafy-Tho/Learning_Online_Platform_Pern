@@ -1,32 +1,7 @@
-export const navLinks = [
-  { label: "Courses", href: "/courses" },
-  { label: "Community", href: "/community" },
-  { label: "Coaching", href: "/coaching" },
-];
-export const pricingItems = [
-  {
-    label: "Individual Courses",
-    href: "#individual",
-    icon: "fa-solid fa-user",
-  },
-  {
-    label: "Plan Subscription",
-    href: "#subscription",
-    icon: "fa-solid fa-crown",
-  },
-];
-export const avatarMenuItems = [
-  { label: "Dashboard", href: "#dashboard", icon: "fa-solid fa-gauge-high" },
-  { label: "Settings", href: "#settings", icon: "fa-solid fa-gear" },
-  { label: "Earnings", href: "#earnings", icon: "fa-solid fa-chart-line" },
-];
-
-export const CURRENT_YEAR = new Date().getFullYear();
-
 export const lesson = `<div class="min-h-screen bg-gray-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-200 font-sans transition-colors duration-200">
 <div class="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 px-8 py-4">
   <div class="flex items-center gap-2 text-xs font-mono text-zinc-400 dark:text-zinc-500 flex-wrap">
-    <span class="text-yellow-600 dark:text-yellow-400 font-semibold">C LANGUAGE</span>
+    <span class="tex t-yellow-600 dark:text-yellow-400 font-semibold">C LANGUAGE</span>
     <i class="fas fa-chevron-right text-zinc-300 dark:text-zinc-700 text-xs"></i>
     <span>MODULE 1</span>
     <i class="fas fa-chevron-right text-zinc-300 dark:text-zinc-700 text-xs"></i>

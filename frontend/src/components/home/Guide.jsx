@@ -1,4 +1,4 @@
-import guideSteps from "../../constants/guideSteps";
+import { guideSteps } from "../../constants/guideSteps";
 
 function Guide() {
   return (

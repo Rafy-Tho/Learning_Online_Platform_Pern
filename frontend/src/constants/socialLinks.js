@@ -1,27 +1,33 @@
+import FaceBook from "../socialSvg/FaceBook";
+import Instagram from "../socialSvg/Instagram";
+import LinkedIn from "../socialSvg/LinkedIn";
+import Twitter from "../socialSvg/Twitter";
+import YouTube from "../socialSvg/YouTube";
+
 export const socialLinks = [
   {
-    icon: "fa-brands fa-facebook",
     label: "Facebook",
     href: "#",
+    icon: FaceBook,
   },
   {
-    icon: "fa-brands fa-twitter",
     label: "Twitter",
     href: "#",
+    icon: Twitter,
   },
   {
-    icon: "fa-brands fa-instagram",
     label: "Instagram",
     href: "#",
+    icon: Instagram,
   },
   {
-    icon: "fa-brands fa-linkedin",
     label: "LinkedIn",
     href: "#",
+    icon: LinkedIn,
   },
   {
-    icon: "fa-brands fa-youtube",
     label: "YouTube",
     href: "#",
+    icon: YouTube,
   },
 ];

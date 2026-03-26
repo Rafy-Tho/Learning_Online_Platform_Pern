@@ -1,18 +1,16 @@
 import { NavLink } from "react-router-dom";
-import {
-  avatarMenuItems,
-  navLinks,
-  pricingItems,
-} from "../../constants/constant";
-import ThemeSelector from "../ThemSelector";
-import useAuth from "../../hooks/useAuth";
+
 import useLogout from "../../hooks/auth/useLogout";
+import useAuth from "../../hooks/useAuth";
+import ThemeSelector from "../ThemSelector";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { navLinks } from "../../constants/navLinks";
+import { avatarMenuItems } from "../../constants/avatarMenuItems";
 
 function Mobile({
   mobileMenuOpen,
   closeAll,
-  togglePricing,
-  pricingOpen,
+
   avatarOpen,
   toggleAvatar,
 }) {
@@ -39,51 +37,6 @@ function Mobile({
               </NavLink>
             ))}
           </div>
-
-          {/* Mobile Pricing with Dropdown */}
-          <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-            <button
-              onClick={togglePricing}
-              className="flex items-center justify-between w-full px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg font-medium transition-colors"
-            >
-              <span>Pricing</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className={`w-4 h-4 transition-transform duration-200 ${pricingOpen ? "rotate-180" : ""}`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
-
-            {/* Mobile Pricing Dropdown Items */}
-            {pricingOpen && (
-              <div className="mt-2 ml-4 space-y-1">
-                {pricingItems.map((item) => (
-                  <NavLink
-                    key={item.label}
-                    href={item.href}
-                    onClick={() => {
-                      closeAll();
-                      window.scrollTo({ top: 0, behavior: "smooth" });
-                    }}
-                    className="flex items-center gap-3 px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                  >
-                    <i className={`${item.icon} text-blue-500 w-5`}></i>
-                    <span className="font-medium">{item.label}</span>
-                  </NavLink>
-                ))}
-              </div>
-            )}
-          </div>
-
           {/* Mobile User Info with Dropdown */}
           {user && (
             <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
@@ -106,20 +59,7 @@ function Mobile({
                     </p>
                   </div>
                 </div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className={`w-4 h-4 transition-transform duration-200 ${avatarOpen ? "rotate-180" : ""}`}
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
+                {avatarOpen ? <ChevronDown /> : <ChevronUp />}
               </button>
 
               {/* Mobile Avatar Dropdown Items */}
@@ -128,20 +68,21 @@ function Mobile({
                   <div className="flex items-center gap-3 px-4 py-2.5 text-sm transition-colors text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
                     <ThemeSelector />
                   </div>
-                  {avatarMenuItems.map((item) => (
-                    <NavLink
-                      key={item.label}
-                      href={item.href}
-                      onClick={closeAll}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700
+                  {avatarMenuItems.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <NavLink
+                        key={item.label}
+                        href={item.href}
+                        onClick={closeAll}
+                        className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700
                     `}
-                    >
-                      <i
-                        className={`${item.icon} w-5 text-gray-500 dark:text-gray-400`}
-                      ></i>
-                      {item.label}
-                    </NavLink>
-                  ))}
+                      >
+                        <Icon className="w-5 h-5" />
+                        {item.label}
+                      </NavLink>
+                    );
+                  })}
                   <button
                     onClick={() => {
                       logout();

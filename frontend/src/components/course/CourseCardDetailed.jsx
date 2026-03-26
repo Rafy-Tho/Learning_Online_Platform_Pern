@@ -10,20 +10,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export function CourseCard(props) {
-  const {
-    type,
-    title,
-    description,
-    difficulty,
-    updatedTime,
-    duration,
-    rating,
-    lessons,
-    features,
-    quizzes,
-    extras,
-  } = props;
+export function CourseCardDetailed({ course }) {
   return (
     <Link
       to={`/courses/1`}
@@ -34,20 +21,20 @@ export function CourseCard(props) {
         <div className="flex items-center gap-3">
           <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300 text-xs font-medium rounded">
             <BookOpen className="w-3 h-3" />
-            {type}
+            {course.type}
           </span>
           <div className="hidden md:flex items-center gap-3 text-sm text-gray-600 dark:text-slate-400">
             <span className="flex items-center gap-1">
               <BarChart3 className="w-4 h-4" />
-              {difficulty}
+              {course.difficulty}
             </span>
             <span className="flex items-center gap-1">
               <Clock className="w-4 h-4" />
-              {updatedTime}
+              {course.updatedTime}
             </span>
             <span className="flex items-center gap-1">
               <Clock className="w-4 h-4" />
-              {duration}
+              {course.duration}
             </span>
           </div>
         </div>
@@ -55,7 +42,7 @@ export function CourseCard(props) {
           <div className="flex items-center gap-1">
             <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
             <span className="text-sm font-medium text-gray-900 dark:text-white">
-              {rating}
+              {course.rating}
             </span>
           </div>
           <button className="p-1 text-gray-400 hover:text-gray-600 dark:text-slate-500 dark:hover:text-slate-300">
@@ -68,37 +55,37 @@ export function CourseCard(props) {
       <div className="md:hidden flex flex-wrap gap-2 mb-3 text-xs text-gray-600 dark:text-slate-400">
         <span className="flex items-center gap-1">
           <BarChart3 className="w-3 h-3" />
-          {difficulty}
+          {course.difficulty}
         </span>
         <span className="flex items-center gap-1">
           <Clock className="w-3 h-3" />
-          {updatedTime}
+          {course.updatedTime}
         </span>
         <span className="flex items-center gap-1">
           <Clock className="w-3 h-3" />
-          {duration}
+          {course.duration}
         </span>
       </div>
 
       {/* Title */}
       <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-2">
-        {title}
+        {course.title}
       </h3>
 
       {/* Description */}
       <p className="text-sm text-gray-600 dark:text-slate-400 mb-4 line-clamp-2">
-        {description}
+        {course.description}
       </p>
 
       {/* Features */}
       <div className="flex flex-wrap gap-3 text-xs md:text-sm text-gray-700 dark:text-slate-300">
         <span className="flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-50 dark:bg-slate-800 rounded">
           <CheckCircle className="w-4 h-4" />
-          {lessons} Lessons
+          {course.lessons} Lessons
         </span>
         <span className="flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-50 dark:bg-slate-800 rounded">
           <Star className="w-4 h-4" />
-          {features} AI Features
+          {course.features} AI Features
         </span>
         <span className="flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-50 dark:bg-slate-800 rounded">
           <MessageSquare className="w-4 h-4" />
@@ -106,11 +93,11 @@ export function CourseCard(props) {
         </span>
         <span className="flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-50 dark:bg-slate-800 rounded">
           <CheckCircle className="w-4 h-4" />
-          {quizzes} Quizzes
+          {course.quizzes} Quizzes
         </span>
         <span className="flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-50 dark:bg-slate-800 rounded">
           <Edit className="w-4 h-4" />
-          {extras}
+          {course.extras}
         </span>
       </div>
     </Link>

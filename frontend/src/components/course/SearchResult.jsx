@@ -1,4 +1,4 @@
-import { CourseCard } from "./courseCard";
+import { CourseCardDetailed } from "./CourseCardDetailed";
 
 export function SearchResult({ results, totalCount }) {
   return (
@@ -10,7 +10,7 @@ export function SearchResult({ results, totalCount }) {
 
         <div className="space-y-4 md:space-y-5">
           {results.map((course, index) => (
-            <CourseCard key={index} {...course} />
+            <CourseCardDetailed key={index} course={course} />
           ))}
         </div>
       </div>

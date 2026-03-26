@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { avatarMenuItems } from "../../constants/constant";
+import { avatarMenuItems } from "../../constants/avatarMenuItems";
 import useAuth from "../../hooks/useAuth";
 import ThemeSelector from "../ThemSelector";
 import useLogout from "../../hooks/auth/useLogout";
@@ -39,20 +39,21 @@ function Avatar({ avatarOpen, toggleAvatar, closeAll }) {
             <div className="flex items-center gap-3 px-4 py-2.5 text-sm transition-colors text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
               <ThemeSelector />
             </div>
-            {avatarMenuItems.map((item) => (
-              <NavLink
-                key={item.label}
-                href={item.href}
-                onClick={closeAll}
-                className={`flex items-center gap-3 px-4 py-2.5 text-sm transition-colors text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600
+            {avatarMenuItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <NavLink
+                  key={item.label}
+                  href={item.href}
+                  onClick={closeAll}
+                  className={`flex items-center gap-3 px-4 py-2.5 text-sm transition-colors text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600
                 `}
-              >
-                <i
-                  className={`${item.icon} w-5 text-gray-500 dark:text-gray-400`}
-                ></i>
-                {item.label}
-              </NavLink>
-            ))}
+                >
+                  <Icon className="w-5 text-gray-500 dark:text-gray-400" />
+                  {item.label}
+                </NavLink>
+              );
+            })}
             <button
               onClick={() => {
                 closeAll();

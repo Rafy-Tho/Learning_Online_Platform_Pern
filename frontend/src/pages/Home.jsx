@@ -1,10 +1,10 @@
-import Course from "../components/Course";
 import Feature from "../components/home/Feature";
 import FreAskQuestion from "../components/home/FreAskQuestion";
 import Guide from "../components/home/Guide";
 import Hero from "../components/home/Hero";
 import StartLearning from "../components/home/StartLearning";
 import Testimonial from "../components/home/Testimonial";
+import TopCourse from "../components/home/TopCourse";
 const Home = () => {
   return (
     <div
@@ -15,7 +15,7 @@ const Home = () => {
       {/*  ========== FEATURES SECTION (e-learning themed) ========== */}
       <Feature />
       {/* ========== COURSES SECTION (e-learning themed) ========== */}
-      <Course />
+      <TopCourse />
       {/* ========== HOW IT WORKS (simplified) ========== */}
       <Guide />
       {/* ========== TESTIMONIALS (shortened) ========== */}

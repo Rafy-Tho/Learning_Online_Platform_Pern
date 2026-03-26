@@ -1,5 +1,4 @@
-import React from "react";
-import testimonials from "../../constants/testimonials";
+import { testimonials } from "../../constants/testimonials";
 import StarRating from "../StarRating";
 
 const Testimonial = () => {

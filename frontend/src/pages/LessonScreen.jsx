@@ -1,4 +1,4 @@
-import { lesson } from "../constants/constant";
+import { lesson } from "../constants/lessonTest";
 
 function LessonScreen() {
   console.log(JSON.stringify(lesson));

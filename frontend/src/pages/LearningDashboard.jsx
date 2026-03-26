@@ -2,11 +2,7 @@
 import {
   ArrowUpRight,
   Award,
-  BarChart2,
-  BookOpen,
-  Bookmark,
   ChevronRight,
-  Clock,
   Code,
   Code2,
   FlaskConical,
@@ -19,46 +15,9 @@ import {
   UserCheck,
 } from "lucide-react";
 import { useState } from "react";
-import HorizontalCarousel from "../components/HorizontalCarousel";
-
-const courseCardBase =
-  "flex min-w-[280px] max-w-sm shrink-0 flex-col rounded-xl border border-slate-100 bg-white p-6 shadow-sm transition hover:shadow-md dark:border-slate-800 dark:bg-slate-900 sm:min-w-[300px] md:min-w-[calc(50%-0.5rem)] lg:min-w-[calc(25%-0.75rem)]";
-
-function CourseCard({ c }) {
-  return (
-    <article className={courseCardBase}>
-      <div className="mb-4 flex items-start justify-between">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400">
-          <BookOpen className="size-3.5" aria-hidden />
-          Course
-        </span>
-        <button
-          type="button"
-          className="text-slate-400 transition hover:text-indigo-600 dark:text-slate-500"
-          aria-label="Bookmark"
-        >
-          <Bookmark className="size-5" />
-        </button>
-      </div>
-      <h3 className="mb-2 text-lg font-bold text-slate-900 dark:text-slate-100">
-        {c.title}
-      </h3>
-      <p className="mb-6 line-clamp-4 flex-1 text-sm text-slate-600 dark:text-slate-400">
-        {c.description}
-      </p>
-      <div className="mt-auto flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-        <span className="inline-flex items-center gap-1">
-          <Clock className="size-3.5" />
-          {c.duration}
-        </span>
-        <span className="inline-flex items-center gap-1">
-          <BarChart2 className="size-3.5" />
-          {c.level}
-        </span>
-      </div>
-    </article>
-  );
-}
+import { SwiperSlide } from "swiper/react";
+import CourseCard from "../components/CourseCard";
+import SwiperWrapper from "../components/SwiperWrapper";
 
 const tabs = ["Home", "Recently Viewed", "In Progress", "Saved", "Completed"];
 
@@ -71,7 +30,35 @@ const suggestions = [
   "MCP",
 ];
 
-const recommended = [
+export const recommended = [
+  {
+    title: "Distributed Systems for Practitioners",
+    description:
+      "Delve into distributed systems, exploring core principles, key algorithms, and protocols...",
+    duration: "9 h 30 m",
+    level: "Beginner",
+  },
+  {
+    title: "Grokking Modern System Design Interview",
+    description:
+      "Everything you need for Grokking the System Design Interview, developed by FAANG engineers...",
+    duration: "26 h",
+    level: "Intermediate",
+  },
+  {
+    title: "Generative AI Essentials",
+    description:
+      "Explore AI fundamentals, history, models, and ethics in our generative AI course...",
+    duration: "7 h",
+    level: "Beginner",
+  },
+  {
+    title: "Claude Code: Workflows and Tools",
+    description:
+      "Learn AI-powered development with Claude Code using models like Opus 4.6 and Sonnet 4.6...",
+    duration: "4 h",
+    level: "Beginner",
+  },
   {
     title: "Distributed Systems for Practitioners",
     description:
@@ -117,6 +104,76 @@ const recentlyViewed = [
     duration: "26 h",
     level: "Intermediate",
   },
+  {
+    title: "Agentic System Design",
+    description:
+      "Build intelligent agents, orchestration patterns, and production-ready AI systems with clear architecture and tooling.",
+    duration: "6 h",
+    level: "Advanced",
+  },
+  {
+    title: "Grokking Modern System Design Interview",
+    description:
+      "Practice scalable system design with real-world examples and interview-focused breakdowns.",
+    duration: "26 h",
+    level: "Intermediate",
+  },
+  {
+    title: "Agentic System Design",
+    description:
+      "Build intelligent agents, orchestration patterns, and production-ready AI systems with clear architecture and tooling.",
+    duration: "6 h",
+    level: "Advanced",
+  },
+  {
+    title: "Grokking Modern System Design Interview",
+    description:
+      "Practice scalable system design with real-world examples and interview-focused breakdowns.",
+    duration: "26 h",
+    level: "Intermediate",
+  },
+  {
+    title: "Agentic System Design",
+    description:
+      "Build intelligent agents, orchestration patterns, and production-ready AI systems with clear architecture and tooling.",
+    duration: "6 h",
+    level: "Advanced",
+  },
+  {
+    title: "Grokking Modern System Design Interview",
+    description:
+      "Practice scalable system design with real-world examples and interview-focused breakdowns.",
+    duration: "26 h",
+    level: "Intermediate",
+  },
+  {
+    title: "Agentic System Design",
+    description:
+      "Build intelligent agents, orchestration patterns, and production-ready AI systems with clear architecture and tooling.",
+    duration: "6 h",
+    level: "Advanced",
+  },
+  {
+    title: "Grokking Modern System Design Interview",
+    description:
+      "Practice scalable system design with real-world examples and interview-focused breakdowns.",
+    duration: "26 h",
+    level: "Intermediate",
+  },
+  {
+    title: "Agentic System Design",
+    description:
+      "Build intelligent agents, orchestration patterns, and production-ready AI systems with clear architecture and tooling.",
+    duration: "6 h",
+    level: "Advanced",
+  },
+  {
+    title: "Grokking Modern System Design Interview",
+    description:
+      "Practice scalable system design with real-world examples and interview-focused breakdowns.",
+    duration: "26 h",
+    level: "Intermediate",
+  },
 ];
 
 const popular = [
@@ -127,15 +184,15 @@ const popular = [
     duration: "26 h",
     level: "Intermediate",
   },
-  ...recommended.slice(0, 3),
+  ...recommended,
 ];
 
 export default function LearningDashboard() {
   const [activeTab, setActiveTab] = useState("Home");
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
-      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+    <div className="min-h-screen bg-slate-100 text-slate-900 dark:bg-slate-900 dark:text-slate-100 max-w-7xl mx-auto">
+      <div className=" px-4 py-8 sm:px-6">
         {/* Header */}
         <header className="mb-8 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex gap-4">
@@ -234,9 +291,9 @@ export default function LearningDashboard() {
             </span>
             Recently Viewed
           </h2>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {recentlyViewed.map((c) => (
-              <CourseCard key={c.title} c={c} />
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {recentlyViewed.slice(0, 4).map((c) => (
+              <CourseCard key={c.title} course={c} />
             ))}
           </div>
         </section>
@@ -257,11 +314,13 @@ export default function LearningDashboard() {
               Learning Preferences
             </button>
           </div>
-          <HorizontalCarousel ariaLabel="Recommended courses">
+          <SwiperWrapper>
             {recommended.map((c) => (
-              <CourseCard key={c.title} c={c} />
+              <SwiperSlide key={c.title}>
+                <CourseCard key={c.title} course={c} />
+              </SwiperSlide>
             ))}
-          </HorizontalCarousel>
+          </SwiperWrapper>
           <div className="mt-8 flex justify-center">
             <button
               type="button"
@@ -355,13 +414,13 @@ export default function LearningDashboard() {
             </span>
             Most Popular Courses
           </h2>
-          <HorizontalCarousel ariaLabel="Popular courses">
-            <div className="flex gap-4 pb-4">
-              {popular.map((c, i) => (
-                <CourseCard key={`${c.title}-${i}`} c={c} />
-              ))}
-            </div>
-          </HorizontalCarousel>
+          <SwiperWrapper>
+            {popular.map((c) => (
+              <SwiperSlide key={c.title}>
+                <CourseCard key={c.title} course={c} />
+              </SwiperSlide>
+            ))}
+          </SwiperWrapper>
         </section>
 
         {/* Discover features */}

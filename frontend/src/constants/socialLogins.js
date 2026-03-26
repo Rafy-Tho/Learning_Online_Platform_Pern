@@ -1,7 +1,11 @@
-const socialLogins = [
+import FaceBook from "../socialSvg/FaceBook";
+import GitHub from "../socialSvg/GitHub";
+import Google from "../socialSvg/Google";
+
+export const socialLogins = [
   {
     name: "Google",
-    icon: "fab fa-google",
+    icon: Google,
     bgColor: "bg-white",
     textColor: "text-gray-700",
     hoverColor: "hover:bg-gray-50",
@@ -9,7 +13,7 @@ const socialLogins = [
   },
   {
     name: "GitHub",
-    icon: "fab fa-github",
+    icon: GitHub,
     bgColor: "bg-gray-900",
     textColor: "text-white",
     hoverColor: "hover:bg-gray-800",
@@ -17,11 +21,10 @@ const socialLogins = [
   },
   {
     name: "Facebook",
-    icon: "fab fa-facebook-f",
+    icon: FaceBook,
     bgColor: "bg-blue-600",
     textColor: "text-white",
     hoverColor: "hover:bg-blue-700",
     borderColor: "border-blue-600",
   },
 ];
-export default socialLogins;

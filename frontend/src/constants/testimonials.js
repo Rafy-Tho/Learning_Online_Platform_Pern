@@ -1,4 +1,4 @@
-const testimonials = [
+export const testimonials = [
   {
     id: 1,
     text: "If you're using Tailwind CSS, PrebuiltUI is a must have. It dramatically speeds up development while keeping the UI clean and modern.",
@@ -32,5 +32,3 @@ const testimonials = [
       "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200",
   },
 ];
-
-export default testimonials;

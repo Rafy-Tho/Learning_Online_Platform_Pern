@@ -1,5 +1,5 @@
 import { ChevronRight, CheckCircle2, Sparkles } from "lucide-react";
-import { lesson } from "../../constants/constant";
+import { lesson } from "../../constants/lessonTest";
 
 export function LessonContent() {
   return (

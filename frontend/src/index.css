@@ -40,8 +40,3 @@ html {
   scroll-behavior: smooth;
   /* overflow-x: hidden; Hide horizontal overflow on html */
 }
-
-/* Optional: Remove the transition-all from * if it causes performance issues */
-/* * {
-  @apply transition-all duration-300;
-} */
