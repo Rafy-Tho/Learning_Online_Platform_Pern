@@ -15,6 +15,7 @@ class UserApi {
     }
     return result;
   }
+
   async updateProfile(data) {
     const res = await fetch(`${this.baseUrl}/me`, {
       method: "PATCH",

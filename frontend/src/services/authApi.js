@@ -2,8 +2,7 @@ class AuthApi {
   constructor() {
     this.baseUrl = import.meta.env.VITE_BASE_URL + "/users";
   }
-
-  async login(data) {
+    async login(data) {
     const res = await fetch(`${this.baseUrl}/login`, {
       method: "POST",
       headers: {
@@ -92,6 +91,7 @@ class AuthApi {
     if (!res.ok) {
       throw new Error(result.message || "Failed to reset password");
     }
+
     return result;
   }
 }

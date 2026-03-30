@@ -38,7 +38,6 @@ class CourseApi {
   async getFirstLesson(courseId) {
     const res = await fetch(`${this.baseUrl}/${courseId}/lessons/first`);
     const result = await res.json();
-    console.log(result);
     if (!res.ok) {
       throw new Error(result.message || "Failed to fetch first lesson");
     }
