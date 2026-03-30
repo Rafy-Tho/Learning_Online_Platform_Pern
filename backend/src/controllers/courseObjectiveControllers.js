@@ -65,3 +65,20 @@ export const updateCourseObjective = asyncHandler(async (req, res, next) => {
     data: updatedCourseObjective,
   });
 });
+// @desc Get course objectives by course id
+// @route GET /api/v1/courses/:id/objectives
+// @access Public
+export const getCourseObjectives = asyncHandler(async (req, res, next) => {
+  const courseId = req.params.id;
+  const course = await Course.findById(courseId);
+  if (!course)
+    return next(new ApiError(StatusCode.BAD_REQUEST, "Course  not found"));
+
+  const courseObjectives = await CourseObjective.getByCourseId(courseId);
+  res.status(StatusCode.OK).json({
+    success: true,
+    message: "Course objectives retrieved successfully",
+    status: StatusCode.OK,
+    data: courseObjectives,
+  });
+});

@@ -49,3 +49,20 @@ export const updateLessonContent = asyncHandler(async (req, res, next) => {
     data: updatedLessonContent,
   });
 });
+
+// @desc Create a lesson content
+// @route get GET /api/v1/lessons/:id/contents
+// @access public
+export const getLessonContents = asyncHandler(async (req, res, next) => {
+  const lessonId = req.params.id;
+  const lesson = await Lesson.findById(lessonId);
+  if (!lesson)
+    return next(new ApiError(StatusCode.NOT_FOUND, "Lesson not found"));
+  const lessonContents = await LessonContent.findByLessonId(lessonId);
+  res.status(StatusCode.OK).json({
+    success: true,
+    statusCode: StatusCode.OK,
+    message: "Lesson contents fetched successfully",
+    data: lessonContents,
+  });
+});

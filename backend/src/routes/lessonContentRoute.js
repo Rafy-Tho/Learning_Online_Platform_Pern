@@ -6,6 +6,7 @@ import { lessonContentValidator } from "../validators/lessonValidators.js";
 import { validateResult } from "../middlewares/validateResult.js";
 import {
   createLessonContent,
+  getLessonContents,
   updateLessonContent,
 } from "../controllers/lessonContentControllers.js";
 
@@ -13,6 +14,7 @@ const lessonContentRoute = express.Router({ mergeParams: true });
 
 lessonContentRoute
   .route("/")
+  .get(getLessonContents)
   .post(
     requireAuth,
     authorize(INSTRUCTOR),

@@ -6,19 +6,22 @@ import authorize from "../middlewares/authorize.js";
 import { INSTRUCTOR } from "../constants/constants.js";
 import {
   createCourseObjective,
+  getCourseObjectives,
   updateCourseObjective,
 } from "../controllers/courseObjectiveControllers.js";
 
 const courseObjectiveRoute = express.Router({ mergeParams: true });
 
-courseObjectiveRoute.post(
-  "/",
-  requireAuth,
-  authorize(INSTRUCTOR),
-  courseObjectiveValidator,
-  validateResult,
-  createCourseObjective,
-);
+courseObjectiveRoute
+  .route("/")
+  .get(getCourseObjectives)
+  .post(
+    requireAuth,
+    authorize(INSTRUCTOR),
+    courseObjectiveValidator,
+    validateResult,
+    createCourseObjective,
+  );
 
 courseObjectiveRoute.patch(
   "/:id",

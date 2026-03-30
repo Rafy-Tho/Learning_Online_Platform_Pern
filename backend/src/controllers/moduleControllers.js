@@ -28,21 +28,6 @@ export const createModule = asyncHandler(async (req, res, next) => {
   });
 });
 // @desc Get modules by course id
-// @route GET /api/v1/courses/:courseId/modules
-// @access Private/Instructor
-export const getModules = asyncHandler(async (req, res, next) => {
-  const courseId = req.params.id;
-  const modules = await Module.findByCourseId(courseId);
-  if (!modules)
-    return next(new ApiError(StatusCode.NOT_FOUND, "Modules not found"));
-  res.status(200).json({
-    success: true,
-    statusCode: StatusCode.OK,
-    message: "Modules retrieved successfully",
-    data: modules,
-  });
-});
-// @desc Get modules by course id
 // @route GET  /api/v1/modules/:id
 // @access Private/Instructor
 export const getModule = asyncHandler(async (req, res, next) => {

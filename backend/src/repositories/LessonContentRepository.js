@@ -35,6 +35,22 @@ class LessonContentRepository {
     const result = await pgPool.query(query, values);
     return result.rows[0];
   }
+  async delete(id) {
+    const query = `UPDATE lesson_contents
+      SET deleted_at = NOW()
+      WHERE id = 
+      RETURNING *
+    `;
+    const values = [id];
+    const result = await pgPool.query(query, values);
+    return result.rows[0];
+  }
+  async findByLessonId(lessonId) {
+    const query = `SELECT * FROM lesson_contents WHERE lesson_id = $1`;
+    const values = [lessonId];
+    const result = await pgPool.query(query, values);
+    return result.rows;
+  }
 }
 
 const LessonContent = new LessonContentRepository();

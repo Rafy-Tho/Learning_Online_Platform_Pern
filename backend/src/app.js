@@ -1,22 +1,22 @@
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import express from "express";
 import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
+import ENV from "./configs/Env.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import { globalLimiter } from "./middlewares/rateLimitMiddlewares.js";
 import sessionMiddleware from "./middlewares/sessionMiddleware.js";
 import categoryRoute from "./routes/categoryRoute.js";
+import chapterRoute from "./routes/chapterRoute.js";
+import courseObjectiveRoute from "./routes/courseObjectiveRoute.js";
+import courseRoute from "./routes/courseRoute.js";
+import lessonContentRoute from "./routes/lessonContentRoute.js";
+import lessonRoute from "./routes/lessonRoute.js";
+import moduleRoute from "./routes/moduleRoute.js";
 import userRoute from "./routes/userRoute.js";
 import notFoundUrl from "./utils/notFoundUrl.js";
-import courseRoute from "./routes/courseRoute.js";
-import moduleRoute from "./routes/moduleRoute.js";
-import chapterRoute from "./routes/chapterRoute.js";
-import lessonRoute from "./routes/lessonRoute.js";
-import cors from "cors";
-import ENV from "./configs/Env.js";
-import courseObjectiveRoute from "./routes/courseObjectiveRoute.js";
-import lessonContentRoute from "./routes/lessonContentRoute.js";
 
 // configure variable
 const app = express();

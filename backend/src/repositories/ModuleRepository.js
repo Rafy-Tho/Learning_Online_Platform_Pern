@@ -42,16 +42,6 @@ class ModuleRepository {
     );
     return result.rows[0];
   }
-  async findByCourseId(courseId) {
-    const result = await pgPool.query(
-      `SELECT *
-        FROM modules
-        WHERE course_id = $1
-      `,
-      [courseId],
-    );
-    return result.rows;
-  }
 }
 
 const Module = new ModuleRepository();

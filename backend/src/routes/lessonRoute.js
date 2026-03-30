@@ -7,6 +7,7 @@ import { validateResult } from "../middlewares/validateResult.js";
 import {
   createLesson,
   deleteLesson,
+  getFirstLesson,
   updateLesson,
 } from "../controllers/lessonControllers.js";
 import lessonContentRoute from "./lessonContentRoute.js";
@@ -36,4 +37,5 @@ lessonRoute
   )
   .delete(requireAuth, authorize(INSTRUCTOR), deleteLesson);
 
+lessonRoute.get("/first", getFirstLesson);
 export default lessonRoute;

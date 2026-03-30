@@ -43,29 +43,16 @@ export const createCourse = asyncHandler(async (req, res, next) => {
 // @access Public
 // eslint-disable-next-line no-unused-vars
 export const getAllCourses = asyncHandler(async (req, res, next) => {
-  const courses = await Course.findAll();
+  const { data, pagination } = await Course.getAllCourses(req.query);
   res.status(200).json({
     success: true,
     statusCode: StatusCode.OK,
     message: "Courses retrieved successfully",
-    data: courses,
+    data: data,
+    pagination,
   });
 });
-// @desc Get a course by ID
-// @route GET /api/v1/courses/:id
-// @access Public
-export const getCourseById = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
-  const course = await Course.findById(id);
-  if (!course)
-    return next(new ApiError(StatusCode.NOT_FOUND, "Course not found"));
-  res.status(200).json({
-    success: true,
-    statusCode: StatusCode.OK,
-    message: "Course retrieved successfully",
-    data: course,
-  });
-});
+
 // @desc Get courses by category ID
 // @route GET /api/v1/courses/category/:category_id
 // @access Public
@@ -173,5 +160,39 @@ export const deleteCourse = asyncHandler(async (req, res, next) => {
     statusCode: StatusCode.OK,
     message: "Course deleted successfully",
     data: deletedCourse,
+  });
+});
+// @desc Get specific course details
+// @route GET /api/v1/courses/:id
+// @access Public
+export const getCourseDetails = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const course = await Course.findById(id);
+  if (!course)
+    return next(new ApiError(StatusCode.NOT_FOUND, "Course not found"));
+  const courseDetails = await Course.getCourseDetailsById(id);
+  res.status(StatusCode.OK).json({
+    success: true,
+    statusCode: StatusCode.OK,
+    message: "Course retrieved successfully",
+    data: courseDetails,
+  });
+});
+// @desc Get module details by course id
+// @route GET /api/v1/courses/:id/modules
+// @access Public
+export const getCourseLearningData = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const course = await Course.findById(id);
+  if (!course)
+    return next(new ApiError(StatusCode.NOT_FOUND, "Course not found"));
+
+  const moduleDetails = await Course.getLearningData(id);
+
+  res.status(200).json({
+    success: true,
+    statusCode: StatusCode.OK,
+    message: "Module details retrieved successfully",
+    data: moduleDetails,
   });
 });

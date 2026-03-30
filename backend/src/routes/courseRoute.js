@@ -1,23 +1,26 @@
 import express from "express";
+import { INSTRUCTOR } from "../constants/constants.js";
 import {
   createCourse,
   deleteCourse,
   getAllCourses,
+  getCourseDetails,
+  getCourseLearningData,
   updateCourse,
 } from "../controllers/courseControllers.js";
-import requireAuth from "../middlewares/requireAuth.js";
 import authorize from "../middlewares/authorize.js";
-import { INSTRUCTOR } from "../constants/constants.js";
-import { courseValidator } from "../validators/courseValidators.js";
+import requireAuth from "../middlewares/requireAuth.js";
 import { validateResult } from "../middlewares/validateResult.js";
-import { upload } from "../middlewares/multer.js";
-import moduleRoute from "./moduleRoute.js";
+import { courseValidator } from "../validators/courseValidators.js";
 import courseObjectiveRoute from "./courseObjectiveRoute.js";
+import lessonRoute from "./lessonRoute.js";
+import moduleRoute from "./moduleRoute.js";
 
 const courseRoute = express.Router();
 
 courseRoute.use("/:id/modules", moduleRoute);
 courseRoute.use("/:id/objectives", courseObjectiveRoute);
+courseRoute.use("/:id/lessons", lessonRoute);
 // @desc Create a course
 courseRoute
   .route("/")
@@ -25,7 +28,6 @@ courseRoute
   .post(
     requireAuth,
     authorize(INSTRUCTOR),
-    upload.single("image"),
     courseValidator,
     validateResult,
     createCourse,
@@ -33,14 +35,14 @@ courseRoute
 // @desc Update a course
 courseRoute
   .route("/:id")
+  .get(getCourseDetails)
   .patch(
     requireAuth,
     authorize(INSTRUCTOR),
-    upload.single("image"),
     courseValidator,
     validateResult,
     updateCourse,
   )
   .delete(requireAuth, authorize(INSTRUCTOR), deleteCourse);
-
+courseRoute.get("/:id/learn", getCourseLearningData);
 export default courseRoute;

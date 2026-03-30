@@ -37,14 +37,14 @@ class CourseObjectiveRepository {
     const result = await pgPool.query(query, values);
     return result.rows[0];
   }
-  async findByCourseId(courseId) {
-    const query = `SELECT * FROM course_objectives
+  async getByCourseId(courseId) {
+    const query = `SELECT content FROM course_objectives
       WHERE course_id = $1
       ORDER BY position
     `;
     const values = [courseId];
     const result = await pgPool.query(query, values);
-    return result.rows;
+    return result.rows.map((row) => row.content);
   }
   async findById(id) {
     const query = `SELECT * FROM course_objectives
