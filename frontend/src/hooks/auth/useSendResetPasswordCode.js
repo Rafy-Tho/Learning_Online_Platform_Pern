@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import authApi from "../../services/authApi";
+import authApi from "../../services/AuthApi";
 
 function useSendResetPasswordCode() {
   const {

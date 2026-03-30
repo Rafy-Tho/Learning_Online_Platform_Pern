@@ -1,8 +1,8 @@
 import { Outlet } from "react-router-dom";
-import Footer from "./Footer";
-import Navigation from "./Navigation";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Don't forget this!
+import Footer from "./Footer";
+import Navigation from "./Navigation";
 function AppLayout() {
   return (
     <div className="min-w-sm bg-slate-100 dark:bg-slate-900">

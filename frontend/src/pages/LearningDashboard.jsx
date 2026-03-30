@@ -30,7 +30,7 @@ const suggestions = [
   "MCP",
 ];
 
-export const recommended = [
+const recommended = [
   {
     title: "Distributed Systems for Practitioners",
     description:

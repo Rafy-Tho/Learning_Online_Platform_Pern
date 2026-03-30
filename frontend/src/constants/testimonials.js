@@ -1,34 +1,38 @@
 export const testimonials = [
   {
     id: 1,
-    text: "If you're using Tailwind CSS, PrebuiltUI is a must have. It dramatically speeds up development while keeping the UI clean and modern.",
+    text: "The curriculum is rigorous and perfectly aligned with industry standards. I graduated feeling fully prepared for the challenges of a professional environment.",
     name: "Alex Morgan",
-    role: "Founder - Lumens",
+    role: "Alumni, Class of 2024",
     image:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=200",
+      "https://www.shutterstock.com/image-photo/beauty-charisma-head-shot-portrait-600nw-2647728057.jpg",
+    rating: 5,
   },
   {
     id: 2,
-    text: "PrebuiltUI has completely changed how I build interfaces. Most recommended components and templates.",
+    text: "Having access to such high-caliber instructors and research resources made all the difference in my studies. It truly is a premier learning experience.",
     name: "Sarah Collins",
-    role: "Tech Lead - You Inc.",
+    role: "Graduate Student",
     image:
-      "https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=200",
+      "https://i0.wp.com/knowledgeenthusiast.com/wp-content/uploads/2022/04/pexels-photo-6694422.jpeg?fit=900%2C600&ssl=1",
+    rating: 5,
   },
   {
     id: 3,
-    text: "PrebuiltUI templates are the most useful product for UI engineers. Saving me hours on every saas project.",
+    text: "The hands-on approach and collaborative projects helped me build a professional network before I even finished my final semester.",
     name: "Emily Carter",
-    role: "UI Engineer - Meta",
+    role: "Recent Graduate",
     image:
-      "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQF2yaox2cALIq_yyd-9qEyovEsficJr7X9QQ&s",
+    rating: 5,
   },
   {
     id: 4,
-    text: "PrebuiltUI allows me to focus on building features instead of writing CSS. Everything looks premium right out of the box.",
+    text: "Choosing this course was the best investment for my career. The depth of the material and the mentorship provided are second to none.",
     name: "Ryan Collins",
-    role: "Co-founder - Unique",
+    role: "Executive Education Participant",
     image:
-      "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200",
+      "https://img.freepik.com/free-photo/portrait-white-man-isolated_53876-40306.jpg?semt=ais_incoming&w=740&q=80",
+    rating: 4.5,
   },
 ];

@@ -1,8 +1,15 @@
 import { ArrowRightIcon } from "lucide-react";
-import { recommended } from "../../pages/LearningDashboard";
+import useGetCourses from "../../hooks/course/useGetCourses";
+import ErrorMessage from "../../ui/ErrorMessage";
+import SpinnerLoader from "../../ui/SpinnerLoader";
 import CourseCardGrid from "../CourseCardGrid";
 
 function TopCourse() {
+  const param = new URLSearchParams({
+    limit: 4,
+  });
+  const { data, isPending, error } = useGetCourses(param);
+
   return (
     <section className="py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
       <div className="max-w-7xl mx-auto">
@@ -16,7 +23,9 @@ function TopCourse() {
             FAANG engineers
           </p>
         </div>
-        <CourseCardGrid courses={recommended.slice(0, 4)} />
+        {isPending && <SpinnerLoader size="lg" color="blue" />}
+        {error && <ErrorMessage message={error.message} />}
+        {data && <CourseCardGrid courses={data?.data?.slice(0, 4) || []} />}
         {/* View All Button */}
         <div className="text-center mt-12">
           <button className="inline-flex items-center px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white dark:text-slate-800 font-medium rounded-lg  dark:hover:bg-gray-100 transition-colors duration-200 shadow-lg hover:shadow-xl cursor-pointer">

@@ -1,6 +1,10 @@
 class AuthApi {
+  constructor() {
+    this.baseUrl = import.meta.env.VITE_BASE_URL + "/users";
+  }
+
   async login(data) {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/users/login`, {
+    const res = await fetch(`${this.baseUrl}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -16,7 +20,7 @@ class AuthApi {
     return result;
   }
   async register(data) {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/users/register`, {
+    const res = await fetch(`${this.baseUrl}/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -32,7 +36,7 @@ class AuthApi {
     return result;
   }
   async logout() {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/users/logout`, {
+    const res = await fetch(`${this.baseUrl}/logout`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -46,17 +50,14 @@ class AuthApi {
     return result;
   }
   async sendResetPasswordCode(data) {
-    const res = await fetch(
-      `${import.meta.env.VITE_BASE_URL}/users/password-reset-code`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-        credentials: "include",
+    const res = await fetch(`${this.baseUrl}/password-reset-code`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify(data),
+      credentials: "include",
+    });
     const result = await res.json();
     if (!res.ok) {
       throw new Error(result.message || "Failed to send code");
@@ -64,17 +65,14 @@ class AuthApi {
     return result;
   }
   async verifyPasswordResetCode(data) {
-    const res = await fetch(
-      `${import.meta.env.VITE_BASE_URL}/users/verify-password-reset-code`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-        credentials: "include",
+    const res = await fetch(`${this.baseUrl}/verify-password-reset-code`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify(data),
+      credentials: "include",
+    });
     const result = await res.json();
     if (!res.ok) {
       throw new Error(result.message || "Failed to verify code");
@@ -82,17 +80,14 @@ class AuthApi {
     return result;
   }
   async resetPassword(data) {
-    const res = await fetch(
-      `${import.meta.env.VITE_BASE_URL}/users/reset-password`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-        credentials: "include",
+    const res = await fetch(`${this.baseUrl}/reset-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify(data),
+      credentials: "include",
+    });
     const result = await res.json();
     if (!res.ok) {
       throw new Error(result.message || "Failed to reset password");

@@ -1,5 +1,8 @@
 import { BookOpen, Bookmark, Clock, BarChart2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import formatMinutes from "../utils/formatMinutes";
+import formatCapitalize from "../utils/formatCapitalize";
+import truncateText from "../utils/truncateText";
 function CourseCard({ course }) {
   const navigate = useNavigate();
   return (
@@ -26,20 +29,20 @@ function CourseCard({ course }) {
       </div>
 
       <h3 className="mb-2 text-lg font-bold text-slate-900 dark:text-slate-100">
-        {course.title}
+        {course.name}
       </h3>
       <p className="mb-6 line-clamp-4 flex-1 text-sm text-slate-600 dark:text-slate-400">
-        {course.description}
+        {truncateText(course.description, 150)}
       </p>
 
       <div className="mt-auto flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
         <span className="inline-flex items-center gap-1">
           <Clock className="size-3.5" />
-          {course.duration}
+          {formatMinutes(course.total_duration)}
         </span>
         <span className="inline-flex items-center gap-1">
           <BarChart2 className="size-3.5" />
-          {course.level}
+          {formatCapitalize(course.level)}
         </span>
       </div>
     </article>

@@ -1,6 +1,9 @@
 class UserApi {
+  constructor() {
+    this.baseUrl = import.meta.env.VITE_BASE_URL + "/users";
+  }
   async getProfile() {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/users/me`, {
+    const res = await fetch(`${this.baseUrl}/me`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -13,7 +16,7 @@ class UserApi {
     return result;
   }
   async updateProfile(data) {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/users/me`, {
+    const res = await fetch(`${this.baseUrl}/me`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

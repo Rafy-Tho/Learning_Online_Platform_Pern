@@ -1,5 +1,5 @@
 import { testimonials } from "../../constants/testimonials";
-import StarRating from "../StarRating";
+import RatingStars from "../RatingStars";
 
 const Testimonial = () => {
   const getGridSpan = (index) => {
@@ -44,7 +44,7 @@ const Testimonial = () => {
               `}
             >
               {/* Stars */}
-              <StarRating />
+              <RatingStars rating={testimonial.rating} />
 
               {/* Testimonial Text */}
               <p

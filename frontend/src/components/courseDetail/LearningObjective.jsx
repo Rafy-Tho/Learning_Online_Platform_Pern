@@ -1,17 +1,13 @@
 import { Check } from "lucide-react";
+import useGetCourseObjective from "../../hooks/course/useGetCourseObjective";
+import SpinnerLoader from "../../ui/SpinnerLoader";
+import ErrorMessage from "../../ui/ErrorMessage";
 
 export default function LearningObjective() {
-  const objectives = [
-    "An understanding of AI agents and how they differ from AI models",
-    "The ability to identify and explain core AI agent components and memory systems",
-    "An explanation of different agent orchestration patterns and how to choose among them",
-    "Hands-on experience designing and implementing AI agent safety guardrails",
-    "Knowledge of integrating human oversight into agent workflows",
-    "Understanding and applying strategies to overcome challenges in agentic systems",
-    "Hands-on experience deconstructing real-world AI agent case studies",
-    "Understanding the design and architecture of adaptive and robust AI agent systems",
-  ];
-
+  const { data, isPending, error } = useGetCourseObjective();
+  if (isPending) return <SpinnerLoader />;
+  if (error) return <ErrorMessage message={error.message} />;
+  const objectives = data?.data || [];
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
       <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-6 sm:p-8 lg:p-10">
