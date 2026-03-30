@@ -50,7 +50,6 @@ export const passwordValidator = (field) => ({
 export const textValidator = (field, optional = false, maxLength = 50) => ({
   in: ["body"],
   trim: true,
-  escape: true,
   ...(optional && {
     optional: {
       options: { nullable: true, checkFalsy: true },

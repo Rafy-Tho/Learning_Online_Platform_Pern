@@ -122,7 +122,6 @@ CREATE TABLE courses(
   slug TEXT UNIQUE NOT NULL,
   description TEXT NOT NULL,
   status content_status DEFAULT 'DRAFT' NOT NULL,
-  price NUMERIC(10,2) DEFAULT 0 CHECK (price >= 0) NOT NULL,
   level course_level DEFAULT 'BEGINNER' NOT NULL,
   access_type access_course_type DEFAULT 'FREE',
   position INTEGER,

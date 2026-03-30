@@ -7,7 +7,7 @@ import formatMinutes from "../../utils/formatMinutes";
 import formatTimeAgo from "../../utils/formatTimeAgo";
 import RatingStars from "../RatingStars";
 
-export default function HeroSection() {
+export default function HeroSection({ scrollToSection }) {
   const { data, isPending, error } = useGetCourseDetails();
   if (isPending) return <SpinnerLoader />;
   if (error) return <ErrorMessage message={error.message} />;
@@ -53,7 +53,10 @@ export default function HeroSection() {
             >
               Start Learning
             </Link>
-            <button className="w-full sm:w-auto border-2 border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-gray-800 px-8 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 cursor-pointer">
+            <button
+              onClick={scrollToSection}
+              className="w-full sm:w-auto border-2 border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-gray-800 px-8 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 cursor-pointer"
+            >
               Course Content
               <ArrowDownIcon className="w-5 h-5" />
             </button>
