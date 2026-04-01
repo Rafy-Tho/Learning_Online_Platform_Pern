@@ -1,24 +1,26 @@
 const skills = [
-  { name: "skill", label: "System Design", value: "system-design" },
-  { name: "skill", label: "Python", value: "python" },
-  { name: "skill", label: "AWS", value: "aws" },
-  { name: "skill", label: "Java", value: "java" },
-  { name: "skill", label: "SQL", value: "sql" },
-  { name: "skill", label: "Interview Prep", value: "interview-prep" },
-  { name: "skill", label: ".NET", value: "net" },
-  { name: "skill", label: "A-frame", value: "a-frame" },
+  {
+    name: "skill",
+    label: "System Design",
+    value: "introduction-to-computer-science",
+  },
+  { name: "skill", label: "Python", value: "python-programming-for-beginners" },
+  { name: "skill", label: "C", value: "c-programming-mastery" },
+  { name: "skill", label: "Java", value: "java-programming-for-beginners" },
+  { name: "skill", label: "PHP", value: "php-programming-for-beginners" },
+  { name: "skill", label: "JavaScript", value: "javascript-mastery" },
+  { name: "skill", label: "C++", value: "cpp-programming-for-beginners" },
 ];
 
 const levels = [
-  { name: "level", label: "Beginner", value: "beginner" },
-  { name: "level", label: "Intermediate", value: "intermediate" },
-  { name: "level", label: "Advanced", value: "advanced" },
+  { name: "level", label: "Beginner", value: "BEGINNER" },
+  { name: "level", label: "Intermediate", value: "INTERMEDIATE" },
+  { name: "level", label: "Advanced", value: "ADVANCED" },
 ];
 
 const filters = [
-  { name: "filter-by", label: "New", value: "latest" },
-  { name: "filter-by", label: "Free", value: "free" },
-  { name: "filter-by", label: "Popular", value: "popular" },
+  { name: "isFree", label: "Free", value: "FREE" },
+  { name: "isFree", label: "Paid", value: "SUBSCRIPTION" },
 ];
 
 // 🔥 SIMPLIFIED values
@@ -31,11 +33,11 @@ const ratings = [
 ];
 
 const durations = [
-  { name: "duration", label: "1-3", value: "1" },
-  { name: "duration", label: "4-6", value: "4" },
-  { name: "duration", label: "7-12", value: "7" },
-  { name: "duration", label: "13-24", value: "13" },
-  { name: "duration", label: "25+", value: "25" },
+  { name: "duration", label: "1-3", value: "60" },
+  { name: "duration", label: "3-5", value: "180" },
+  { name: "duration", label: "5-7", value: "300" },
+  { name: "duration", label: "7-10", value: "420" },
+  { name: "duration", label: "10+", value: "600" },
 ];
 
 export { skills, filters, levels, ratings, durations };

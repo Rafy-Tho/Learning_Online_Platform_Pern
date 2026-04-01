@@ -44,15 +44,17 @@ export const createCourse = asyncHandler(async (req, res, next) => {
 // eslint-disable-next-line no-unused-vars
 export const getAllCourses = asyncHandler(async (req, res, next) => {
   const { data, pagination } = await Course.getAllCourses(req.query);
+  const query = req.query;
+  console.log(query);
   res.status(200).json({
     success: true,
     statusCode: StatusCode.OK,
     message: "Courses retrieved successfully",
     data: data,
     pagination,
+    query,
   });
 });
-
 // @desc Get courses by category ID
 // @route GET /api/v1/courses/category/:category_id
 // @access Public

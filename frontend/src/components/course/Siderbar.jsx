@@ -9,17 +9,19 @@ import {
   skills,
 } from "../../constants/courseFilterData";
 import RatingStars from "../RatingStars";
+import parseQueryToObject from "../../utils/parseQueryToObject";
+import parseQueryToString from "../../utils/parseQueryToString";
 
 // ---------------- RANGE CONFIG ----------------
 const rangeConfig = {
   rating: (v) => ({ gte: Number(v), lt: Number(v) + 1 }),
   duration: (v) => {
     const map = {
-      1: { gte: 1, lt: 3 },
-      4: { gte: 4, lt: 6 },
-      7: { gte: 7, lt: 12 },
-      13: { gte: 13, lt: 24 },
-      25: { gte: 25 },
+      60: { gte: 60, lt: 180 },
+      180: { gte: 180, lt: 300 },
+      300: { gte: 300, lt: 420 },
+      420: { gte: 420, lt: 600 },
+      600: { gte: 600 },
     };
     return map[Number(v)]; // ✅ cast to Number so "1" matches key 1
   },
@@ -28,7 +30,7 @@ const rangeConfig = {
 // ✅ Derive initial state directly from URL params — no useEffect needed
 function getInitialSelected(searchParams) {
   return {
-    "filter-by": searchParams.get("filter-by") || "",
+    isFree: searchParams.get("isFree") || "",
     level: searchParams.get("level") || "",
     rating: searchParams.get("rating[gte]") || "", // ✅ matches rangeConfig key
     duration: searchParams.get("duration[gte]") || "", // ✅ matches rangeConfig key
@@ -45,7 +47,7 @@ export function Sidebar() {
     () => searchParams.getAll("skill") || [],
   );
   const isRange = ["rating", "duration"];
-  const queryFields = ["filter-by", "level", "rating", "duration", "skill"];
+  const queryFields = ["isFree", "level", "rating", "duration", "skill"];
   // ---------------- RADIO ----------------
   const handleSelectOne = (e) => {
     const { name, value } = e.target;
@@ -107,13 +109,15 @@ export function Sidebar() {
       }
     });
     setSearchParams(params);
-    setSelected({ "filter-by": "", level: "", rating: "", duration: "" });
+    setSelected({ isFree: "", level: "", rating: "", duration: "" });
     setSelectedSkill([]);
   };
-
+  const object = parseQueryToObject(searchParams);
+  const string = parseQueryToString(searchParams);
+  console.log({ object, string });
   // ---------------- UI ----------------
   return (
-    <div className="w-full md:w-64 bg-slate-100 dark:bg-slate-900 border-r p-4 md:p-6 flex flex-col gap-6 relative">
+    <div className="w-full md:w-64 bg-slate-100 dark:bg-slate-900 border-r p-4 md:p-6 flex flex-col gap-6 relative text-slate-700 dark:text-slate-300">
       <button className="md:hidden absolute -top-10 right-2">
         <X className="w-5 h-5 cursor-pointer" />
       </button>
@@ -125,7 +129,7 @@ export function Sidebar() {
         </div>
         <button
           onClick={handleClear}
-          className="text-sm bg-slate-400 px-2 py-1 rounded dark:bg-slate-700"
+          className="text-sm bg-slate-400 px-2 py-1 rounded dark:bg-slate-700 cursor-pointer"
         >
           Clear
         </button>

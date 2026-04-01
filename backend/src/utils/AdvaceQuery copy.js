@@ -29,26 +29,9 @@ class AdvancedQuery {
       const baseField = key.split("[")[0];
       const column = this.filterMap[baseField];
 
-      if (!column) return;
+      if (!column) return; // ignore unknown fields
 
-      const value = queryObj[key];
-
-      // =========================
-      // ✅ HANDLE ARRAY (IN QUERY)
-      // =========================
-      if (Array.isArray(value)) {
-        const placeholders = value.map((v) => {
-          this.values.push(v);
-          return `$${this.values.length}`;
-        });
-
-        this.where.push(`${column} IN (${placeholders.join(", ")})`);
-        return;
-      }
-
-      // =========================
-      // 🔥 OPERATORS (gte, lte)
-      // =========================
+      // operator (gte, lte, etc.)
       if (key.includes("[")) {
         const operator = key.match(/\[(.*)\]/)[1];
 
@@ -61,16 +44,17 @@ class AdvancedQuery {
 
         if (!sqlOp) return;
 
-        this.values.push(value);
+        this.values.push(queryObj[key]);
         this.where.push(`${column} ${sqlOp} $${this.values.length}`);
       } else {
-        this.values.push(value);
+        this.values.push(queryObj[key]);
         this.where.push(`${column} = $${this.values.length}`);
       }
     });
 
     return this;
   }
+
   // =========================
   // 2️⃣ SEARCH (MULTI FIELD)
   // =========================
@@ -137,7 +121,7 @@ class AdvancedQuery {
   // =========================
   async paginate() {
     const page = Math.max(1, Number(this.queryString.page) || 1);
-    const limit = Math.max(1, Number(this.queryString.limit) || 2);
+    const limit = Math.max(1, Number(this.queryString.limit) || 10);
     const offset = (page - 1) * limit;
 
     const whereClause = this.where.length

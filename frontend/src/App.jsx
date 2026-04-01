@@ -14,6 +14,7 @@ import Login from "./pages/Login";
 import ResetPasswordFlow from "./pages/ResetPasswordFlow";
 import Signup from "./pages/Signup";
 import NotFoundPage from "./ui/NotFoundPage";
+import Testing from "./pages/Testing";
 
 function App() {
   return (
@@ -27,7 +28,7 @@ function App() {
           <Route path="/reset-password" element={<ResetPasswordFlow />} />
           <Route path="/courses" element={<CoursePage />} />
           <Route path="/courses/:courseId" element={<CourseDetailScreen />} />
-
+          <Route path="/testing" element={<Testing />} />
           <Route path="/learning-dashboard" element={<LearningDashboard />} />
           <Route path="/community" element={<Community />} />
           <Route path="/coaching" element={<Coaching />} />

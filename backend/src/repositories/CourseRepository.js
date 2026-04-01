@@ -103,7 +103,9 @@ class CourseRepository {
     LEFT JOIN (
       SELECT 
         m.course_id,
-        SUM(l.duration_minutes) AS total_duration
+        SUM(l.duration_minutes) AS total_duration,
+        COUNT(l.id) FILTER (WHERE l.type = 'TEXT') AS total_lessons,
+        COUNT(l.id) FILTER (WHERE l.type = 'QUIZ') AS total_quizzes
       FROM modules m
       JOIN chapters ch ON ch.module_id = m.id
       JOIN lessons l ON l.chapter_id = ch.id
@@ -123,8 +125,10 @@ class CourseRepository {
     const filterMap = {
       level: "c.level",
       category: "c.category_id",
+      skill: "c.slug",
       rating: "rv.avg_rating",
       duration: "ld.total_duration",
+      isFree: "c.access_type",
     };
 
     const sortMap = {
@@ -144,7 +148,9 @@ class CourseRepository {
     c.*,
     COALESCE(ld.total_duration, 0) AS total_duration,
     COALESCE(rv.avg_rating, 0) AS avg_rating,
-    COALESCE(rv.total_reviews, 0) AS total_reviews
+    COALESCE(rv.total_reviews, 0) AS total_reviews,
+    COALESCE(ld.total_lessons, 0) AS total_lessons,
+    COALESCE(ld.total_quizzes, 0) AS total_quizzes
   `;
 
     await features

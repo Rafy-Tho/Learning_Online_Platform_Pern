@@ -1,40 +1,42 @@
 import {
-  BookOpen,
   BarChart3,
-  Clock,
-  Star,
   Bookmark,
+  BookOpen,
   CheckCircle,
+  Clock,
   MessageSquare,
-  Edit,
+  Star,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import formatCapitalize from "../../utils/formatCapitalize";
+import formatMinutes from "../../utils/formatMinutes";
+import formatTimeAgo from "../../utils/formatTimeAgo";
 
 export function CourseCardDetailed({ course }) {
   return (
     <Link
-      to={`/courses/1`}
+      to={`/courses/${course.id}`}
       className="bg-slate-100 dark:bg-slate-900 border border-slate-400 dark:border-slate-800 rounded-lg p-5 md:p-6 hover:shadow-md dark:hover:shadow-lg dark:hover:shadow-slate-900/50 transition-shadow block"
     >
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 mb-4">
+      <div className="flex  items-center justify-between gap-3 mb-4">
         <div className="flex items-center gap-3">
           <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300 text-xs font-medium rounded">
             <BookOpen className="w-3 h-3" />
-            {course.type}
+            Course
           </span>
-          <div className="hidden md:flex items-center gap-3 text-sm text-gray-600 dark:text-slate-400">
+          <div className="hidden lg:flex items-center gap-3 text-sm text-gray-600 dark:text-slate-400">
             <span className="flex items-center gap-1">
               <BarChart3 className="w-4 h-4" />
-              {course.difficulty}
+              {formatCapitalize(course.level)}
             </span>
             <span className="flex items-center gap-1">
               <Clock className="w-4 h-4" />
-              {course.updatedTime}
+              {formatTimeAgo(course.updated_at)}
             </span>
             <span className="flex items-center gap-1">
               <Clock className="w-4 h-4" />
-              {course.duration}
+              {formatMinutes(course.total_duration)}
             </span>
           </div>
         </div>
@@ -42,7 +44,7 @@ export function CourseCardDetailed({ course }) {
           <div className="flex items-center gap-1">
             <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
             <span className="text-sm font-medium text-gray-900 dark:text-white">
-              {course.rating}
+              {course.avg_rating}
             </span>
           </div>
           <button className="p-1 text-gray-400 hover:text-gray-600 dark:text-slate-500 dark:hover:text-slate-300">
@@ -52,24 +54,24 @@ export function CourseCardDetailed({ course }) {
       </div>
 
       {/* Mobile difficulty/time info */}
-      <div className="md:hidden flex flex-wrap gap-2 mb-3 text-xs text-gray-600 dark:text-slate-400">
+      <div className="lg:hidden flex flex-wrap gap-2 mb-3 text-xs text-gray-600 dark:text-slate-400">
         <span className="flex items-center gap-1">
           <BarChart3 className="w-3 h-3" />
-          {course.difficulty}
+          {course.level}
         </span>
         <span className="flex items-center gap-1">
           <Clock className="w-3 h-3" />
-          {course.updatedTime}
+          {formatTimeAgo(course.updated_at)}
         </span>
         <span className="flex items-center gap-1">
           <Clock className="w-3 h-3" />
-          {course.duration}
+          {formatMinutes(course.total_duration)}
         </span>
       </div>
 
       {/* Title */}
       <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-2">
-        {course.title}
+        {course.name}
       </h3>
 
       {/* Description */}
@@ -81,23 +83,16 @@ export function CourseCardDetailed({ course }) {
       <div className="flex flex-wrap gap-3 text-xs md:text-sm text-gray-700 dark:text-slate-300">
         <span className="flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-50 dark:bg-slate-800 rounded">
           <CheckCircle className="w-4 h-4" />
-          {course.lessons} Lessons
+          {course.total_lessons} Lessons
         </span>
-        <span className="flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-50 dark:bg-slate-800 rounded">
-          <Star className="w-4 h-4" />
-          {course.features} AI Features
-        </span>
+
         <span className="flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-50 dark:bg-slate-800 rounded">
           <MessageSquare className="w-4 h-4" />
           Mock Interviews
         </span>
         <span className="flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-50 dark:bg-slate-800 rounded">
           <CheckCircle className="w-4 h-4" />
-          {course.quizzes} Quizzes
-        </span>
-        <span className="flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-50 dark:bg-slate-800 rounded">
-          <Edit className="w-4 h-4" />
-          {course.extras}
+          {course.total_quizzes} Quizzes
         </span>
       </div>
     </Link>
