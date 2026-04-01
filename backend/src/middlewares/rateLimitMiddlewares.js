@@ -10,10 +10,11 @@ const createLimiter = (windowMs, max, message) => {
     },
   });
 };
+
 export const globalLimiter = createLimiter(
-  15 * 60 * 1000, // 15 minutes
+  60 * 1000, // 1 minute
   100, // Limit each IP to 100 requests per windowMs
-  "Too many requests, please try again after 15 minutes",
+  "Too many requests, please try again after 1 minute",
 );
 export const loginLimiter = createLimiter(
   15 * 60 * 1000, // 15 minutes

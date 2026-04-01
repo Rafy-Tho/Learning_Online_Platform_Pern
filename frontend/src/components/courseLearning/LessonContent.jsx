@@ -4,8 +4,11 @@ import ErrorMessage from "../../ui/ErrorMessage";
 import SpinnerLoader from "../../ui/SpinnerLoader";
 function LessonContent() {
   const { data, isPending, error } = useGetLessonContent();
+
   const lessons = data?.data?.map((lesson) => lesson.content).join("");
-  const cleanHTML = DOMPurify.sanitize(lessons);
+  const cleanHTML = DOMPurify.sanitize(lessons, {
+    ALLOWED_ATTR: ["class", "style"],
+  });
 
   if (isPending) return <SpinnerLoader />;
   if (error) return <ErrorMessage message={error.message} />;

@@ -1,10 +1,14 @@
-import { useState } from "react";
-import { Outlet, useOutletContext } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { Outlet, useLocation, useOutletContext } from "react-router-dom";
 import { CourseSidebar } from "../components/courseLearning/CourseSidebar";
 
 const CourseLearningScreen = () => {
-  const [activeLesson, setActiveLesson] = useState("l1");
   const { sidebarOpen, setSidebarOpen } = useOutletContext();
+  const sectionRef = useRef(null);
+  const location = useLocation();
+  useEffect(() => {
+    sectionRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+  }, [location.pathname]);
   return (
     <div className="flex h-screen overflow-hidden bg-slate-100 dark:bg-slate-900">
       {/* Mobile overlay */}
@@ -23,19 +27,12 @@ const CourseLearningScreen = () => {
     ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
   `}
       >
-        <CourseSidebar
-          activeLesson={activeLesson}
-          onSelectLesson={(id) => {
-            setActiveLesson(id);
-            setSidebarOpen(false);
-          }}
-          onClose={() => setSidebarOpen(false)}
-        />
+        <CourseSidebar onClose={() => setSidebarOpen(false)} />
       </div>
 
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto" ref={sectionRef}>
           <Outlet />
         </main>
       </div>

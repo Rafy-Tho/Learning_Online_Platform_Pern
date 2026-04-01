@@ -1,124 +1,235 @@
-"use client";
+import { Filter, X } from "lucide-react";
+import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import {
+  durations,
+  filters,
+  levels,
+  ratings,
+  skills,
+} from "../../constants/courseFilterData";
+import RatingStars from "../RatingStars";
 
-import { Filter, Search } from "lucide-react";
+// ---------------- RANGE CONFIG ----------------
+const rangeConfig = {
+  rating: (v) => ({ gte: Number(v), lt: Number(v) + 1 }),
+  duration: (v) => {
+    const map = {
+      1: { gte: 1, lt: 3 },
+      4: { gte: 4, lt: 6 },
+      7: { gte: 7, lt: 12 },
+      13: { gte: 13, lt: 24 },
+      25: { gte: 25 },
+    };
+    return map[Number(v)]; // ✅ cast to Number so "1" matches key 1
+  },
+};
 
-const filterByOptions = ["New Only", "Free"];
-const skillLevelOptions = ["Beginner", "Intermediate", "Advanced"];
-const topicOptions = [
-  "System Design",
-  "Python",
-  "AWS",
-  "Java",
-  "SQL",
-  "Interview Prep",
-  ".NET",
-  "A-frame",
-];
+// ✅ Derive initial state directly from URL params — no useEffect needed
+function getInitialSelected(searchParams) {
+  return {
+    "filter-by": searchParams.get("filter-by") || "",
+    level: searchParams.get("level") || "",
+    rating: searchParams.get("rating[gte]") || "", // ✅ matches rangeConfig key
+    duration: searchParams.get("duration[gte]") || "", // ✅ matches rangeConfig key
+  };
+}
 
-export function Sidebar({ filters, onFilterChange, onShowMoreTopics }) {
+// ---------------- COMPONENT ----------------
+export function Sidebar() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [selected, setSelected] = useState(() =>
+    getInitialSelected(searchParams),
+  );
+  const [selectedSkill, setSelectedSkill] = useState(
+    () => searchParams.getAll("skill") || [],
+  );
+  const isRange = ["rating", "duration"];
+  const queryFields = ["filter-by", "level", "rating", "duration", "skill"];
+  // ---------------- RADIO ----------------
+  const handleSelectOne = (e) => {
+    const { name, value } = e.target;
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      if (selected[name] === value) {
+        if (isRange.includes(name)) {
+          params.delete(`${name}[gte]`);
+          params.delete(`${name}[lt]`);
+        } else {
+          params.delete(name);
+        }
+        setSelected((p) => ({ ...p, [name]: "" }));
+      } else {
+        if (isRange.includes(name)) {
+          const range = rangeConfig[name]?.(value);
+          if (!range) return prev; // safety — return unchanged params
+          params.delete(`${name}[gte]`);
+          params.delete(`${name}[lt]`);
+          if (range.gte !== undefined) params.set(`${name}[gte]`, range.gte);
+          if (range.lt !== undefined) params.set(`${name}[lt]`, range.lt);
+        } else {
+          params.set(name, value);
+        }
+        setSelected((p) => ({ ...p, [name]: value }));
+      }
+
+      return params;
+    });
+  };
+
+  // ---------------- CHECKBOX ----------------
+  const handleSelectMany = (e) => {
+    const { name, value, checked } = e.target;
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      if (checked) {
+        params.append(name, value);
+        setSelectedSkill((p) => [...p, value]);
+      } else {
+        const updated = params.getAll(name).filter((v) => v !== value);
+        params.delete(name);
+        updated.forEach((v) => params.append(name, v));
+        setSelectedSkill((p) => p.filter((v) => v !== value));
+      }
+      return params;
+    });
+  };
+
+  // ---------------- CLEAR ----------------
+  const handleClear = () => {
+    const params = new URLSearchParams(searchParams);
+    queryFields.forEach((f) => {
+      if (isRange.includes(f)) {
+        params.delete(`${f}[gte]`);
+        params.delete(`${f}[lt]`);
+      } else {
+        params.delete(f);
+      }
+    });
+    setSearchParams(params);
+    setSelected({ "filter-by": "", level: "", rating: "", duration: "" });
+    setSelectedSkill([]);
+  };
+
+  // ---------------- UI ----------------
   return (
-    <div className="w-full md:w-64 bg-slate-100 dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 p-4 md:p-6 flex flex-col gap-6">
-      {/* Filter Header */}
-      <div className="flex items-center gap-2">
-        <Filter className="w-5 h-5 text-gray-900 dark:text-white" />
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-          Filters
-        </h2>
-      </div>
-
-      {/* Filter By Section */}
-      <div>
-        <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-          Filter By
-        </h3>
-        <div className="space-y-3">
-          {filterByOptions.map((option) => (
-            <label
-              key={option}
-              className="flex items-center gap-3 cursor-pointer group"
-            >
-              <input
-                type="radio"
-                name="filterBy"
-                value={option}
-                checked={filters.filterBy.includes(option)}
-                onChange={(e) =>
-                  onFilterChange("filterBy", option, e.target.checked)
-                }
-                className="w-4 h-4 text-blue-600 dark:text-blue-400 cursor-pointer"
-              />
-              <span className="text-sm text-gray-600 dark:text-slate-400 group-hover:text-gray-900 dark:group-hover:text-slate-200">
-                {option}
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
-
-      {/* Skill Level Section */}
-      <div>
-        <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-          Skill Level
-        </h3>
-        <div className="space-y-3">
-          {skillLevelOptions.map((option) => (
-            <label
-              key={option}
-              className="flex items-center gap-3 cursor-pointer group"
-            >
-              <input
-                type="radio"
-                name="skillLevel"
-                value={option}
-                checked={filters.skillLevel.includes(option)}
-                onChange={(e) =>
-                  onFilterChange("skillLevel", option, e.target.checked)
-                }
-                className="w-4 h-4 text-blue-600 dark:text-blue-400 cursor-pointer"
-              />
-              <span className="text-sm text-gray-600 dark:text-slate-400 group-hover:text-gray-900 dark:group-hover:text-slate-200">
-                {option}
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
-
-      {/* Topics Section */}
-      <div>
-        <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-          Topics
-        </h3>
-        <div className="space-y-3">
-          {topicOptions.map((option) => (
-            <label
-              key={option}
-              className="flex items-center gap-3 cursor-pointer group"
-            >
-              <input
-                type="checkbox"
-                value={option}
-                checked={filters.topics.includes(option)}
-                onChange={(e) =>
-                  onFilterChange("topics", option, e.target.checked)
-                }
-                className="w-4 h-4 text-blue-600 dark:text-blue-400 rounded cursor-pointer"
-              />
-              <span className="text-sm text-gray-600 dark:text-slate-400 group-hover:text-gray-900 dark:group-hover:text-slate-200">
-                {option}
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
-
-      {/* Show More Topics Button */}
-      <button
-        onClick={onShowMoreTopics}
-        className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-medium text-left"
-      >
-        Show more (373)
+    <div className="w-full md:w-64 bg-slate-100 dark:bg-slate-900 border-r p-4 md:p-6 flex flex-col gap-6 relative">
+      <button className="md:hidden absolute -top-10 right-2">
+        <X className="w-5 h-5 cursor-pointer" />
       </button>
+
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Filter className="w-5 h-5" />
+          <h2 className="text-lg font-semibold">Filters</h2>
+        </div>
+        <button
+          onClick={handleClear}
+          className="text-sm bg-slate-400 px-2 py-1 rounded dark:bg-slate-700"
+        >
+          Clear
+        </button>
+      </div>
+
+      <Section title="Filter By">
+        {filters.map((o) => (
+          <Radio
+            key={o.value}
+            option={o}
+            selected={selected}
+            onChange={handleSelectOne}
+            checked={selected[o.name] === o.value}
+          />
+        ))}
+      </Section>
+
+      <Section title="Skill Level">
+        {levels.map((o) => (
+          <Radio
+            key={o.value}
+            option={o}
+            selected={selected}
+            onChange={handleSelectOne}
+            checked={selected[o.name] === o.value}
+          />
+        ))}
+      </Section>
+
+      <Section title="Rating">
+        {ratings.map((o) => (
+          <Radio
+            key={o.value}
+            option={o}
+            selected={selected}
+            onChange={handleSelectOne}
+            checked={selected[o.name] === o.value}
+          />
+        ))}
+      </Section>
+
+      <Section title="Duration">
+        {durations.map((o) => (
+          <Radio
+            key={o.value}
+            option={o}
+            selected={selected}
+            onChange={handleSelectOne}
+            checked={selected[o.name] === o.value}
+          />
+        ))}
+      </Section>
+
+      <Section title="Topics">
+        {skills.map((s) => (
+          <label
+            key={s.value}
+            className="flex items-center gap-3 cursor-pointer"
+          >
+            <input
+              type="checkbox"
+              name={s.name}
+              value={s.value}
+              checked={selectedSkill.includes(s.value)}
+              onChange={handleSelectMany}
+              className="w-4 h-4"
+            />
+            <span className="text-sm">{s.label}</span>
+          </label>
+        ))}
+      </Section>
     </div>
+  );
+}
+
+// ---------------- SMALL COMPONENTS ----------------
+function Section({ title, children }) {
+  return (
+    <div>
+      <h3 className="text-sm font-semibold mb-3">{title}</h3>
+      <div className="space-y-3">{children}</div>
+    </div>
+  );
+}
+
+function Radio({ option, onChange, checked }) {
+  return (
+    <label className="flex items-center gap-3 cursor-pointer">
+      <input
+        type="checkbox"
+        name={option.name}
+        value={option.value}
+        checked={checked}
+        onChange={onChange}
+        className="w-4 h-4"
+      />
+      {option.name === "rating" ? (
+        <span className="flex items-center gap-1 text-sm">
+          <RatingStars rating={Number(option.value)} />
+          {option.label}
+        </span>
+      ) : (
+        <span className="text-sm">{option.label}</span>
+      )}
+    </label>
   );
 }

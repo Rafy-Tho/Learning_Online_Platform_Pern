@@ -38,7 +38,6 @@ app.use(globalLimiter);
 app.use(sessionMiddleware);
 // configure middleware static
 app.use(express.static(path.join(__dirname, "../uploads")));
-app.use(express.static(path.join(__dirname, "../public")));
 // configure middleware routes
 app.use("/api/v1/users", userRoute);
 app.use("/api/v1/categories", categoryRoute);
