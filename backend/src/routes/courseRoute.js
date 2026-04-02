@@ -15,12 +15,14 @@ import { courseValidator } from "../validators/courseValidators.js";
 import courseObjectiveRoute from "./courseObjectiveRoute.js";
 import lessonRoute from "./lessonRoute.js";
 import moduleRoute from "./moduleRoute.js";
+import reviewRoute from "./reviewRoute.js";
 
 const courseRoute = express.Router();
 
 courseRoute.use("/:id/modules", moduleRoute);
 courseRoute.use("/:id/objectives", courseObjectiveRoute);
 courseRoute.use("/:id/lessons", lessonRoute);
+courseRoute.use("/:id/reviews", reviewRoute);
 // @desc Create a course
 courseRoute
   .route("/")

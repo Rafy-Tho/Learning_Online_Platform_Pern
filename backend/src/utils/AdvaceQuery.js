@@ -1,7 +1,13 @@
 import pgPool from "../configs/database.js";
 
 class AdvancedQuery {
-  constructor({ baseQuery, queryString, filterMap = {}, sortMap = {} }) {
+  constructor({
+    baseQuery,
+    queryString,
+    filterMap = {},
+    sortMap = {},
+    startIndex = 1,
+  }) {
     this.baseQuery = baseQuery;
     this.queryString = queryString;
     this.filterMap = filterMap;
@@ -14,6 +20,7 @@ class AdvancedQuery {
     this.offset = "";
     this.select = "*";
     this.pagination = {};
+    this.paramIndex = startIndex;
   }
 
   // =========================
@@ -39,7 +46,7 @@ class AdvancedQuery {
       if (Array.isArray(value)) {
         const placeholders = value.map((v) => {
           this.values.push(v);
-          return `$${this.values.length}`;
+          return `$${this.paramIndex++}`;
         });
 
         this.where.push(`${column} IN (${placeholders.join(", ")})`);
@@ -62,10 +69,10 @@ class AdvancedQuery {
         if (!sqlOp) return;
 
         this.values.push(value);
-        this.where.push(`${column} ${sqlOp} $${this.values.length}`);
+        this.where.push(`${column} ${sqlOp} $${this.paramIndex++}`);
       } else {
         this.values.push(value);
-        this.where.push(`${column} = $${this.values.length}`);
+        this.where.push(`${column} = $${this.paramIndex++}`);
       }
     });
 
@@ -80,7 +87,7 @@ class AdvancedQuery {
 
       const conditions = fields.map((field) => {
         this.values.push(value);
-        return `${field} ILIKE $${this.values.length}`;
+        return `${field} ILIKE $${this.paramIndex++}`;
       });
 
       this.where.push(`(${conditions.join(" OR ")})`);
@@ -135,18 +142,21 @@ class AdvancedQuery {
   // =========================
   // 5️⃣ PAGINATION
   // =========================
-  async paginate() {
+  async paginate(extraValues = []) {
     const page = Math.max(1, Number(this.queryString.page) || 1);
-    const limit = Math.max(1, Number(this.queryString.limit) || 2);
+    const limit = Math.max(1, Number(this.queryString.limit) || 10);
     const offset = (page - 1) * limit;
 
     const whereClause = this.where.length
       ? `WHERE ${this.where.join(" AND ")}`
       : "";
 
-    // count query
+    // ✅ include extraValues (like userId)
     const countQuery = `SELECT COUNT(*) ${this.baseQuery} ${whereClause}`;
-    const countResult = await pgPool.query(countQuery, this.values);
+    const countResult = await pgPool.query(countQuery, [
+      ...extraValues,
+      ...this.values,
+    ]);
 
     const total = Number(countResult.rows[0].count);
 
@@ -165,7 +175,6 @@ class AdvancedQuery {
 
     return this;
   }
-
   // =========================
   // 🔥 BUILD FINAL QUERY
   // =========================

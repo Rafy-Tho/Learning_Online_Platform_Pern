@@ -17,6 +17,7 @@ import lessonRoute from "./routes/lessonRoute.js";
 import moduleRoute from "./routes/moduleRoute.js";
 import userRoute from "./routes/userRoute.js";
 import notFoundUrl from "./utils/notFoundUrl.js";
+import reviewRoute from "./routes/reviewRoute.js";
 
 // configure variable
 const app = express();
@@ -47,6 +48,7 @@ app.use("/api/v1/modules", moduleRoute);
 app.use("/api/v1/chapters", chapterRoute);
 app.use("/api/v1/lessons", lessonRoute);
 app.use("/api/v1/contents", lessonContentRoute);
+app.use("/api/v1/reviews", reviewRoute);
 // configure middleware handle error
 app.use(notFoundUrl);
 app.use(errorHandler);

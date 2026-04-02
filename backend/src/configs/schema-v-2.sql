@@ -114,21 +114,21 @@ EXECUTE FUNCTION set_updated_at();
 -- =========================
 -- COURSES
 -- =========================
-CREATE TABLE courses(
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  instructor_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  category_id UUID NOT NULL REFERENCES categories(id) ON DELETE RESTRICT,
-  name VARCHAR(255) NOT NULL,
-  slug TEXT UNIQUE NOT NULL,
-  description TEXT NOT NULL,
-  status content_status DEFAULT 'DRAFT' NOT NULL,
-  level course_level DEFAULT 'BEGINNER' NOT NULL,
-  access_type access_course_type DEFAULT 'FREE',
-  position INTEGER,
-  deleted_at TIMESTAMP WITH TIME ZONE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
+  CREATE TABLE courses(
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    instructor_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    category_id UUID NOT NULL REFERENCES categories(id) ON DELETE RESTRICT,
+    name VARCHAR(255) NOT NULL,
+    slug TEXT UNIQUE NOT NULL,
+    description TEXT NOT NULL,
+    status content_status DEFAULT 'DRAFT' NOT NULL,
+    level course_level DEFAULT 'BEGINNER' NOT NULL,
+    access_type access_course_type DEFAULT 'FREE',
+    position INTEGER,
+    deleted_at TIMESTAMP WITH TIME ZONE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+  );
 
 CREATE TRIGGER trg_courses_updated_at
 BEFORE UPDATE ON courses
