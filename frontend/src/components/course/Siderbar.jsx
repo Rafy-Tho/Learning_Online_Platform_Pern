@@ -74,7 +74,8 @@ export function Sidebar() {
         }
         setSelected((p) => ({ ...p, [name]: value }));
       }
-
+      params.delete("page");
+      params.delete("limit");
       return params;
     });
   };
@@ -93,6 +94,8 @@ export function Sidebar() {
         updated.forEach((v) => params.append(name, v));
         setSelectedSkill((p) => p.filter((v) => v !== value));
       }
+      params.delete("page");
+      params.delete("limit");
       return params;
     });
   };

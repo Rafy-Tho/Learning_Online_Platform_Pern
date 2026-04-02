@@ -2,6 +2,7 @@ import { useRef } from "react";
 import HeroSection from "../components/courseDetail/HeroSection";
 import LearningObjective from "../components/courseDetail/LearningObjective";
 import LearningRoadmap from "../components/courseDetail/LearningRoadMap";
+import ReviewContainer from "../components/courseReview/ReviewContainer";
 
 function CourseDetailScreen() {
   const sectionRef = useRef(null);
@@ -16,6 +17,7 @@ function CourseDetailScreen() {
       <HeroSection scrollToSection={scrollToSection} />
       <LearningObjective />
       <LearningRoadmap sectionRef={sectionRef} />
+      <ReviewContainer />
     </div>
   );
 }

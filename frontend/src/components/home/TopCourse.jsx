@@ -5,11 +5,13 @@ import SpinnerLoader from "../../ui/SpinnerLoader";
 import CourseCardGrid from "../CourseCardGrid";
 
 function TopCourse() {
-  const param = new URLSearchParams({
-    limit: 4,
-  });
+  const param = new URLSearchParams({});
+  param.append("limit", 4);
+  param.append("skill", "javascript-mastery");
+  param.append("skill", "c-programming-mastery");
+  param.append("skill", "python-programming-for-beginners");
+  param.append("skill", "cpp-programming-for-beginners");
   const { data, isPending, error } = useGetCourses(param);
-
   return (
     <section className="py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
       <div className="max-w-7xl mx-auto">

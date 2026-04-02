@@ -8,14 +8,18 @@ export function SearchHeader({ setShowMobileFilter, showMobileFilter }) {
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim() === "") return;
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams);
+    params.delete("page");
+    params.delete("limit");
     params.set("search", searchQuery);
     setSearchParams(params);
   };
   useEffect(() => {
     if (searchQuery.trim() !== "") return;
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams);
     params.delete("search");
+    params.delete("page");
+    params.delete("limit");
     setSearchParams(params);
   }, [searchQuery, searchParams, setSearchParams]);
   return (

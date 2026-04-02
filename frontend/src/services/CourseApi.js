@@ -43,6 +43,30 @@ class CourseApi {
     }
     return result;
   }
+  async getReviews(queryString, courseId) {
+    const res = await fetch(
+      `${this.baseUrl}/${courseId}/reviews?${queryString}`,
+      {
+        credentials: "include",
+      },
+    );
+    const result = await res.json();
+    console.log({ getReviews: result });
+    if (!res.ok) {
+      throw new Error(result.message || "Failed to fetch reviews");
+    }
+    return result;
+  }
+
+  async getReviewDetails(courseId) {
+    const res = await fetch(`${this.baseUrl}/${courseId}/reviews/summary`);
+    const result = await res.json();
+    console.log({ getReviewDetails: result });
+    if (!res.ok) {
+      throw new Error(result.message || "Failed to fetch review details");
+    }
+    return result;
+  }
 }
 const courseApi = new CourseApi();
 export default courseApi;

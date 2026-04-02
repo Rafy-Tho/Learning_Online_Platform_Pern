@@ -17,7 +17,7 @@ export function SearchResult() {
     <div className="flex-1 overflow-y-auto">
       <div className="p-4 md:p-8">
         <h2 className="text-xl md:text-2xl font-semibold text-gray-900 dark:text-white mb-6">
-          Search Results ({courses.length})
+          Search Results ({pagination?.totalItems || 0})
         </h2>
         {courses.length === 0 && (
           <p className="text-center text-gray-500 dark:text-white">
