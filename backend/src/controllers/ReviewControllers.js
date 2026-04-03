@@ -90,6 +90,7 @@ export const reviewHelpfulVote = async (req, res, next) => {
     userId,
     reviewId,
   });
+  const isHelpfulBool = isHelpful === true || isHelpful === "true";
   if (!existingVote) {
     // 1. No vote → create
     await Review.createReviewHelpfulVote({
@@ -97,7 +98,7 @@ export const reviewHelpfulVote = async (req, res, next) => {
       reviewId,
       isHelpful,
     });
-  } else if (Boolean(existingVote.is_helpful) === Boolean(isHelpful)) {
+  } else if (existingVote.is_helpful === isHelpfulBool) {
     // 2. Same vote → remove (toggle)
     await Review.deleteReviewHelpfulVote({
       userId,
@@ -116,5 +117,43 @@ export const reviewHelpfulVote = async (req, res, next) => {
     success: true,
     statusCode: StatusCode.OK,
     message: "Review helpful vote updated successfully",
+  });
+};
+// Create review report
+// @route POST /api/v1/reviews/:id/reports
+// @desc Create a report for a review
+// @access Private
+export const createReviewReport = async (req, res, next) => {
+  const userId = req.session?.user?.id || null;
+  const reviewId = req.params.id;
+  const { reason, description } = req.body;
+  const user = await User.findById(userId);
+  // Check if the user exists
+  if (!user) return next(new ApiError(StatusCode.NOT_FOUND, "User not found"));
+  // Check if the review exists
+  const review = await Review.findById(reviewId);
+  if (!review)
+    return next(new ApiError(StatusCode.NOT_FOUND, "Review not found"));
+  // Check if the user has already reported this review
+  const existingReport = await Review.getReviewReports({
+    userId,
+    reviewId,
+  });
+  if (existingReport)
+    return next(
+      new ApiError(StatusCode.BAD_REQUEST, "Review already reported"),
+    );
+
+  const report = await Review.createReviewReport({
+    userId,
+    reviewId,
+    reason,
+    description,
+  });
+  res.status(StatusCode.OK).json({
+    success: true,
+    statusCode: StatusCode.OK,
+    message: "Review report created successfully",
+    data: report,
   });
 };

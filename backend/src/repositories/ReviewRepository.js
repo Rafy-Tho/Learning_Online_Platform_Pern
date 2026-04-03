@@ -5,10 +5,13 @@ class ReviewRepository {
   async getReviews(queryString, courseId, userId) {
     const baseQuery = `
    FROM course_reviews cr
-   LEFT JOIN users u ON u.id = cr.user_id
-   LEFT JOIN review_helpful_votes rhv 
+  LEFT JOIN users u ON u.id = cr.user_id
+  LEFT JOIN review_helpful_votes rhv 
     ON rhv.review_id = cr.id 
     AND rhv.user_id = $1
+  LEFT JOIN review_reports rr
+    ON rr.review_id = cr.id
+    AND rr.user_id = $1
   `;
 
     const features = new AdvancedQuery({
@@ -26,15 +29,19 @@ class ReviewRepository {
     });
 
     features.select = `
-    cr.id,
-    cr.user_id,
-    cr.course_id,
-    cr.rating,
-    cr.review,
-    cr.created_at,
-    u.name AS user_name,
-    u.image_url AS user_profile,
-    COALESCE(rhv.is_helpful, null) AS is_helpful
+   cr.id,
+  cr.user_id,
+  cr.course_id,
+  cr.rating,
+  cr.review,
+  cr.created_at,
+  u.name AS user_name,
+  u.image_url AS user_profile,
+  COALESCE(rhv.is_helpful, null) AS is_helpful,
+  CASE 
+    WHEN rr.id IS NOT NULL THEN true 
+    ELSE false 
+  END AS is_reported
   `;
 
     await features.filter().search(["cr.review"]).sort().paginate([userId]);
@@ -54,11 +61,11 @@ class ReviewRepository {
     'total', COUNT(*),
     'average', ROUND(AVG(rating), 2),
     'ratings', json_build_object(
-    '5', COUNT(*) FILTER (WHERE rating = 5),
-    '4', COUNT(*) FILTER (WHERE rating = 4),
-    '3', COUNT(*) FILTER (WHERE rating = 3),
-    '2', COUNT(*) FILTER (WHERE rating = 2),
-    '1', COUNT(*) FILTER (WHERE rating = 1)
+    '5', COUNT(*) FILTER (WHERE rating >= 4.5 AND rating <= 5 ),
+    '4', COUNT(*) FILTER (WHERE rating >= 4 AND rating < 4.5),
+    '3', COUNT(*) FILTER (WHERE rating >= 3 AND rating < 4),
+    '2', COUNT(*) FILTER (WHERE rating >= 2 AND rating < 3),
+    '1', COUNT(*) FILTER (WHERE rating >= 1 AND rating < 2)
    )
    ) AS review_summary
    FROM course_reviews
@@ -129,6 +136,31 @@ class ReviewRepository {
     WHERE id = $1
     `;
     const result = await pgPool.query(query, [id]);
+    return result.rows[0];
+  }
+
+  async createReviewReport({ userId, reviewId, reason, description }) {
+    const query = `
+    INSERT INTO review_reports (user_id, review_id, reason, description)
+    VALUES ($1, $2, $3, $4)
+    RETURNING id, user_id, review_id, reason, description, created_at;
+    `;
+    const result = await pgPool.query(query, [
+      userId,
+      reviewId,
+      reason,
+      description,
+    ]);
+    return result.rows[0];
+  }
+
+  async getReviewReports({ userId, reviewId }) {
+    const query = `
+    SELECT *
+    FROM review_reports
+    WHERE user_id = $1 AND review_id = $2
+    `;
+    const result = await pgPool.query(query, [userId, reviewId]);
     return result.rows[0];
   }
 }

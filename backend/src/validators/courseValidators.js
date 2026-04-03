@@ -5,7 +5,6 @@ import {
   COURSE_LEVEL,
 } from "../constants/constants.js";
 import {
-  booleanValidator,
   EnumValidator,
   numberValidator,
   textValidator,
@@ -26,8 +25,4 @@ export const courseValidator = checkSchema({
 export const courseObjectiveValidator = checkSchema({
   position: numberValidator("Course Objective Position"),
   content: textValidator("Course Objective", false, 500),
-});
-
-export const helpfulVoteValidator = checkSchema({
-  isHelpful: booleanValidator("Is Helpful"),
 });
