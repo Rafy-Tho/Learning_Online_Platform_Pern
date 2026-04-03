@@ -4,11 +4,11 @@ import AdvancedQuery from "../utils/AdvaceQuery.js";
 class ReviewRepository {
   async getReviews(queryString, courseId, userId) {
     const baseQuery = `
-    FROM course_reviews cr
-    LEFT JOIN users u ON u.id = cr.user_id
-    LEFT JOIN review_helpful_votes rhv 
-      ON rhv.review_id = cr.id 
-      AND ($1::uuid IS NULL OR rhv.user_id = $1)
+   FROM course_reviews cr
+   LEFT JOIN users u ON u.id = cr.user_id
+   LEFT JOIN review_helpful_votes rhv 
+    ON rhv.review_id = cr.id 
+    AND rhv.user_id = $1
   `;
 
     const features = new AdvancedQuery({
@@ -72,7 +72,7 @@ class ReviewRepository {
     const query = `
     INSERT INTO course_reviews (user_id, course_id, rating, review)
     VALUES ($1, $2, $3, $4)
-    RETURNING id, user_id, course_id, rating, review, helpful_count, created_at;
+    RETURNING id, user_id, course_id, rating, review, created_at;
     `;
     const result = await pgPool.query(query, [
       userId,
@@ -80,6 +80,55 @@ class ReviewRepository {
       rating,
       review,
     ]);
+    return result.rows[0];
+  }
+
+  async createReviewHelpfulVote({ userId, reviewId, isHelpful }) {
+    const query = `
+    INSERT INTO review_helpful_votes (user_id, review_id, is_helpful)
+    VALUES ($1, $2, $3)
+    RETURNING id, user_id, review_id, is_helpful, created_at;
+    `;
+    const result = await pgPool.query(query, [userId, reviewId, isHelpful]);
+    return result.rows[0];
+  }
+
+  async updateReviewHelpfulVote({ reviewId, isHelpful }) {
+    const query = `
+    UPDATE review_helpful_votes
+    SET is_helpful = $1
+    WHERE id = $2
+    RETURNING is_helpful;
+    `;
+    const result = await pgPool.query(query, [isHelpful, reviewId]);
+    return result.rows[0];
+  }
+
+  async getReviewHelpfulVote({ userId, reviewId }) {
+    const query = `
+    SELECT *
+    FROM review_helpful_votes
+    WHERE user_id = $1 AND review_id = $2
+    `;
+    const result = await pgPool.query(query, [userId, reviewId]);
+    return result.rows[0];
+  }
+  async deleteReviewHelpfulVote({ userId, reviewId }) {
+    const query = `
+    DELETE FROM review_helpful_votes
+    WHERE user_id = $1 AND review_id = $2
+    RETURNING id, user_id, review_id, is_helpful, created_at;
+    `;
+    const result = await pgPool.query(query, [userId, reviewId]);
+    return result.rows[0];
+  }
+  async findById(id) {
+    const query = `
+    SELECT *
+    FROM course_reviews
+    WHERE id = $1
+    `;
+    const result = await pgPool.query(query, [id]);
     return result.rows[0];
   }
 }

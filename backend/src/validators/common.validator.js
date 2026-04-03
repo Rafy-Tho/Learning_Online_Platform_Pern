@@ -206,3 +206,16 @@ export const htmlValidator = (fieldName) => ({
     errorMessage: `${fieldName} must be at most 1,000,000 characters`,
   },
 });
+
+export const booleanValidator = (fieldName) => ({
+  in: ["body"],
+  trim: true,
+  escape: true,
+  notEmpty: {
+    errorMessage: `${fieldName} is required`,
+    bail: true,
+  },
+  isBoolean: {
+    errorMessage: `${fieldName} must be a boolean`,
+  },
+});

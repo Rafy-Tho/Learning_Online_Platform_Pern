@@ -49,6 +49,7 @@ app.use("/api/v1/chapters", chapterRoute);
 app.use("/api/v1/lessons", lessonRoute);
 app.use("/api/v1/contents", lessonContentRoute);
 app.use("/api/v1/reviews", reviewRoute);
+
 // configure middleware handle error
 app.use(notFoundUrl);
 app.use(errorHandler);

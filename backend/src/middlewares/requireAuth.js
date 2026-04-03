@@ -1,5 +1,4 @@
 import StatusCode from "../constants/StatusCode.js";
-import sessionService from "../services/SessionService.js";
 import ApiError from "../utils/ApiError.js";
 
 function requireAuth(req, res, next) {
@@ -11,15 +10,7 @@ function requireAuth(req, res, next) {
       ),
     );
   }
-  const isValidSession = sessionService.validate(req);
-  if (!isValidSession) {
-    return next(
-      new ApiError(
-        StatusCode.UNAUTHORIZED,
-        "Session expired or invalid. Please log in again.",
-      ),
-    );
-  }
+  // to do: validate session
   next();
 }
 
