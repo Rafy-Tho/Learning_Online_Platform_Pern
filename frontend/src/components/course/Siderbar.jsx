@@ -9,8 +9,6 @@ import {
   skills,
 } from "../../constants/courseFilterData";
 import RatingStars from "../RatingStars";
-import parseQueryToObject from "../../utils/parseQueryToObject";
-import parseQueryToString from "../../utils/parseQueryToString";
 
 // ---------------- RANGE CONFIG ----------------
 const rangeConfig = {
@@ -115,9 +113,6 @@ export function Sidebar() {
     setSelected({ isFree: "", level: "", rating: "", duration: "" });
     setSelectedSkill([]);
   };
-  const object = parseQueryToObject(searchParams);
-  const string = parseQueryToString(searchParams);
-  console.log({ object, string });
   // ---------------- UI ----------------
   return (
     <div className="w-full md:w-64 bg-slate-100 dark:bg-slate-900 border-r p-4 md:p-6 flex flex-col gap-6 relative text-slate-700 dark:text-slate-300">

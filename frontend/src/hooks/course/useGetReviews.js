@@ -6,7 +6,6 @@ import { useParams } from "react-router-dom";
 
 function useGetReviews(params) {
   const { courseId } = useParams();
-  console.log({ useGetReviews: courseId });
   const queryString = parseQueryToString(params);
   const queryObject = parseQueryToObject(params);
   const { data, isPending, error, refetch } = useQuery({

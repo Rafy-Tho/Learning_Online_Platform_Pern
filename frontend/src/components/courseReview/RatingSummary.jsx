@@ -1,8 +1,8 @@
-import { Star } from "lucide-react";
 import useGetReviewDetails from "../../hooks/course/useGetReviewDetails";
-import SpinnerLoader from "../../ui/SpinnerLoader";
 import ErrorMessage from "../../ui/ErrorMessage";
+import SpinnerLoader from "../../ui/SpinnerLoader";
 import RatingStars from "../RatingStars";
+import NotSummary from "./NotSummary";
 
 export function RatingSummary() {
   const { data, isPending, error } = useGetReviewDetails();
@@ -18,7 +18,7 @@ export function RatingSummary() {
 
   if (isPending) return <SpinnerLoader />;
   if (error) return <ErrorMessage message={error.message} />;
-  if (!total || !data) return null;
+  if (!total || !data || !ratings) return <NotSummary />;
   return (
     <div className="bg-white dark:bg-slate-800 p-8 rounded-lg">
       <h2 className="text-2xl font-bold mb-8 text-slate-900 dark:text-slate-100">
