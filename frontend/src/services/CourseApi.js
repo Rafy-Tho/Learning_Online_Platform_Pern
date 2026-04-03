@@ -51,7 +51,6 @@ class CourseApi {
       },
     );
     const result = await res.json();
-    console.log({ getReviews: result });
     if (!res.ok) {
       throw new Error(result.message || "Failed to fetch reviews");
     }
@@ -61,7 +60,6 @@ class CourseApi {
   async getReviewDetails(courseId) {
     const res = await fetch(`${this.baseUrl}/${courseId}/reviews/summary`);
     const result = await res.json();
-    console.log({ getReviewDetails: result });
     if (!res.ok) {
       throw new Error(result.message || "Failed to fetch review details");
     }

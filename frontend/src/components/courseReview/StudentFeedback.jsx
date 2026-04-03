@@ -10,9 +10,8 @@ export function StudentFeedback() {
   const [filterRating, setFilterRating] = useState("All");
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const [visibleReviews, setVisibleReviews] = useState(5);
-  const [submittedSearch, setSubmittedSearch] = useState(""); // store the search term when
+  const [submittedSearch, setSubmittedSearch] = useState("");
   const selectRef = useRef(null);
-  const inputRef = useRef(null);
   // Build query string for useGetReviews
 
   const param = new URLSearchParams();
@@ -34,6 +33,7 @@ export function StudentFeedback() {
     if (filterRating === "All") return "All ratings";
     return `${filterRating} star${filterRating > 1 ? "s" : ""}`;
   };
+
   // Handle search submission
   const handleSearch = (e) => {
     e.preventDefault();
@@ -41,6 +41,7 @@ export function StudentFeedback() {
     setVisibleReviews(5);
     setSubmittedSearch(searchQuery); // update submitted search
   };
+
   // Close filter dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -51,25 +52,19 @@ export function StudentFeedback() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
   // Clear submitted search when search query changes
   useEffect(() => {
     if (searchQuery.trim() !== "") return;
     setSubmittedSearch("");
     setVisibleReviews(5);
   }, [searchQuery]);
-  // Focus on input field when component mounts
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
-  // Handle pagination click
-  if (isPending) return <SpinnerLoader />;
-  if (error) return <ErrorMessage message={error.message} />;
+
   return (
     <>
       <div className="flex flex-col sm:flex-row gap-4 mb-8">
         <form onSubmit={handleSearch} className="flex-1 relative">
           <input
-            ref={inputRef}
             type="text"
             placeholder="Search reviews"
             value={searchQuery}
@@ -78,13 +73,13 @@ export function StudentFeedback() {
           />
           <button
             type="submit"
-            className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-violet-600 dark:bg-violet-500 rounded-lg flex items-center justify-center hover:bg-violet-700 dark:hover:bg-violet-600 transition-colors"
+            className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-violet-600 dark:bg-violet-500 rounded-lg flex items-center justify-center hover:bg-violet-700 dark:hover:bg-violet-600 transition-colors cursor-pointer"
           >
             <Search size={20} className="text-white" />
           </button>
         </form>
 
-        <div className="relative">
+        <div className="relative" ref={selectRef}>
           <button
             onClick={() => setShowFilterDropdown(!showFilterDropdown)}
             className="w-full sm:w-auto px-6 py-3 border-2 border-slate-300 dark:border-slate-600 rounded-lg flex items-center justify-between gap-4 hover:border-violet-500 dark:hover:border-violet-400 transition-colors bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
@@ -97,10 +92,7 @@ export function StudentFeedback() {
           </button>
 
           {showFilterDropdown && (
-            <div
-              ref={selectRef}
-              className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-lg shadow-lg z-10"
-            >
+            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-lg shadow-lg z-10">
               <button
                 onClick={() => {
                   setFilterRating("All");
@@ -130,12 +122,16 @@ export function StudentFeedback() {
       </div>
 
       <div className="space-y-0">
-        {reviews.slice(0, visibleReviews).map((review) => (
-          <ReviewCard key={review.id} review={review} />
-        ))}
+        {isPending && <SpinnerLoader />}
+        {error && <ErrorMessage message={error.message} />}
+        {!isPending &&
+          !error &&
+          reviews
+            .slice(0, visibleReviews)
+            .map((review) => <ReviewCard key={review.id} review={review} />)}
       </div>
 
-      {visibleReviews < pagination.totalItems && (
+      {visibleReviews < pagination?.totalItems && (
         <div className="mt-8">
           <button
             onClick={() => setVisibleReviews((prev) => prev + 5)}
@@ -146,7 +142,7 @@ export function StudentFeedback() {
         </div>
       )}
 
-      {reviews.length === 0 && (
+      {reviews?.length === 0 && (
         <div className="text-center py-12 text-slate-600 dark:text-slate-400">
           No reviews found matching your criteria.
         </div>

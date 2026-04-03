@@ -8,6 +8,7 @@ class UserApi {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
     });
     const result = await res.json();
     if (!res.ok) {
@@ -22,6 +23,7 @@ class UserApi {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify(data),
     });
     const result = await res.json();
