@@ -3,8 +3,10 @@ import useGetCourses from "../../hooks/course/useGetCourses";
 import ErrorMessage from "../../ui/ErrorMessage";
 import SpinnerLoader from "../../ui/SpinnerLoader";
 import CourseCardGrid from "../CourseCardGrid";
+import { useNavigate } from "react-router-dom";
 
 function TopCourse() {
+  const navigate = useNavigate();
   const param = new URLSearchParams({});
   param.append("limit", 4);
   param.append("skill", "javascript-mastery");
@@ -30,7 +32,13 @@ function TopCourse() {
         {data && <CourseCardGrid courses={data?.data?.slice(0, 4) || []} />}
         {/* View All Button */}
         <div className="text-center mt-12">
-          <button className="inline-flex items-center px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white dark:text-slate-800 font-medium rounded-lg  dark:hover:bg-gray-100 transition-colors duration-200 shadow-lg hover:shadow-xl cursor-pointer">
+          <button
+            onClick={() => {
+              navigate("/courses");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            className="inline-flex items-center px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white dark:text-slate-800 font-medium rounded-lg  dark:hover:bg-gray-100 transition-colors duration-200 shadow-lg hover:shadow-xl cursor-pointer"
+          >
             View All Courses
             <ArrowRightIcon className="w-5 h-5 ml-2" />
           </button>

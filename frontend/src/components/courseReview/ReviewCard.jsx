@@ -11,22 +11,20 @@ export function ReviewCard({ review }) {
   const [showReportModal, setShowReportModal] = useState(false);
   const { mutate } = useHelpfulVote();
   const [helpfulVote, setHelpfulVote] = useState(
-    () => review.is_helpful || null,
+    () => review.is_helpful ?? null,
   ); // true, false, or null
+  const [isReported, setIsReported] = useState(
+    () => review.is_reported ?? false,
+  );
   const { user } = useAuth();
   const navigate = useNavigate();
   const handleHelpfulVote = (voteType) => {
     if (!user) {
       navigate("/login");
+      window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
-    if (helpfulVote === voteType) {
-      // If clicking the same vote, remove it
-      setHelpfulVote(null);
-    } else {
-      // Otherwise set the new vote
-      setHelpfulVote(voteType);
-    }
+    setHelpfulVote((prev) => (prev === voteType ? null : voteType));
     mutate({ reviewId: review.id, isHelpful: voteType });
   };
 
@@ -61,14 +59,21 @@ export function ReviewCard({ review }) {
           </p>
 
           <div className="flex items-center gap-4">
-            <span className="text-sm text-slate-600 dark:text-slate-400">
-              Was this review helpful?
-            </span>
+            {helpfulVote === null && (
+              <span className="text-sm text-slate-600 dark:text-slate-400">
+                Was this review helpful?
+              </span>
+            )}
+            {helpfulVote !== null && (
+              <span className="text-sm text-slate-600 dark:text-slate-400">
+                Thank you for your vote!
+              </span>
+            )}
             <div className="flex gap-2">
               <button
                 onClick={() => handleHelpfulVote(true)}
                 className={`w-10 h-10 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
-                  helpfulVote === true
+                  Boolean(helpfulVote) === Boolean(true)
                     ? "bg-violet-500 border-violet-500 hover:bg-violet-600"
                     : "border-violet-500 dark:border-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/20"
                 }`}
@@ -100,12 +105,19 @@ export function ReviewCard({ review }) {
                 />
               </button>
             </div>
-            <button
-              onClick={() => setShowReportModal(true)}
-              className="text-sm font-medium text-slate-900 dark:text-slate-100 hover:text-violet-600 dark:hover:text-violet-400 transition-colors underline"
-            >
-              Report
-            </button>
+            {!isReported && (
+              <button
+                onClick={() => setShowReportModal(true)}
+                className="text-sm font-medium text-slate-900 dark:text-slate-100 hover:text-violet-600 dark:hover:text-violet-400 transition-colors underline"
+              >
+                Report
+              </button>
+            )}
+            {isReported && (
+              <span className="text-sm text-slate-600 dark:text-slate-400">
+                Reported
+              </span>
+            )}
           </div>
         </div>
       </div>
@@ -113,6 +125,8 @@ export function ReviewCard({ review }) {
       <ReportModal
         isOpen={showReportModal}
         onClose={() => setShowReportModal(false)}
+        reviewId={review.id}
+        setIsReported={setIsReported}
       />
     </div>
   );

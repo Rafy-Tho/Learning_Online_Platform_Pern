@@ -5,17 +5,21 @@ import App from "./App";
 import AuthProvider from "./contexts/AuthContext";
 import ThemeProvider from "./contexts/ThemeContext";
 import "./index.css";
+import { StrictMode } from "react";
 
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </ThemeProvider>
-    {/* Optional: DevTools (only visible in development) */}
-    <ReactQueryDevtools initialIsOpen={false} />
-  </QueryClientProvider>,
+  <StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </ThemeProvider>
+      {/* Optional: DevTools (only visible in development) */}
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
+    ,
+  </StrictMode>,
 );

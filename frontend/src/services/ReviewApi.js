@@ -16,8 +16,30 @@ class ReviewApi {
       }),
     });
     const result = await response.json();
+    console.log(result);
     if (!response.ok) {
       throw new Error(result.message || "Failed to create helpful vote");
+    }
+    return result;
+  }
+
+  // Create review report
+  async report({ reviewId, reason, description }) {
+    const response = await fetch(`${this.baseUrl}/${reviewId}/reports`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        reason: reason,
+        description: description,
+      }),
+    });
+    const result = await response.json();
+    console.log(result);
+    if (!response.ok) {
+      throw new Error(result.message || "Failed to create report");
     }
     return result;
   }

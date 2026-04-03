@@ -20,7 +20,7 @@ function useLogout() {
       navigate("/login");
     },
     onError: (err) => {
-      toast.error(err.response.data.message || "Logout failed");
+      toast.error(err.message || "Logout failed");
     },
   });
   return { logout, isPending, error };
