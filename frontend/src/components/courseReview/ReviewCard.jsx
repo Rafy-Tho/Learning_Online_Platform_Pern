@@ -5,9 +5,11 @@ import RatingStars from "../RatingStars";
 import { ReportModal } from "./ReportModal";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
+import useHelpfulVote from "../../hooks/course/useHelpfulVote";
 
 export function ReviewCard({ review }) {
   const [showReportModal, setShowReportModal] = useState(false);
+  const { mutate } = useHelpfulVote();
   const [helpfulVote, setHelpfulVote] = useState(
     () => review.is_helpful || null,
   ); // true, false, or null
@@ -25,6 +27,7 @@ export function ReviewCard({ review }) {
       // Otherwise set the new vote
       setHelpfulVote(voteType);
     }
+    mutate({ reviewId: review.id, isHelpful: voteType });
   };
 
   return (
@@ -73,7 +76,7 @@ export function ReviewCard({ review }) {
                 <ThumbsUp
                   size={18}
                   className={`transition-colors ${
-                    helpfulVote === "up"
+                    helpfulVote === true
                       ? "text-white"
                       : "text-violet-500 dark:text-violet-400"
                   }`}
@@ -90,7 +93,7 @@ export function ReviewCard({ review }) {
                 <ThumbsDown
                   size={18}
                   className={`transition-colors ${
-                    helpfulVote === "down"
+                    helpfulVote === false
                       ? "text-white"
                       : "text-violet-500 dark:text-violet-400"
                   }`}
