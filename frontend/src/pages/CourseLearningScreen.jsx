@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { Outlet, useLocation, useOutletContext } from "react-router-dom";
 import { CourseSidebar } from "../components/courseLearning/CourseSidebar";
 import NextPrevious from "../components/courseLearning/NextPrevious";
+import CourseRating from "../components/courseLearning/CourseRating";
 
 const CourseLearningScreen = () => {
   const { sidebarOpen, setSidebarOpen } = useOutletContext();
@@ -10,6 +11,8 @@ const CourseLearningScreen = () => {
 
   return (
     <div className="flex h-[calc(100vh-64px)] overflow-hidden bg-slate-100 dark:bg-slate-900">
+      {/* rating modal */}
+      <CourseRating />
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div

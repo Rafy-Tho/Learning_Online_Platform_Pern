@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 
 function LearningLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [ratingOpen, setRatingOpen] = useState(false);
   useEffect(() => {
     // Close sidebar on mobile by default
     const checkScreenSize = () => {
@@ -24,8 +25,12 @@ function LearningLayout() {
       <LearningNavigation
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
+        ratingOpen={ratingOpen}
+        setRatingOpen={setRatingOpen}
       />
-      <Outlet context={{ sidebarOpen, setSidebarOpen }} />
+      <Outlet
+        context={{ sidebarOpen, setSidebarOpen, ratingOpen, setRatingOpen }}
+      />
     </div>
   );
 }
