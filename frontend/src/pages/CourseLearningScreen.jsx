@@ -1,14 +1,13 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { Outlet, useLocation, useOutletContext } from "react-router-dom";
 import { CourseSidebar } from "../components/courseLearning/CourseSidebar";
+import NextPrevious from "../components/courseLearning/NextPrevious";
 
 const CourseLearningScreen = () => {
   const { sidebarOpen, setSidebarOpen } = useOutletContext();
   const sectionRef = useRef(null);
   const location = useLocation();
-  useEffect(() => {
-    sectionRef.current?.scrollTo({ top: 0, behavior: "smooth" });
-  }, [location.pathname]);
+
   return (
     <div className="flex h-screen overflow-hidden bg-slate-100 dark:bg-slate-900">
       {/* Mobile overlay */}
@@ -18,7 +17,6 @@ const CourseLearningScreen = () => {
           onClick={() => setSidebarOpen(false)}
         />
       )}
-
       {/* Mobile sidebar (overlay) */}
       <div
         className={`fixed top-0 left-0 h-full z-40 w-[320px] lg:hidden
@@ -45,16 +43,28 @@ const CourseLearningScreen = () => {
 
         {/* Desktop main content */}
         <div className="flex-1 flex flex-col overflow-hidden">
-          <main className="flex-1 overflow-y-auto" ref={sectionRef}>
+          <main
+            key={location.pathname}
+            className="flex-1 overflow-y-auto"
+            ref={sectionRef}
+          >
             <Outlet />
+            {/* Navigation buttons */}
+            <NextPrevious />
           </main>
         </div>
       </div>
 
       {/* Mobile main content */}
       <div className="lg:hidden flex-1 flex flex-col overflow-hidden">
-        <main className="flex-1 overflow-y-auto" ref={sectionRef}>
+        <main
+          key={location.pathname}
+          className="flex-1 overflow-y-auto"
+          ref={sectionRef}
+        >
           <Outlet />
+          {/* Navigation buttons for mobile */}
+          <NextPrevious />
         </main>
       </div>
     </div>
