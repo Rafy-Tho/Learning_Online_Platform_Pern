@@ -1,6 +1,8 @@
 import express from "express";
 import {
+  createReview,
   createReviewReport,
+  getReview,
   getReviewDetail,
   getReviews,
   reviewHelpfulVote,
@@ -10,11 +12,15 @@ import { validateResult } from "../middlewares/validateResult.js";
 import {
   helpfulVoteValidator,
   reportValidator,
+  reviewValidator,
 } from "../validators/reviewValidator.js";
 
 const reviewRoute = express.Router({ mergeParams: true });
 
-reviewRoute.route("/").get(getReviews);
+reviewRoute
+  .route("/")
+  .get(getReviews)
+  .post(requireAuth, reviewValidator, validateResult, createReview);
 reviewRoute.route("/summary").get(getReviewDetail);
 reviewRoute
   .route("/:id/helpful-votes")
@@ -22,4 +28,5 @@ reviewRoute
 reviewRoute
   .route("/:id/reports")
   .post(requireAuth, reportValidator, validateResult, createReviewReport);
+reviewRoute.route("/me").get(requireAuth, getReview);
 export default reviewRoute;

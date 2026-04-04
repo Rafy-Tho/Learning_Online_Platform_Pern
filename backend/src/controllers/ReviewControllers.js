@@ -3,12 +3,13 @@ import Course from "../repositories/CourseRepository.js";
 import Review from "../repositories/ReviewRepository.js";
 import User from "../repositories/UserRepository.js";
 import ApiError from "../utils/ApiError.js";
+import asyncHandler from "../utils/asyncHandler.js";
 
 // Get reviews by course ID
 // @route GET /api/v1/courses/:id/reviews
 // @desc Get all reviews for a course
 // @access Public
-export const getReviews = async (req, res, next) => {
+export const getReviews = asyncHandler(async (req, res, next) => {
   const courseId = req.params.id;
   const userId = req.session?.user?.id || null;
   const course = await Course.findById(courseId);
@@ -27,12 +28,12 @@ export const getReviews = async (req, res, next) => {
     data,
     pagination,
   });
-};
+});
 // Get reviews by course ID
 // @route GET /api/v1/courses/:id/reviews/summary
 // @desc Get all reviews for a course
 // @access Public
-export const getReviewDetail = async (req, res, next) => {
+export const getReviewDetail = asyncHandler(async (req, res, next) => {
   const courseId = req.params.id;
   const course = await Course.findById(courseId);
   if (!course)
@@ -44,19 +45,19 @@ export const getReviewDetail = async (req, res, next) => {
     message: "Review retrieved successfully",
     data: review,
   });
-};
+});
 // Create review
 // @route POST /api/v1/courses/:id/reviews
 // @desc Create a review for a course
 // @access Private
-export const createReview = async (req, res, next) => {
+export const createReview = asyncHandler(async (req, res, next) => {
   const userId = req.session.user.id;
   const courseId = req.params.id;
   const course = await Course.findById(courseId);
   if (!course)
     return next(new ApiError(StatusCode.NOT_FOUND, "Course not found"));
-
-  const { rating, review } = req.body;
+  const { rating, description } = req.body;
+  const review = description || "The user did not leave a review description";
   const reviewData = await Review.createReview({
     userId,
     courseId,
@@ -69,12 +70,28 @@ export const createReview = async (req, res, next) => {
     message: "Review created successfully",
     data: reviewData,
   });
-};
+});
+export const getReview = asyncHandler(async (req, res, next) => {
+  const userId = req.session.user.id;
+  const courseId = req.params.id;
+  const course = await Course.findById(courseId);
+  if (!course)
+    return next(new ApiError(StatusCode.NOT_FOUND, "Course not found"));
+  const review = await Review.getReview({ userId, courseId });
+  // if (!review)
+  //   return next(new ApiError(StatusCode.NOT_FOUND, "Review not found"));
+  res.status(StatusCode.OK).json({
+    success: true,
+    statusCode: StatusCode.OK,
+    message: "Review retrieved successfully",
+    data: review || null,
+  });
+});
 // Create review helpful vote
 // @route POST /api/v1/reviews/:id/helpful-votes
 // @desc Create a helpful vote for a review
 // @access Private
-export const reviewHelpfulVote = async (req, res, next) => {
+export const reviewHelpfulVote = asyncHandler(async (req, res, next) => {
   const userId = req.session?.user?.id || null;
   const reviewId = req.params.id;
   const { isHelpful } = req.body;
@@ -118,12 +135,12 @@ export const reviewHelpfulVote = async (req, res, next) => {
     statusCode: StatusCode.OK,
     message: "Review helpful vote updated successfully",
   });
-};
+});
 // Create review report
 // @route POST /api/v1/reviews/:id/reports
 // @desc Create a report for a review
 // @access Private
-export const createReviewReport = async (req, res, next) => {
+export const createReviewReport = asyncHandler(async (req, res, next) => {
   const userId = req.session?.user?.id || null;
   const reviewId = req.params.id;
   const { reason, description } = req.body;
@@ -156,4 +173,4 @@ export const createReviewReport = async (req, res, next) => {
     message: "Review report created successfully",
     data: report,
   });
-};
+});

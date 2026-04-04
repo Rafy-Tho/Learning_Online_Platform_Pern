@@ -163,6 +163,15 @@ class ReviewRepository {
     const result = await pgPool.query(query, [userId, reviewId]);
     return result.rows[0];
   }
+  async getReview({ userId, courseId }) {
+    const query = `
+    SELECT *
+    FROM course_reviews
+    WHERE user_id = $1 AND course_id = $2
+    `;
+    const result = await pgPool.query(query, [userId, courseId]);
+    return result.rows[0];
+  }
 }
 
 const Review = new ReviewRepository();
