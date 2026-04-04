@@ -7,7 +7,6 @@ function AppLayout() {
   return (
     <div className="min-w-sm bg-slate-100 dark:bg-slate-900">
       <Navigation />
-
       <Outlet />
       <Footer />
       <ToastContainer

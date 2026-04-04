@@ -20,34 +20,41 @@ export function RatingSummary() {
   if (error) return <ErrorMessage message={error.message} />;
   if (!total || !data || !ratings) return <NotSummary />;
   return (
-    <div className="bg-white dark:bg-slate-800 p-8 rounded-lg">
-      <h2 className="text-2xl font-bold mb-8 text-slate-900 dark:text-slate-100">
+    <div className="bg-white  py-4 dark:bg-slate-800  sm:p-6 md:p-8 rounded-lg">
+      <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-8 text-slate-900 dark:text-slate-100">
         Student feedback
       </h2>
 
-      <div className="flex flex-col lg:flex-row gap-8">
-        <div className="flex flex-col items-center lg:items-start lg:w-1/4">
-          <div className="text-6xl font-bold text-orange-500 mb-2">
+      <div className="flex flex-col lg:flex-row gap-6 sm:gap-8">
+        <div className="flex flex-row lg:flex-col items-center justify-between lg:justify-start lg:w-1/4">
+          <div className="text-5xl sm:text-6xl font-bold text-orange-500 mb-1 sm:mb-2">
             {average.toFixed(1)}
           </div>
-          {<RatingStars rating={average} />}
-          <div className="text-orange-500 font-medium mt-2">Course Rating</div>
+          <RatingStars rating={average} />
+          <div className="text-orange-500 font-medium text-sm sm:text-base mt-1 sm:mt-2">
+            Course Rating
+          </div>
         </div>
 
-        <div className="flex-1 space-y-2">
+        <div className="flex-1 space-y-3 sm:space-y-2">
           {breakdown.map(({ stars, percentage }) => (
-            <div key={stars} className="flex items-center gap-3">
-              <div className="w-full max-w-md lg:max-w-2xl bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+            <div
+              key={stars}
+              className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3"
+            >
+              <div className="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
                 <div
                   className="bg-slate-400 dark:bg-slate-500 h-full transition-all duration-300"
                   style={{ width: `${percentage}%` }}
                 />
               </div>
-              <div className="flex items-center gap-1 min-w-[120px]">
-                <RatingStars rating={stars} />
-              </div>
-              <div className="text-orange-500 font-medium min-w-[50px] text-right">
-                {percentage < 1 ? "<1%" : `${percentage}%`}
+              <div className="flex items-center justify-between sm:justify-start gap-2 sm:gap-3">
+                <div className="flex items-center gap-1">
+                  <RatingStars rating={stars} />
+                </div>
+                <div className="text-orange-500 font-medium min-w-[50px] text-right sm:text-left text-sm sm:text-base">
+                  {percentage < 1 ? "<1%" : `${percentage}%`}
+                </div>
               </div>
             </div>
           ))}

@@ -19,19 +19,40 @@ const CourseLearningScreen = () => {
         />
       )}
 
-      {/* Sidebar */}
+      {/* Mobile sidebar (overlay) */}
       <div
-        className={`fixed lg:relative inset-y-0 left-0 top-16 lg:top-0 z-40
-    transform transition-transform duration-200 ease-out  w-[320px] lg:translate-x-0
-   
-    ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
-  `}
+        className={`fixed top-0 left-0 h-full z-40 w-[320px] lg:hidden
+      transition-transform duration-200 ease-out pt-15
+      ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+    `}
       >
         <CourseSidebar onClose={() => setSidebarOpen(false)} />
       </div>
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      {/* Desktop layout with collapsible sidebar */}
+      <div className="hidden lg:flex w-full">
+        {/* Desktop sidebar - collapsible by controlling width */}
+        <div
+          className={`
+        shrink-0 transition-all duration-200 ease-out overflow-hidden
+        ${sidebarOpen ? "w-[320px]" : "w-0"}
+      `}
+        >
+          <div className="w-[320px] h-full">
+            <CourseSidebar onClose={() => setSidebarOpen(false)} />
+          </div>
+        </div>
+
+        {/* Desktop main content */}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <main className="flex-1 overflow-y-auto" ref={sectionRef}>
+            <Outlet />
+          </main>
+        </div>
+      </div>
+
+      {/* Mobile main content */}
+      <div className="lg:hidden flex-1 flex flex-col overflow-hidden">
         <main className="flex-1 overflow-y-auto" ref={sectionRef}>
           <Outlet />
         </main>

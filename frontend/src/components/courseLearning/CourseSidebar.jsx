@@ -97,7 +97,7 @@ export function CourseSidebar({ onClose }) {
   if (isPending) return <SpinnerLoader />;
   if (error) return <ErrorMessage message={error.message} />;
   return (
-    <aside className="flex flex-col h-[calc(100vh-64px)] bg-slate-50 border-r border-slate-200 dark:bg-slate-900 dark:border-slate-800">
+    <aside className="flex flex-col lg:h-[calc(100vh-64px)] h-full bg-slate-50 border-r border-slate-200 dark:bg-slate-900 dark:border-slate-800">
       <button
         onClick={onClose}
         className="text-slate-400 dark:text-slate-500 absolute top-3 right-3 text-2xl cursor-pointer lg:hidden"

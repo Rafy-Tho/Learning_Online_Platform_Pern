@@ -67,10 +67,7 @@ export default function LearningRoadmap({ sectionRef }) {
   if (isPending) return <SpinnerLoader />;
   if (error) return <ErrorMessage message={error.message} />;
   return (
-    <div
-      ref={sectionRef}
-      className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16"
-    >
+    <div ref={sectionRef} className="max-w-6xl mx-auto  py-12 sm:py-16">
       <div className="mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>

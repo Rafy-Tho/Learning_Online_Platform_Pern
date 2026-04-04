@@ -20,6 +20,5 @@ createRoot(document.getElementById("root")).render(
       {/* Optional: DevTools (only visible in development) */}
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
-    ,
   </StrictMode>,
 );

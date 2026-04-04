@@ -18,19 +18,6 @@ function Hero() {
               certificates. Learn at your own pace with personalized
               recommendations.
             </p>
-
-            <div className="bg-white dark:bg-gray-700 shadow-sm border border-gray-200 dark:border-gray-600 mt-12 flex px-1 py-1.5 rounded-lg overflow-hidden max-xl:max-w-xl max-xl:mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="w-full outline-none bg-white dark:bg-gray-700 dark:text-white px-4"
-              />
-              <div className="ml-auto sm:min-w-[200px] min-w-[120px]">
-                <button className="bg-blue-600 hover:bg-blue-700 cursor-pointer transition-all text-white font-medium rounded-lg px-4 py-2.5 block ml-auto">
-                  Start Free
-                </button>
-              </div>
-            </div>
           </div>
 
           {/* Stats */}

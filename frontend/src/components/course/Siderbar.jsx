@@ -36,7 +36,7 @@ function getInitialSelected(searchParams) {
 }
 
 // ---------------- COMPONENT ----------------
-export function Sidebar() {
+export function Sidebar({ setShowMobileFilter }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [selected, setSelected] = useState(() =>
     getInitialSelected(searchParams),
@@ -116,7 +116,10 @@ export function Sidebar() {
   // ---------------- UI ----------------
   return (
     <div className="w-full md:w-64 bg-slate-100 dark:bg-slate-900 border-r p-4 md:p-6 flex flex-col gap-6 relative text-slate-700 dark:text-slate-300">
-      <button className="md:hidden absolute -top-10 right-2">
+      <button
+        onClick={() => setShowMobileFilter(false)}
+        className="md:hidden absolute -top-10 right-2"
+      >
         <X className="w-5 h-5 cursor-pointer" />
       </button>
 
