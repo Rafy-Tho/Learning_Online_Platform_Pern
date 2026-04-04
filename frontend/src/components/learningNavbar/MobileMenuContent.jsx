@@ -1,6 +1,8 @@
 import { Award, Shield, StarOff, TrendingUp } from "lucide-react";
 import UnlockAccessButton from "./UnlockAccessButton";
 import ThemeSelector from "../ThemSelector";
+import useGetReview from "../../hooks/course/useGetReview";
+import RatingStars from "../RatingStars";
 
 /**
  * Mobile menu content
@@ -10,7 +12,8 @@ function MobileMenuContent({ menuId, setMenuOpen, setRatingOpen }) {
     setRatingOpen(true);
     setMenuOpen(false);
   };
-
+  const { data } = useGetReview();
+  const reviews = data?.data;
   return (
     <div
       id={menuId}
@@ -51,16 +54,27 @@ function MobileMenuContent({ menuId, setMenuOpen, setRatingOpen }) {
 
       {/* Mobile CTA Buttons */}
       <UnlockAccessButton fullWidth />
-
-      <button
-        type="button"
-        role="menuitem"
-        className="flex w-full items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-left text-sm font-medium text-slate-700 transition-all hover:bg-slate-50 active:scale-95 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-700/80"
-        onClick={handleLeaveReview}
-      >
-        <StarOff className="h-4 w-4 text-amber-500" />
-        Leave Review
-      </button>
+      {reviews && (
+        <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+          <RatingStars rating={reviews?.rating} />
+          <div className="flex items-baseline gap-1">
+            <span className="text-sm font-bold text-slate-900 dark:text-white">
+              {reviews?.rating}
+            </span>
+          </div>
+        </div>
+      )}
+      {!reviews && (
+        <button
+          type="button"
+          role="menuitem"
+          className="flex w-full items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-left text-sm font-medium text-slate-700 transition-all hover:bg-slate-50 active:scale-95 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-700/80"
+          onClick={handleLeaveReview}
+        >
+          <StarOff className="h-4 w-4 text-amber-500" />
+          Leave Review
+        </button>
+      )}
     </div>
   );
 }

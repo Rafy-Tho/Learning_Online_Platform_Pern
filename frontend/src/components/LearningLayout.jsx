@@ -1,7 +1,8 @@
 import { Outlet } from "react-router-dom";
 import LearningNavigation from "./LearningNavigation";
 import { useState, useEffect } from "react";
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Don't forget this!
 function LearningLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [ratingOpen, setRatingOpen] = useState(false);
@@ -30,6 +31,18 @@ function LearningLayout() {
       />
       <Outlet
         context={{ sidebarOpen, setSidebarOpen, ratingOpen, setRatingOpen }}
+      />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
       />
     </div>
   );

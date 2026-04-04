@@ -1,21 +1,36 @@
 import { X } from "lucide-react";
 import { useState } from "react";
 
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import StarRating from "../../ui/StarRating";
+import useCreateReview from "../../hooks/course/useCreateReview";
+import { toast } from "react-toastify";
 
 export default function CourseRating() {
+  const { courseId } = useParams();
   const { ratingOpen, setRatingOpen } = useOutletContext();
   const [rating, setRating] = useState(0);
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
+  const { mutate, isPending } = useCreateReview();
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!rating) {
       setError("Please select a rating");
       return;
     }
-    console.log({ rating, description });
+    mutate(
+      { courseId, rating, description },
+      {
+        onSuccess: () => {
+          setRatingOpen(false);
+        },
+        onError: (error) => {
+          console.log({ error });
+          toast.error(error.message || "Rating failed");
+        },
+      },
+    );
   };
   if (!ratingOpen) return null;
   return (
@@ -65,9 +80,10 @@ export default function CourseRating() {
 
           <button
             type="submit"
+            disabled={isPending}
             className="w-full rounded-lg bg-orange-500 hover:bg-orange-600 text-white py-2.5 text-sm font-medium transition-colors"
           >
-            Submit review
+            {isPending ? "Submitting..." : " Submit review"}
           </button>
         </div>
       </form>

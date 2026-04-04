@@ -51,7 +51,6 @@ class CourseApi {
       },
     );
     const result = await res.json();
-    console.log(result);
     if (!res.ok) {
       throw new Error(result.message || "Failed to fetch reviews");
     }
@@ -63,6 +62,32 @@ class CourseApi {
     const result = await res.json();
     if (!res.ok) {
       throw new Error(result.message || "Failed to fetch review details");
+    }
+    return result;
+  }
+  async createReview({ courseId, description, rating }) {
+    const res = await fetch(`${this.baseUrl}/${courseId}/reviews`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ description, rating }),
+    });
+    const result = await res.json();
+    console.log(result);
+    if (!res.ok) {
+      throw new Error(result.message || "Failed to create review");
+    }
+    return result;
+  }
+  async getReview(courseId) {
+    const res = await fetch(`${this.baseUrl}/${courseId}/reviews/me`, {
+      credentials: "include",
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.message || "Failed to fetch review");
     }
     return result;
   }
