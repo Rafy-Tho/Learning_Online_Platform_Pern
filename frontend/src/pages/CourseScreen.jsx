@@ -7,7 +7,7 @@ import { Sidebar } from "../components/course/Siderbar";
 export default function CourseScreen() {
   const [showMobileFilter, setShowMobileFilter] = useState(false);
   return (
-    <div className="h-screen bg-slate-100 dark:bg-slate-900 flex flex-col max-w-7xl mx-auto">
+    <div className="h-[calc(100vh-64px)] bg-slate-100 dark:bg-slate-900 flex flex-col max-w-7xl mx-auto">
       {/* Fixed Header Section */}
       <div className="sticky top-0 z-30 bg-slate-100 dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800">
         {/* Search Header */}
@@ -22,7 +22,7 @@ export default function CourseScreen() {
       {/* Main Content Area */}
       <div className="flex flex-1 overflow-hidden">
         {/* Desktop Sidebar - Fixed on desktop, hidden on mobile */}
-        <div className="hidden md:flex w-64 flex-shrink-0 sticky top-0 h-[calc(100vh-180px)] overflow-y-auto">
+        <div className="hidden md:block w-64 shrink-0  sticky top-0 overflow-y-auto h-full  overflow-x-hidden">
           <Sidebar />
         </div>
 

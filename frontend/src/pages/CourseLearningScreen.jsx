@@ -9,7 +9,7 @@ const CourseLearningScreen = () => {
   const location = useLocation();
 
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-100 dark:bg-slate-900">
+    <div className="flex h-[calc(100vh-64px)] overflow-hidden bg-slate-100 dark:bg-slate-900">
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div

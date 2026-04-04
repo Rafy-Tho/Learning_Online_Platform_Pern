@@ -15,12 +15,12 @@ function NextPrevious() {
     if (prevLessonId) navigate(`/courses/${courseId}/lessons/${prevLessonId}`);
   };
   return (
-    <div className="flex justify-between items-center px-4 py-6 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 mt-8">
+    <div className="flex flex-col sm:flex-row justify-between items-center gap-4 px-4 py-6 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 mt-8">
       <button
         onClick={goToPrevPage}
         disabled={!prevLessonId}
         className={`
-                  flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-200
+                  flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-200 w-full sm:w-auto justify-center
                   ${
                     prevLessonId
                       ? "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600"
@@ -44,7 +44,7 @@ function NextPrevious() {
         Previous
       </button>
 
-      <div className="text-sm text-slate-500 dark:text-slate-400">
+      <div className="text-sm text-slate-500 dark:text-slate-400 font-medium px-3 py-1 bg-slate-50 dark:bg-slate-700/50 rounded-full sm:bg-transparent sm:dark:bg-transparent">
         Lesson {currentLessonIndex + 1} of {totalLessons}
       </div>
 
@@ -52,10 +52,10 @@ function NextPrevious() {
         onClick={goToNextPage}
         disabled={!nextLessonId}
         className={`
-                  flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-200
+                  flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-200 w-full sm:w-auto justify-center
                   ${
                     nextLessonId
-                      ? "bg-orange-500 text-white hover:bg-orange-600"
+                      ? "bg-orange-500 text-white hover:bg-orange-600 active:bg-orange-700"
                       : "bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-600 cursor-not-allowed"
                   }
                 `}
