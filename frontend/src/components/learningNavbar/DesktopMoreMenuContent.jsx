@@ -4,14 +4,13 @@ import ThemeSelector from "../ThemSelector";
 /**
  * Desktop more menu content
  */
-function DesktopMoreMenuContent({ moreMenuId, setMoreMenuOpen }) {
+function DesktopMoreMenuContent({ moreMenuId }) {
   return (
     <div
       id={moreMenuId}
       role="menu"
       aria-labelledby={`${moreMenuId}-trigger`}
       className="absolute right-0 top-full z-50 mt-2 min-w-[20rem] origin-top-right animate-in slide-in-from-top-2 rounded-xl border border-slate-200 bg-white p-1 shadow-xl ring-1 ring-black/5 dark:border-slate-600 dark:bg-slate-800 dark:ring-white/10"
-      onClick={() => setMoreMenuOpen(false)}
     >
       <div className="border-b border-slate-100 px-2 pb-2 pt-1 dark:border-slate-700">
         <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
