@@ -15,6 +15,7 @@ import ResetPasswordFlow from "./pages/ResetPasswordFlow";
 import Signup from "./pages/Signup";
 import NotFoundPage from "./ui/NotFoundPage";
 import Testing from "./pages/Testing";
+import Quiz from "./components/courseLearning/quiz/Quiz";
 
 function App() {
   return (
@@ -37,7 +38,10 @@ function App() {
         <Route path="/courses/:courseId/lessons" element={<LearningLayout />}>
           <Route element={<CourseLearningScreen />}>
             <Route index element={<RedirectToFirstLesson />} />
-            <Route path=":lessonId" element={<LessonContent />} />
+            <Route path=":lessonId">
+              <Route index element={<LessonContent />} />
+              <Route path="quiz" element={<Quiz />} />
+            </Route>
           </Route>
         </Route>
         {/* Not Found Page */}

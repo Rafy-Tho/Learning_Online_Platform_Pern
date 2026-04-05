@@ -29,6 +29,20 @@ class LessonApi {
     }
     return result;
   }
+
+  async getQuizzes(id) {
+    const res = await fetch(`${this.baseUrl}/${id}/questions`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.message || "Failed to fetch quizzes");
+    }
+    return result;
+  }
 }
 const lessonApi = new LessonApi();
 export default lessonApi;

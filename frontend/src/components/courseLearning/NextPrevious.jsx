@@ -4,15 +4,26 @@ import { useLessonNavigation } from "../../hooks/course/useLessonNavigation";
 function NextPrevious() {
   const { courseId } = useParams();
   const navigate = useNavigate();
-  const { currentLessonIndex, totalLessons, prevLessonId, nextLessonId } =
-    useLessonNavigation();
-
+  const {
+    currentLessonIndex,
+    totalLessons,
+    prevLessonId,
+    nextLessonId,
+    isPrevQuiz,
+    isNextQuiz,
+  } = useLessonNavigation();
   const goToNextPage = () => {
-    if (nextLessonId) navigate(`/courses/${courseId}/lessons/${nextLessonId}`);
+    if (!nextLessonId) return;
+    if (isNextQuiz)
+      navigate(`/courses/${courseId}/lessons/${nextLessonId}/quiz`);
+    else navigate(`/courses/${courseId}/lessons/${nextLessonId}`);
   };
 
   const goToPrevPage = () => {
-    if (prevLessonId) navigate(`/courses/${courseId}/lessons/${prevLessonId}`);
+    if (!prevLessonId) return;
+    if (isPrevQuiz)
+      navigate(`/courses/${courseId}/lessons/${prevLessonId}/quiz`);
+    else navigate(`/courses/${courseId}/lessons/${prevLessonId}`);
   };
   return (
     <div className="flex flex-col sm:flex-row justify-between items-center gap-4 px-4 py-6 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 mt-8">
