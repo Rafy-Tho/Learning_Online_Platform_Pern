@@ -11,11 +11,11 @@ import {
   updateLesson,
 } from "../controllers/lessonControllers.js";
 import lessonContentRoute from "./lessonContentRoute.js";
-
+import questionRoute from "./questionRoute.js";
 const lessonRoute = express.Router({ mergeParams: true });
 
 lessonRoute.use("/:id/contents", lessonContentRoute);
-
+lessonRoute.use("/:id/questions", questionRoute);
 lessonRoute
   .route("/")
   .post(

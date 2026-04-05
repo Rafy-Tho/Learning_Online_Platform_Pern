@@ -116,6 +116,29 @@ class LessonRepository {
     const result = await pgPool.query(query, values);
     return result.rows[0];
   }
+
+  async getQuestions(lessonId) {
+    const query = `SELECT 
+  q.id,
+  q.question,
+  q.explanation,
+  q.position,
+  json_agg(
+    json_build_object(
+      'text', qo.text,
+      'is_correct', qo.is_correct,
+      'position', qo.position
+    ) ORDER BY qo.position
+  ) AS options
+  FROM quizzes q
+  JOIN quiz_options qo ON qo.quiz_id = q.id
+  WHERE q.lesson_id = $1
+  GROUP BY q.id
+  ORDER BY q.position;`;
+    const values = [lessonId];
+    const result = await pgPool.query(query, values);
+    return result.rows;
+  }
 }
 const Lesson = new LessonRepository();
 export default Lesson;

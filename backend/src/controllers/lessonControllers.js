@@ -110,3 +110,21 @@ export const getFirstLesson = asyncHandler(async (req, res, next) => {
     data: firstLesson,
   });
 });
+// @desc Get questions for a lesson
+// @route GET /api/v1/lessons/:id/questions
+// @access Public
+export const getQuestions = asyncHandler(async (req, res, next) => {
+  const lessonId = req.params.id;
+  const lesson = await Lesson.findById(lessonId);
+  if (!lesson)
+    return next(new ApiError(StatusCode.NOT_FOUND, "Lesson not found"));
+  const questions = await Lesson.getQuestions(lessonId);
+  if (!questions)
+    return next(new ApiError(StatusCode.NOT_FOUND, "Questions not found"));
+  res.status(StatusCode.OK).json({
+    success: true,
+    statusCode: StatusCode.OK,
+    message: "Questions retrieved successfully",
+    data: questions,
+  });
+});
