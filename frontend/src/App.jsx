@@ -2,6 +2,9 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AppLayout from "./components/AppLayout";
 import LearningLayout from "./components/LearningLayout";
 import LessonContent from "./components/courseLearning/LessonContent";
+import Quiz from "./components/courseLearning/quiz/Quiz";
+import IsAuthenticate from "./components/redirectRoutes/IsAuthenticate";
+import ProtectRoute from "./components/redirectRoutes/ProtectRoute";
 import RedirectToFirstLesson from "./components/redirectRoutes/RedirectToFirstLesson";
 import Coaching from "./pages/Coaching";
 import Community from "./pages/Community";
@@ -13,9 +16,8 @@ import LearningDashboard from "./pages/LearningDashboard";
 import Login from "./pages/Login";
 import ResetPasswordFlow from "./pages/ResetPasswordFlow";
 import Signup from "./pages/Signup";
-import NotFoundPage from "./ui/NotFoundPage";
 import Testing from "./pages/Testing";
-import Quiz from "./components/courseLearning/quiz/Quiz";
+import NotFoundPage from "./ui/NotFoundPage";
 
 function App() {
   return (
@@ -23,24 +25,33 @@ function App() {
       <Routes>
         {/* App Layout */}
         <Route path="/" element={<AppLayout />}>
-          <Route index element={<Home />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/reset-password" element={<ResetPasswordFlow />} />
+          {/* Login and Signup */}
+          <Route element={<IsAuthenticate />}>
+            <Route index element={<Home />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/reset-password" element={<ResetPasswordFlow />} />
+          </Route>
+          {/* Learning Dashboard */}
+          <Route element={<ProtectRoute />}>
+            <Route path="/learning-dashboard" element={<LearningDashboard />} />
+          </Route>
+          {/* Courses */}
           <Route path="/courses" element={<CoursePage />} />
           <Route path="/courses/:courseId" element={<CourseDetailScreen />} />
           <Route path="/testing" element={<Testing />} />
-          <Route path="/learning-dashboard" element={<LearningDashboard />} />
           <Route path="/community" element={<Community />} />
           <Route path="/coaching" element={<Coaching />} />
         </Route>
         {/* Learning Layout */}
-        <Route path="/courses/:courseId/lessons" element={<LearningLayout />}>
-          <Route element={<CourseLearningScreen />}>
-            <Route index element={<RedirectToFirstLesson />} />
-            <Route path=":lessonId">
-              <Route index element={<LessonContent />} />
-              <Route path="quiz" element={<Quiz />} />
+        <Route element={<ProtectRoute />}>
+          <Route path="/courses/:courseId/lessons" element={<LearningLayout />}>
+            <Route element={<CourseLearningScreen />}>
+              <Route index element={<RedirectToFirstLesson />} />
+              <Route path=":lessonId">
+                <Route index element={<LessonContent />} />
+                <Route path="quiz" element={<Quiz />} />
+              </Route>
             </Route>
           </Route>
         </Route>
