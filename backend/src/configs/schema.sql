@@ -159,13 +159,13 @@ EXECUTE FUNCTION set_updated_at();
 CREATE TABLE modules(
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
-  position INTEGER ,
+  position INTEGER NOT NULL,
   name VARCHAR(255) NOT NULL,
   description TEXT,
-  icon_name VARCHAR(255),
   status content_status DEFAULT 'DRAFT' NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT unique_modules_course_position UNIQUE(course_id, position)
 );
 
 CREATE INDEX idx_modules_course ON modules(course_id);
@@ -181,12 +181,13 @@ EXECUTE FUNCTION set_updated_at();
 CREATE TABLE chapters(
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   module_id UUID NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
-  position INTEGER ,
+  position INTEGER NOT NULL,
   name VARCHAR(255) NOT NULL,
   description TEXT,
   status content_status DEFAULT 'DRAFT' NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT unique_chapters_module_position UNIQUE(module_id, position)
 );
 CREATE INDEX idx_chapters_module ON chapters(module_id);
 CREATE TRIGGER trg_chapters_updated_at
@@ -201,15 +202,16 @@ EXECUTE FUNCTION set_updated_at();
 CREATE TABLE lessons(
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   chapter_id UUID NOT NULL REFERENCES chapters(id) ON DELETE CASCADE,
-  position INTEGER ,
+  position INTEGER NOT NULL,
   name VARCHAR(255) NOT NULL,
   description TEXT,
   type lesson_type NOT NULL,
   status content_status DEFAULT 'DRAFT' NOT NULL,
-  xp_points INTEGER DEFAULT 5 CHECK (xp_points >= 0),
-  duration_minutes INTEGER CHECK (duration_minutes >= 0),
+  xp_points INTEGER DEFAULT 5 CHECK (xp_points >= 0) NOT NULL,
+  duration_minutes INTEGER DEFAULT 0 CHECK (duration_minutes >= 0) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT unique_lessons_chapter_position UNIQUE(chapter_id, position)
 );
 CREATE INDEX idx_lessons_chapter ON lessons(chapter_id);
 CREATE TRIGGER trg_lessons_updated_at
@@ -223,11 +225,12 @@ FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 CREATE TABLE lesson_content(
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   lesson_id UUID NOT NULL REFERENCES lessons(id) ON DELETE CASCADE,
-  position INTEGER,
+  position INTEGER  NOT NULL,
   name VARCHAR(255) NOT NULL,
   content TEXT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT unique_lesson_content_lesson_position UNIQUE(lesson_id, position)
 );
 CREATE INDEX idx_lesson_content_lesson ON lesson_content(lesson_id);
 CREATE TRIGGER trg_lesson_content_updated_at
@@ -243,9 +246,10 @@ CREATE TABLE quizzes(
   lesson_id UUID UNIQUE NOT NULL REFERENCES lessons(id) ON DELETE CASCADE,
   question TEXT NOT NULL,
   explanation TEXT,
-  position INTEGER,
+  position INTEGER NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT unique_quizzes_lesson_position UNIQUE(lesson_id, position)
 );
 
 CREATE INDEX idx_quizzes_lesson ON quizzes(lesson_id);
@@ -263,37 +267,16 @@ CREATE TABLE quiz_options(
   quiz_id UUID NOT NULL REFERENCES quizzes(id) ON DELETE CASCADE,
   text TEXT NOT NULL,
   is_correct BOOLEAN DEFAULT FALSE,
-  position INTEGER,
+  position INTEGER NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT unique_quiz_options_quiz_position UNIQUE(quiz_id, position)
 );
 
-CREATE TABLE quiz_attempts (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  quiz_id UUID NOT NULL REFERENCES quizzes(id) ON DELETE CASCADE,
-  score INTEGER DEFAULT 0,
-  passed BOOLEAN DEFAULT FALSE,
-  started_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  completed_at TIMESTAMP WITH TIME ZONE,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TRIGGER trg_quiz_attempts_updated_at
-BEFORE UPDATE ON quiz_attempts
+CREATE INDEX idx_quiz_options_quiz ON quiz_options(quiz_id);
+CREATE TRIGGER trg_quiz_options_updated_at
+BEFORE UPDATE ON quiz_options
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
-
-CREATE TABLE quiz_attempt_answers(
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  attempt_id UUID NOT NULL REFERENCES quiz_attempts(id) ON DELETE CASCADE,
-  quiz_id UUID NOT NULL REFERENCES quizzes(id) ON DELETE CASCADE,
-  selected_option_id UUID NOT NULL REFERENCES quiz_options(id) ON DELETE CASCADE,
-  is_correct BOOLEAN DEFAULT FALSE,
-  answered_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE INDEX idx_quiz_attempt_answers_attempt ON quiz_attempt_answers(attempt_id);
-CREATE INDEX idx_quiz_attempt_answers_quiz ON quiz_attempt_answers(quiz_id);
 
 -- =========================
 -- ENROLLMENTS
@@ -506,28 +489,6 @@ CREATE TABLE review_reports(
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT unique_user_report UNIQUE(user_id, review_id)
 );
-
--- =========================
--- LEARNING STATISTICS
--- =========================
-
-CREATE TABLE learn_statistics(
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID UNIQUE NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  current_streak INTEGER DEFAULT 0,
-  longest_streak INTEGER DEFAULT 0,
-  total_xp INTEGER DEFAULT 0,
-  total_lessons_completed INTEGER DEFAULT 0,
-  total_time_spent_minutes INTEGER DEFAULT 0,
-  last_learning_date DATE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TRIGGER trg_learn_statistics_updated_at
-  BEFORE UPDATE ON learn_statistics
-  FOR EACH ROW EXECUTE FUNCTION set_updated_at();
-
 -- =========================
 -- LEARNING PROGRESS
 -- =========================
@@ -536,26 +497,9 @@ CREATE TABLE learn_progress(
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
-  
-  -- current position tracking
-  current_module_id UUID REFERENCES modules(id) ON DELETE SET NULL,
-  current_chapter_id UUID REFERENCES chapters(id) ON DELETE SET NULL,
-  current_lesson_id UUID REFERENCES lessons(id) ON DELETE SET NULL,
-
-  -- progress tracking
-  completed_lessons_count INTEGER DEFAULT 0,
-  total_lessons_count INTEGER DEFAULT 0,
-  progress_percentage NUMERIC(5,2) DEFAULT 0,
-  total_xp_earned INTEGER DEFAULT 0,
-  time_spent_minutes INTEGER DEFAULT 0,
-
-  -- last activity tracking
-  last_lesson_completed_at TIMESTAMP WITH TIME ZONE,
-  last_activity_at TIMESTAMP WITH TIME ZONE,
-
+  lesson_id UUID REFERENCES lessons(id) ON DELETE SET NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-
   CONSTRAINT unique_user_course_progress UNIQUE(user_id, course_id)
 );
 
@@ -573,8 +517,6 @@ CREATE TABLE lesson_completion (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
-    module_id UUID NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
-    chapter_id UUID NOT NULL REFERENCES chapters(id) ON DELETE CASCADE,
     lesson_id UUID NOT NULL REFERENCES lessons(id) ON DELETE CASCADE,
     completed_at TIMESTAMP NOT NULL DEFAULT NOW(),
     time_spent_minutes INTEGER DEFAULT 0,
@@ -582,34 +524,8 @@ CREATE TABLE lesson_completion (
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     CONSTRAINT unique_user_lesson_completion UNIQUE(user_id, lesson_id) 
 );
-
 CREATE INDEX idx_lesson_completion_user ON lesson_completion(user_id);
 CREATE INDEX idx_lesson_completion_lesson ON lesson_completion(lesson_id);
-
--- =========================
--- LEARNER ACTIVITY
--- =========================
-
-CREATE TABLE learner_activity(
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  lesson_id UUID NOT NULL REFERENCES lessons(id) ON DELETE CASCADE,
-  learning_date DATE NOT NULL,
-  lesson_completed BOOLEAN DEFAULT FALSE,
-  time_spent_minutes INTEGER DEFAULT 0,
-  xp_earned INTEGER DEFAULT 0,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  
-  CONSTRAINT unique_user_activity UNIQUE(user_id, lesson_id, learning_date)
-);
-
-CREATE INDEX idx_learner_activity_user ON learner_activity(user_id);
-CREATE INDEX idx_learner_activity_date ON learner_activity(learning_date);
-
-CREATE TRIGGER trg_learner_activity_updated_at
-  BEFORE UPDATE ON learner_activity
-  FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 -- =========================
 -- CERTIFICATES
