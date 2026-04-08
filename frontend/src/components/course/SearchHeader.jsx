@@ -3,8 +3,11 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 export function SearchHeader({ setShowMobileFilter, showMobileFilter }) {
-  const [searchQuery, setSearchQuery] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState(
+    () => searchParams.get("search") || "",
+  );
+
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim() === "") return;

@@ -74,7 +74,7 @@ class LessonApi {
     }
     return result;
   }
-  async getCompletedLessons(id) {
+  async getCompletedLesson(id) {
     const res = await fetch(`${this.baseUrl}/${id}/completions`, {
       method: "GET",
       headers: {

@@ -12,15 +12,6 @@ import DiscoverFeatures from "../components/LearningDashBoard/DiscoverFeatures";
 
 const tabs = ["Home", "Recently Viewed", "In Progress", "Saved", "Completed"];
 
-const suggestions = [
-  "System Design",
-  "Interview Prep",
-  "Agentic System Design",
-  "Gen AI Essentials",
-  "LLM Essentials",
-  "MCP",
-];
-
 const recommended = [
   {
     title: "Distributed Systems for Practitioners",
@@ -189,7 +180,7 @@ export default function LearningDashboard() {
     <div className="min-h-screen bg-slate-100 text-slate-900 dark:bg-slate-900 dark:text-slate-100 max-w-7xl mx-auto">
       <div className="px-4 py-8 sm:px-6">
         <Header />
-        <PromptBox suggestions={suggestions} />
+        <PromptBox />
         <Tabs tabs={tabs} activeTab={activeTab} onTabChange={handleTabChange} />
         <RecentlyViewed courses={recentlyViewed.slice(0, 4)} />
         <RecommendedSection courses={recommended} />
