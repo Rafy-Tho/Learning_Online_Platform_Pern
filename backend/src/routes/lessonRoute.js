@@ -12,10 +12,13 @@ import {
 } from "../controllers/lessonControllers.js";
 import lessonContentRoute from "./lessonContentRoute.js";
 import questionRoute from "./questionRoute.js";
+import lessonCompletionRoute from "./lessonCompletionRoute.js";
 const lessonRoute = express.Router({ mergeParams: true });
 
 lessonRoute.use("/:id/contents", lessonContentRoute);
 lessonRoute.use("/:id/questions", questionRoute);
+lessonRoute.use("/:id/completions", lessonCompletionRoute);
+
 lessonRoute
   .route("/")
   .post(

@@ -139,6 +139,16 @@ class LessonRepository {
     const result = await pgPool.query(query, values);
     return result.rows;
   }
+  async getFirstLessonId(courseId) {
+    const query = `SELECT id FROM lessons
+      WHERE course_id = $1
+      ORDER BY position
+      LIMIT 1
+    `;
+    const values = [courseId];
+    const result = await pgPool.query(query, values);
+    return result.rows[0].id;
+  }
 }
 const Lesson = new LessonRepository();
 export default Lesson;

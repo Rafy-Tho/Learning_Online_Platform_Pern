@@ -45,7 +45,6 @@ export const createCourse = asyncHandler(async (req, res, next) => {
 export const getAllCourses = asyncHandler(async (req, res, next) => {
   const { data, pagination } = await Course.getAllCourses(req.query);
   const query = req.query;
-  console.log(query);
   res.status(200).json({
     success: true,
     statusCode: StatusCode.OK,

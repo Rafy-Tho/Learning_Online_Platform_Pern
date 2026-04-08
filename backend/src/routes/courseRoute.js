@@ -16,6 +16,8 @@ import courseObjectiveRoute from "./courseObjectiveRoute.js";
 import lessonRoute from "./lessonRoute.js";
 import moduleRoute from "./moduleRoute.js";
 import reviewRoute from "./reviewRoute.js";
+import enrollmentRoute from "./enrollmentRoute.js";
+import learningProgressRoute from "./learningProgressRoute.js";
 
 const courseRoute = express.Router();
 
@@ -23,6 +25,8 @@ courseRoute.use("/:id/modules", moduleRoute);
 courseRoute.use("/:id/objectives", courseObjectiveRoute);
 courseRoute.use("/:id/lessons", lessonRoute);
 courseRoute.use("/:id/reviews", reviewRoute);
+courseRoute.use("/:id/enrollments", enrollmentRoute);
+courseRoute.use("/:id/progresses", learningProgressRoute);
 // @desc Create a course
 courseRoute
   .route("/")
