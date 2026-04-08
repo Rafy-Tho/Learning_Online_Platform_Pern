@@ -139,7 +139,6 @@ class LessonRepository {
     const result = await pgPool.query(query, values);
     return result.rows;
   }
-
 }
 const Lesson = new LessonRepository();
 export default Lesson;

@@ -30,7 +30,3 @@ export const courseObjectiveValidator = checkSchema({
 export const learningProgressValidator = checkSchema({
   lessonId: uuidValidator("Lesson ID"),
 });
-
-export const lessonCompletionValidator = checkSchema({
-  courseId: uuidValidator("Course ID"),
-});

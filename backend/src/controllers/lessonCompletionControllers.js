@@ -5,17 +5,17 @@ import Lesson from "../repositories/LessonRepository.js";
 import ApiError from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
-// @desc Update lesson completion
+// @desc create lesson completion
 // @route post /api/v1/lessons/:id/completions
-export const lessonCompletion = asyncHandler(async (req, res, next) => {
-  const lessonId = req.body.lessonId;
+export const createLessonCompletion = asyncHandler(async (req, res, next) => {
+  const lessonId = req.params.id;
   const userId = req.session.user.id;
-  const courseId = req.body.courseId;
-  const course = await Course.findById({ courseId });
-  if (!course) {
+  // check if lesson exists
+  const courseId = await Course.getCourseIdByLessonId(lessonId);
+  if (!courseId)
     return next(new ApiError(StatusCode.NOT_FOUND, "Course not found"));
-  }
-  const lesson = await Lesson.findById({ lessonId });
+  // check if lesson exists
+  const lesson = await Lesson.findById(lessonId);
   if (!lesson) {
     return next(new ApiError(StatusCode.NOT_FOUND, "Lesson not found"));
   }
@@ -32,5 +32,32 @@ export const lessonCompletion = asyncHandler(async (req, res, next) => {
     statusCode: StatusCode.CREATED,
     message: "Lesson completion created successfully",
     data: completion,
+  });
+});
+
+export const getLessonCompletion = asyncHandler(async (req, res, next) => {
+  const lessonId = req.params.id;
+  const userId = req.session.user.id;
+  // check if lesson exists
+  const courseId = await Course.getCourseIdByLessonId(lessonId);
+  if (!courseId)
+    return next(new ApiError(StatusCode.NOT_FOUND, "Course not found"));
+  // check if lesson exists
+  const lesson = await Lesson.findById(lessonId);
+  if (!lesson) {
+    return next(new ApiError(StatusCode.NOT_FOUND, "Lesson not found"));
+  }
+
+  const completion = await LessonCompletion.getCompletion({
+    lessonId,
+    userId,
+    courseId,
+  });
+
+  res.status(StatusCode.OK).json({
+    success: true,
+    statusCode: StatusCode.OK,
+    message: "Lesson completion fetched successfully",
+    data: completion ? completion : null,
   });
 });

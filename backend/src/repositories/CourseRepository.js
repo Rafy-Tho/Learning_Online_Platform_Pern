@@ -301,6 +301,21 @@ class CourseRepository {
     const result = await pgPool.query(query, [courseId]);
     return result.rows[0];
   }
+  async getCourseIdByLessonId(lessonId) {
+    const result = await pgPool.query(
+      `
+      SELECT c.id AS course_id
+      FROM lessons l
+      JOIN chapters ch ON ch.id = l.chapter_id
+      JOIN modules m ON m.id = ch.module_id
+      JOIN courses c ON c.id = m.course_id
+      WHERE l.id = $1
+      `,
+      [lessonId],
+    );
+
+    return result.rows[0]?.course_id || null;
+  }
 }
 const Course = new CourseRepository();
 

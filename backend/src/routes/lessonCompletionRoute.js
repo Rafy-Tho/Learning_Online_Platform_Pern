@@ -1,16 +1,13 @@
 import express from "express";
+import {
+  createLessonCompletion,
+  getLessonCompletion,
+} from "../controllers/lessonCompletionControllers.js";
 import requireAuth from "../middlewares/requireAuth.js";
-import { lessonCompletionValidator } from "../validators/courseValidators.js";
-import { validateResult } from "../middlewares/validateResult.js";
-import { lessonCompletion } from "../controllers/lessonCompletionControllers.js";
 const lessonCompletionRoute = express.Router({ mergeParams: true });
 
 lessonCompletionRoute
   .route("/")
-  .post(
-    requireAuth,
-    lessonCompletionValidator,
-    validateResult,
-    lessonCompletion,
-  );
+  .post(requireAuth, createLessonCompletion)
+  .get(requireAuth, getLessonCompletion);
 export default lessonCompletionRoute;
