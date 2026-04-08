@@ -7,6 +7,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 
 // @desc create lesson completion
 // @route post /api/v1/lessons/:id/completions
+// @access private
 export const createLessonCompletion = asyncHandler(async (req, res, next) => {
   const lessonId = req.params.id;
   const userId = req.session.user.id;
@@ -16,6 +17,7 @@ export const createLessonCompletion = asyncHandler(async (req, res, next) => {
     return next(new ApiError(StatusCode.NOT_FOUND, "Course not found"));
   // check if lesson exists
   const lesson = await Lesson.findById(lessonId);
+  console.log(lesson);
   if (!lesson) {
     return next(new ApiError(StatusCode.NOT_FOUND, "Lesson not found"));
   }
@@ -23,7 +25,7 @@ export const createLessonCompletion = asyncHandler(async (req, res, next) => {
     lessonId,
     userId,
     courseId,
-    totalSpentMinutes: lesson.duration_minutes,
+    timeSpentMinutes: lesson.duration_minutes,
     xpEarned: lesson.xp_points,
   });
 
@@ -34,7 +36,9 @@ export const createLessonCompletion = asyncHandler(async (req, res, next) => {
     data: completion,
   });
 });
-
+// @desc create lesson completion
+// @route post /api/v1/lessons/:id/completions
+// @access private
 export const getLessonCompletion = asyncHandler(async (req, res, next) => {
   const lessonId = req.params.id;
   const userId = req.session.user.id;
