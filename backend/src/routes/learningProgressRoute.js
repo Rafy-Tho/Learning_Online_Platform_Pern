@@ -1,6 +1,10 @@
 import express from "express";
 import requireAuth from "../middlewares/requireAuth.js";
-import { learningProgress } from "../controllers/learningProgressControllers.js";
+import {
+  getLearningProgress,
+  learningProgress,
+  updateLearningProgress,
+} from "../controllers/learningProgressControllers.js";
 import { validateResult } from "../middlewares/validateResult.js";
 import { learningProgressValidator } from "../validators/courseValidators.js";
 
@@ -8,11 +12,13 @@ const learningProgressRoute = express.Router({ mergeParams: true });
 
 learningProgressRoute
   .route("/")
-  .post(
+  .post(requireAuth, learningProgress)
+  .get(requireAuth, getLearningProgress)
+  .patch(
     requireAuth,
     learningProgressValidator,
     validateResult,
-    learningProgress,
+    updateLearningProgress,
   );
 
 export default learningProgressRoute;
