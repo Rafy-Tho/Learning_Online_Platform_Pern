@@ -37,7 +37,7 @@ export const enrollCourse = asyncHandler(async (req, res, next) => {
   await LearningProgress.create({
     courseId,
     userId,
-    lessonId: firstLessonId,
+    lessonId: firstLessonId.id,
   });
 
   res.status(200).json({
