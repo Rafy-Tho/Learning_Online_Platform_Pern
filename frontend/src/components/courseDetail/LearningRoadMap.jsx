@@ -18,7 +18,6 @@ export default function LearningRoadmap({ sectionRef }) {
   const [expandedSections, setExpandedSections] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const { data: progress } = useGetCourseProgress();
-  console.log(progress);
   const { mutate } = useCreateCourseProgress();
   const { data, isPending, error } = useGetCourseLearningData();
   const course = data?.data || {};

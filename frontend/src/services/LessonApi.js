@@ -9,6 +9,7 @@ class LessonApi {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
     });
     const result = await res.json();
     if (!res.ok) {
@@ -22,6 +23,7 @@ class LessonApi {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
     });
     const result = await res.json();
     if (!res.ok) {
@@ -36,6 +38,7 @@ class LessonApi {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
     });
     const result = await res.json();
     if (!res.ok) {
@@ -49,6 +52,7 @@ class LessonApi {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
     });
     const result = await res.json();
     if (!res.ok) {
@@ -57,15 +61,30 @@ class LessonApi {
     return result;
   }
   async completeLesson(id) {
-    const res = await fetch(`${this.baseUrl}/${id}/completes`, {
+    const res = await fetch(`${this.baseUrl}/${id}/completions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
     });
     const result = await res.json();
     if (!res.ok) {
       throw new Error(result.message || "Failed to complete lesson");
+    }
+    return result;
+  }
+  async getCompletedLessons(id) {
+    const res = await fetch(`${this.baseUrl}/${id}/completions`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.message || "Failed to fetch completed lessons");
     }
     return result;
   }

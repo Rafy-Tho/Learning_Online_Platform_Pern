@@ -1,9 +1,13 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useLessonNavigation } from "../../hooks/course/useLessonNavigation";
+import useCreateCompletedLesson from "../../hooks/course/useCreateCompletedLesson";
+import { useGetCompletedLesson } from "../../hooks/course/useGetCompletedLesson";
 
 function NextPrevious() {
   const { courseId } = useParams();
   const navigate = useNavigate();
+  const { mutate: completeLesson } = useCreateCompletedLesson();
+  const { data: completedLesson } = useGetCompletedLesson();
   const {
     currentLessonIndex,
     totalLessons,
@@ -12,11 +16,17 @@ function NextPrevious() {
     isPrevQuiz,
     isNextQuiz,
   } = useLessonNavigation();
+
+  function handleCompleteLesson() {
+    if (completedLesson?.data) return;
+    completeLesson();
+  }
   const goToNextPage = () => {
     if (!nextLessonId) return;
     if (isNextQuiz)
       navigate(`/courses/${courseId}/lessons/${nextLessonId}/quiz`);
     else navigate(`/courses/${courseId}/lessons/${nextLessonId}`);
+    handleCompleteLesson();
   };
 
   const goToPrevPage = () => {
