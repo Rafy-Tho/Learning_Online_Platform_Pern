@@ -3,7 +3,7 @@ import pgPool from "../configs/database.js";
 class LearningProgressRepository {
   async create({ courseId, userId, lessonId = null }) {
     const result = await pgPool.query(
-      `INSERT INTO learning_progress 
+      `INSERT INTO learn_progress 
       (course_id, user_id, lesson_id) 
       VALUES ($1, $2, $3)`,
       [courseId, userId, lessonId],
@@ -12,7 +12,7 @@ class LearningProgressRepository {
   }
   async update({ courseId, userId, lessonId }) {
     const result = await pgPool.query(
-      `UPDATE learning_progress 
+      `UPDATE learn_progress 
       SET lesson_id = $3
       WHERE course_id = $1 AND user_id = $2`,
       [courseId, userId, lessonId],
@@ -21,7 +21,7 @@ class LearningProgressRepository {
   }
   async findOne({ courseId, userId }) {
     const result = await pgPool.query(
-      `SELECT * FROM learning_progress WHERE course_id = $1 AND user_id = $2`,
+      `SELECT * FROM learn_progress WHERE course_id = $1 AND user_id = $2`,
       [courseId, userId],
     );
     return result.rows[0];

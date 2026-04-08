@@ -27,10 +27,6 @@ export const courseObjectiveValidator = checkSchema({
   content: textValidator("Course Objective", false, 500),
 });
 
-export const enrollmentValidator = checkSchema({
-  accessType: EnumValidator("Course Access Type", ACCESS_COURSE_TYPE),
-});
-
 export const learningProgressValidator = checkSchema({
   lessonId: uuidValidator("Lesson ID"),
 });
