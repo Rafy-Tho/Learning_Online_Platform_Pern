@@ -112,6 +112,50 @@ class CourseApi {
     }
     return result;
   }
+  async createCourseProgress(courseId) {
+    const res = await fetch(`${this.baseUrl}/${courseId}/progresses`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.message || "Failed to create course progress");
+    }
+    return result;
+  }
+  async getCourseProgress(courseId) {
+    const res = await fetch(`${this.baseUrl}/${courseId}/progresses`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.message || "Failed to get course progress");
+    }
+    return result;
+  }
+  async updateCourseProgress({ courseId, lessonId }) {
+    const res = await fetch(`${this.baseUrl}/${courseId}/progresses`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ lessonId }),
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.message || "Failed to update course progress");
+    }
+    return result;
+  }
 }
+
 const courseApi = new CourseApi();
 export default courseApi;

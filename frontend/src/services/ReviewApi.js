@@ -16,7 +16,6 @@ class ReviewApi {
       }),
     });
     const result = await response.json();
-    console.log(result);
     if (!response.ok) {
       throw new Error(result.message || "Failed to create helpful vote");
     }
@@ -37,7 +36,6 @@ class ReviewApi {
       }),
     });
     const result = await response.json();
-    console.log(result);
     if (!response.ok) {
       throw new Error(result.message || "Failed to create report");
     }

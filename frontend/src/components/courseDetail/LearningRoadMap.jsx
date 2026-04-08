@@ -12,10 +12,14 @@ import useGetCourseLearningData from "../../hooks/course/useGetCourseLearningDat
 import ErrorMessage from "../../ui/ErrorMessage";
 import SpinnerLoader from "../../ui/SpinnerLoader";
 import { Link } from "react-router-dom";
+import useGetCourseProgress from "../../hooks/course/useGetCourseProgress";
+import useCreateCourseProgress from "../../hooks/course/useCreateCourseProgress";
 export default function LearningRoadmap({ sectionRef }) {
   const [expandedSections, setExpandedSections] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-
+  const { data: progress } = useGetCourseProgress();
+  console.log(progress);
+  const { mutate } = useCreateCourseProgress();
   const { data, isPending, error } = useGetCourseLearningData();
   const course = data?.data || {};
   const modules = useMemo(() => course?.modules || [], [course.modules]);
@@ -55,6 +59,10 @@ export default function LearningRoadmap({ sectionRef }) {
 
     if (allExpanded) setExpandedSections([]);
     else setExpandedSections(target.map((m) => m.id));
+  };
+  const handleProgress = () => {
+    if (progress?.data) return;
+    mutate();
   };
   useEffect(() => {
     if (!searchQuery) return;
@@ -149,6 +157,7 @@ export default function LearningRoadmap({ sectionRef }) {
                   return (
                     <Link
                       key={index}
+                      onClick={handleProgress}
                       to={`/courses/${course.id}/lessons/${lesson.id}`}
                       className="flex items-center gap-3 py-2 text-sm sm:text-base"
                     >
