@@ -1,13 +1,7 @@
 import pgPool from "../configs/database.js";
 
 class AdvancedQuery {
-  constructor({
-    baseQuery,
-    queryString,
-    filterMap = {},
-    sortMap = {},
-    startIndex = 1,
-  }) {
+  constructor({ baseQuery, queryString, filterMap = {}, sortMap = {} }) {
     this.baseQuery = baseQuery;
     this.queryString = queryString;
     this.filterMap = filterMap;
@@ -19,7 +13,6 @@ class AdvancedQuery {
     this.offset = "";
     this.select = "*";
     this.pagination = {};
-    this.paramIndex = startIndex;
   }
 
   // =========================
@@ -35,26 +28,9 @@ class AdvancedQuery {
       const baseField = key.split("[")[0];
       const column = this.filterMap[baseField];
 
-      if (!column) return;
+      if (!column) return; // ignore unknown fields
 
-      const value = queryObj[key];
-
-      // =========================
-      // ✅ HANDLE ARRAY (IN QUERY)
-      // =========================
-      if (Array.isArray(value)) {
-        const placeholders = value.map((v) => {
-          this.values.push(v);
-          return `$${this.paramIndex++}`;
-        });
-
-        this.where.push(`${column} IN (${placeholders.join(", ")})`);
-        return;
-      }
-
-      // =========================
-      // 🔥 OPERATORS (gte, lte)
-      // =========================
+      // operator (gte, lte, etc.)
       if (key.includes("[")) {
         const operator = key.match(/\[(.*)\]/)[1];
 
@@ -67,16 +43,17 @@ class AdvancedQuery {
 
         if (!sqlOp) return;
 
-        this.values.push(value);
-        this.where.push(`${column} ${sqlOp} $${this.paramIndex++}`);
+        this.values.push(queryObj[key]);
+        this.where.push(`${column} ${sqlOp} $${this.values.length}`);
       } else {
-        this.values.push(value);
-        this.where.push(`${column} = $${this.paramIndex++}`);
+        this.values.push(queryObj[key]);
+        this.where.push(`${column} = $${this.values.length}`);
       }
     });
 
     return this;
   }
+
   // =========================
   // 2️⃣ SEARCH (MULTI FIELD)
   // =========================
@@ -86,7 +63,7 @@ class AdvancedQuery {
 
       const conditions = fields.map((field) => {
         this.values.push(value);
-        return `${field} ILIKE $${this.paramIndex++}`;
+        return `${field} ILIKE $${this.values.length}`;
       });
 
       this.where.push(`(${conditions.join(" OR ")})`);
@@ -141,7 +118,7 @@ class AdvancedQuery {
   // =========================
   // 5️⃣ PAGINATION
   // =========================
-  async paginate(extraValues = []) {
+  async paginate() {
     const page = Math.max(1, Number(this.queryString.page) || 1);
     const limit = Math.max(1, Number(this.queryString.limit) || 10);
     const offset = (page - 1) * limit;
@@ -150,12 +127,9 @@ class AdvancedQuery {
       ? `WHERE ${this.where.join(" AND ")}`
       : "";
 
-    // ✅ include extraValues (like userId)
+    // count query
     const countQuery = `SELECT COUNT(*) ${this.baseQuery} ${whereClause}`;
-    const countResult = await pgPool.query(countQuery, [
-      ...extraValues,
-      ...this.values,
-    ]);
+    const countResult = await pgPool.query(countQuery, this.values);
 
     const total = Number(countResult.rows[0].count);
 
@@ -174,6 +148,7 @@ class AdvancedQuery {
 
     return this;
   }
+
   // =========================
   // 🔥 BUILD FINAL QUERY
   // =========================

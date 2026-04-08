@@ -3,14 +3,12 @@ class SessionService {
     return new Promise((resolve, reject) => {
       req.session.regenerate((err) => {
         if (err) return reject(err);
-
         req.session.user = {
           id: user.id,
           name: user.name,
           role: user.role,
           loginAt: new Date(),
           userAgent: req.headers["user-agent"],
-          ip: (req.headers["x-forwarded-for"] || req.ip).split(",")[0].trim(),
         };
         resolve();
       });
