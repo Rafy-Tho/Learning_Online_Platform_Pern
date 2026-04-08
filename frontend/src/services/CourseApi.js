@@ -75,7 +75,6 @@ class CourseApi {
       body: JSON.stringify({ description, rating }),
     });
     const result = await res.json();
-    console.log(result);
     if (!res.ok) {
       throw new Error(result.message || "Failed to create review");
     }
@@ -88,6 +87,17 @@ class CourseApi {
     const result = await res.json();
     if (!res.ok) {
       throw new Error(result.message || "Failed to fetch review");
+    }
+    return result;
+  }
+  async enrollCourse(courseId) {
+    const res = await fetch(`${this.baseUrl}/${courseId}/enrollments`, {
+      method: "POST",
+      credentials: "include",
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.message || "Failed to enroll course");
     }
     return result;
   }
