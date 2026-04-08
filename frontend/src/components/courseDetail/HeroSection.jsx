@@ -6,9 +6,17 @@ import SpinnerLoader from "../../ui/SpinnerLoader";
 import formatMinutes from "../../utils/formatMinutes";
 import formatTimeAgo from "../../utils/formatTimeAgo";
 import RatingStars from "../RatingStars";
+import useEnrollment from "../../hooks/course/useEnrollment";
+import useGetEnrollment from "../../hooks/course/useGetEnrollment";
 
 export default function HeroSection({ scrollToSection }) {
   const { data, isPending, error } = useGetCourseDetails();
+  const { mutate } = useEnrollment();
+  const { data: enrollmentsData } = useGetEnrollment();
+  function handleEnroll() {
+    if (enrollmentsData?.data) return;
+    mutate();
+  }
   if (isPending) return <SpinnerLoader />;
   if (error) return <ErrorMessage message={error.message} />;
   const course = data?.data || {};
@@ -48,6 +56,7 @@ export default function HeroSection({ scrollToSection }) {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
             <Link
+              onClick={handleEnroll}
               to={`/courses/${course?.id}/lessons`}
               className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white px-8 py-3 rounded-lg font-medium transition-colors block"
             >

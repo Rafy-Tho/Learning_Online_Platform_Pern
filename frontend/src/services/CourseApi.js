@@ -101,6 +101,17 @@ class CourseApi {
     }
     return result;
   }
+  async getEnrollment(courseId) {
+    const res = await fetch(`${this.baseUrl}/${courseId}/enrollments`, {
+      method: "GET",
+      credentials: "include",
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.message || "Failed to get enrollment");
+    }
+    return result;
+  }
 }
 const courseApi = new CourseApi();
 export default courseApi;
