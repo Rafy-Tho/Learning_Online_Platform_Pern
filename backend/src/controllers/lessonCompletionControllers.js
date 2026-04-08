@@ -17,7 +17,6 @@ export const createLessonCompletion = asyncHandler(async (req, res, next) => {
     return next(new ApiError(StatusCode.NOT_FOUND, "Course not found"));
   // check if lesson exists
   const lesson = await Lesson.findById(lessonId);
-  console.log(lesson);
   if (!lesson) {
     return next(new ApiError(StatusCode.NOT_FOUND, "Lesson not found"));
   }
