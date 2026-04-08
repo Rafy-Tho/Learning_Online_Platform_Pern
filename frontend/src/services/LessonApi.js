@@ -43,6 +43,32 @@ class LessonApi {
     }
     return result;
   }
+  async progressLesson(id) {
+    const res = await fetch(`${this.baseUrl}/${id}/progresses`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.message || "Failed to progress lesson");
+    }
+    return result;
+  }
+  async completeLesson(id) {
+    const res = await fetch(`${this.baseUrl}/${id}/completes`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.message || "Failed to complete lesson");
+    }
+    return result;
+  }
 }
 const lessonApi = new LessonApi();
 export default lessonApi;

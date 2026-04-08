@@ -15,7 +15,7 @@ function LearningLayout() {
         setSidebarOpen(true);
       }
     };
-
+1
     checkScreenSize();
     window.addEventListener("resize", checkScreenSize);
 
