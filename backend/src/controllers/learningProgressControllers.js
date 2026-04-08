@@ -10,7 +10,7 @@ export const createLearningProgress = asyncHandler(async (req, res, next) => {
   const courseId = req.params.id;
   const userId = req.session.user.id;
   const firstLessonId = await Lesson.getFirstLesson(courseId);
-  const course = await Course.findById({ courseId });
+  const course = await Course.findById(courseId);
   // check if course exists
   if (!course) {
     return next(new ApiError(StatusCode.NOT_FOUND, "Course not found"));
@@ -49,7 +49,7 @@ export const updateLearningProgress = asyncHandler(async (req, res, next) => {
   const userId = req.session.user.id;
   const lessonId = req.body.lessonId;
   // check if course exists
-  const course = await Course.findById({ courseId });
+  const course = await Course.findById(courseId);
   if (!course) {
     return next(new ApiError(StatusCode.NOT_FOUND, "Course not found"));
   }
@@ -79,11 +79,10 @@ export const getLearningProgress = asyncHandler(async (req, res, next) => {
   const courseId = req.params.id;
   const userId = req.session.user.id;
   // check if course exists
-  const course = await Course.findById({ courseId });
+  const course = await Course.findById(courseId);
   if (!course) {
     return next(new ApiError(StatusCode.NOT_FOUND, "Course not found"));
   }
-
   const progress = await LearningProgress.findOne({ courseId, userId });
 
   res.status(StatusCode.OK).json({
