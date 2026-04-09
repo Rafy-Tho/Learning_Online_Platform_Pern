@@ -6,6 +6,7 @@ import {
   getAllCourses,
   getCourseDetails,
   getCourseLearningData,
+  getRecentlyViewedCourses,
   updateCourse,
 } from "../controllers/courseControllers.js";
 import authorize from "../middlewares/authorize.js";
@@ -38,6 +39,8 @@ courseRoute
     validateResult,
     createCourse,
   );
+// get recently viewed courses
+courseRoute.get("/recently-viewed", requireAuth, getRecentlyViewedCourses);
 // @desc Update a course
 courseRoute
   .route("/:id")
@@ -51,4 +54,5 @@ courseRoute
   )
   .delete(requireAuth, authorize(INSTRUCTOR), deleteCourse);
 courseRoute.get("/:id/learn", getCourseLearningData);
+
 export default courseRoute;

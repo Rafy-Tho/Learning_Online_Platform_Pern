@@ -316,6 +316,46 @@ class CourseRepository {
 
     return result.rows[0]?.course_id || null;
   }
+
+  async getRecentlyViewed(userId) {
+    const query = `
+      SELECT 
+         c.*,
+
+         -- Learn progress
+         lp.lesson_id AS last_lesson,
+         lp.updated_at AS last_activity,
+
+         -- Total duration (minutes)
+         COALESCE(SUM(l.duration_minutes), 0) AS total_duration
+
+      FROM learn_progress lp
+
+      JOIN courses c 
+           ON c.id = lp.course_id
+
+      LEFT JOIN modules m 
+           ON m.course_id = c.id
+
+      LEFT JOIN chapters ch 
+           ON ch.module_id = m.id
+
+      LEFT JOIN lessons l 
+           ON l.chapter_id = ch.id
+
+      WHERE lp.user_id = $1
+
+      GROUP BY 
+          c.id,
+          lp.lesson_id,
+          lp.updated_at
+
+      ORDER BY lp.updated_at DESC
+      LIMIT 20;
+    `;
+    const result = await pgPool.query(query, [userId]);
+    return result.rows;
+  }
 }
 const Course = new CourseRepository();
 

@@ -1,5 +1,6 @@
 import StatusCode from "../constants/StatusCode.js";
 import Course from "../repositories/CourseRepository.js";
+import User from "../repositories/UserRepository.js";
 import ApiError from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 // @desc Create a new course
@@ -195,5 +196,23 @@ export const getCourseLearningData = asyncHandler(async (req, res, next) => {
     statusCode: StatusCode.OK,
     message: "Module details retrieved successfully",
     data: moduleDetails,
+  });
+});
+// @desc Get course recently viewed
+// @route GET /api/v1/courses/recently-viewed
+// @access private
+export const getRecentlyViewedCourses = asyncHandler(async (req, res, next) => {
+  const userId = req.session.user.id;
+
+  const user = await User.findById(userId);
+
+  if (!user) return next(new ApiError(StatusCode.NOT_FOUND, "User not found"));
+  const recentlyReviewed = await Course.getRecentlyViewed(userId);
+
+  res.status(200).json({
+    success: true,
+    statusCode: StatusCode.OK,
+    message: "Recently reviewed retrieved successfully",
+    data: recentlyReviewed,
   });
 });
