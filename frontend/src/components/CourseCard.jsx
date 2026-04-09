@@ -8,7 +8,10 @@ function CourseCard({ course }) {
   return (
     <article
       className="flex shrink-0 flex-col rounded-xl border border-slate-100 bg-white p-6 shadow-sm transition hover:shadow-md dark:border-slate-800 dark:bg-slate-900 h-full w-full cursor-pointer"
-      onClick={() => navigate(`/courses/${course.id}`)}
+      onClick={() => {
+        navigate(`/courses/${course.id}`);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }}
     >
       <div className="mb-4 flex items-start justify-between">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400 ">

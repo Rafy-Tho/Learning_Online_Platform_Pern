@@ -21,6 +21,7 @@ import NotFoundPage from "./ui/NotFoundPage";
 import HomeDashboard from "./pages/HomeDashboard";
 import RecentViewDashboard from "./pages/RecentViewDashboard";
 import InprogressDashboard from "./pages/InprogressDashboard";
+import CompletedCourseDashboard from "./pages/CompletedCourseDashboard";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
               <Route index element={<HomeDashboard />} />
               <Route path="recent-viewed" element={<RecentViewDashboard />} />
               <Route path="in-progress" element={<InprogressDashboard />} />
+              <Route path="completed" element={<CompletedCourseDashboard />} />
             </Route>
           </Route>
           {/* Courses */}

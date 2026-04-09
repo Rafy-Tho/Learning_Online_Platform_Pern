@@ -8,13 +8,15 @@ import formatTimeAgo from "../../utils/formatTimeAgo";
 import RatingStars from "../RatingStars";
 import useEnrollment from "../../hooks/course/useEnrollment";
 import useGetEnrollment from "../../hooks/course/useGetEnrollment";
+import useAuth from "../../hooks/useAuth";
 
 export default function HeroSection({ scrollToSection }) {
   const { data, isPending, error } = useGetCourseDetails();
   const { mutate } = useEnrollment();
   const { data: enrollmentsData } = useGetEnrollment();
+  const { user } = useAuth();
   function handleEnroll() {
-    if (enrollmentsData?.data) return;
+    if (enrollmentsData?.data || !user) return;
     mutate();
   }
   if (isPending) return <SpinnerLoader />;

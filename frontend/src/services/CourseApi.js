@@ -202,6 +202,20 @@ class CourseApi {
     }
     return result;
   }
+  async getCompletedCourse() {
+    const res = await fetch(`${this.baseUrl}/completed`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.message || "Failed to get course progress");
+    }
+    return result;
+  }
 }
 
 const courseApi = new CourseApi();

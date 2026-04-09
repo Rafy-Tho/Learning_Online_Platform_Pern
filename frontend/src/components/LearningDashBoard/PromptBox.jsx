@@ -15,6 +15,7 @@ export default function PromptBox() {
   const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!search) return;
     navigate(`/courses?search=${search}`);
   };
   return (
@@ -33,7 +34,8 @@ export default function PromptBox() {
         />
         <button
           type="submit"
-          className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-indigo-600 text-white transition hover:bg-indigo-700 cursor-pointer"
+          disabled={!search}
+          className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-indigo-600 text-white transition hover:bg-indigo-700 cursor-pointer disabled:cursor-not-allowed"
           aria-label="Send"
         >
           <Send className="size-5" />

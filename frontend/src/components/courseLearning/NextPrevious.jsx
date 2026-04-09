@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useCreateCompletedLesson from "../../hooks/course/useCreateCompletedLesson";
 import { useGetCompletedLesson } from "../../hooks/course/useGetCompletedLesson";
