@@ -19,6 +19,7 @@ import Signup from "./pages/Signup";
 import Testing from "./pages/Testing";
 import NotFoundPage from "./ui/NotFoundPage";
 import HomeDashboard from "./pages/HomeDashboard";
+import RecentViewDashboard from "./pages/RecentViewDashboard";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
           <Route element={<ProtectRoute />}>
             <Route path="/learning-dashboard" element={<LearningDashboard />}>
               <Route index element={<HomeDashboard />} />
+              <Route path="recent-viewed" element={<RecentViewDashboard />} />
             </Route>
           </Route>
           {/* Courses */}
