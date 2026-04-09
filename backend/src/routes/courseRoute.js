@@ -4,6 +4,7 @@ import {
   createCourse,
   deleteCourse,
   getAllCourses,
+  getCourseCompleted,
   getCourseDetails,
   getCourseInprogress,
   getCourseLearningData,
@@ -47,6 +48,7 @@ courseRoute.get("/recently-viewed", requireAuth, getRecentlyViewedCourses);
 courseRoute.get("/recommended", requireAuth, getRecommendedCourses);
 courseRoute.get("/popular", getPopularCourses);
 courseRoute.get("/in-progress", requireAuth, getCourseInprogress);
+courseRoute.get("/completed", requireAuth, getCourseCompleted);
 // @desc Update a course
 courseRoute
   .route("/:id")

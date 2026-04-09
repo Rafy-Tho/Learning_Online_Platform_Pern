@@ -8,6 +8,7 @@ function useGetCourseObjective() {
   const { data, isPending, error } = useQuery({
     queryKey: ["course-objective", courseId],
     queryFn: async () => courseApi.getCourseObjectives(courseId),
+    enabled: !!courseId,
   });
   return { data, isPending, error };
 }

@@ -11,6 +11,7 @@ function useGetReviews(params) {
   const { data, isPending, error, refetch } = useQuery({
     queryKey: ["reviews", courseId, queryObject],
     queryFn: () => courseApi.getReviews(queryString, courseId),
+    enabled: !!courseId,
   });
   return {
     data,

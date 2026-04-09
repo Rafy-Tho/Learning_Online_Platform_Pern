@@ -7,6 +7,7 @@ function useGetReview() {
   const { data, isPending, isError } = useQuery({
     queryKey: ["review-me"],
     queryFn: () => courseApi.getReview(courseId),
+    enabled: !!courseId,
   });
   return { data, isPending, isError };
 }

@@ -8,6 +8,7 @@ export function useGetCompletedLesson() {
   const { data } = useQuery({
     queryKey: ["get-completed-lesson", lessonId],
     queryFn: () => lessonApi.getCompletedLesson(lessonId),
+    enabled: !!lessonId,
   });
   return { data };
 }

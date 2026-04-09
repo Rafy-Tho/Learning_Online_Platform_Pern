@@ -12,6 +12,7 @@ function useGetEnrollment() {
     onError: (error) => {
       toast.error(error.message || "Failed to get enrollment");
     },
+    enabled: !!courseId,
   });
   return {
     data,

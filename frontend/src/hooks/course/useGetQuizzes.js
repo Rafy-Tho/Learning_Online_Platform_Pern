@@ -7,6 +7,7 @@ function useGetQuizzes() {
   const { data, isPending, error } = useQuery({
     queryKey: ["quizzes", lessonId],
     queryFn: () => lessonApi.getQuizzes(lessonId),
+    enabled: !!lessonId,
   });
   return { data, isPending, error };
 }

@@ -8,6 +8,7 @@ function useGetCourseLearningData() {
   const { data, isPending, error } = useQuery({
     queryKey: ["course-learning-data", courseId],
     queryFn: async () => courseApi.getCourseLearningData(courseId),
+    enabled: !!courseId,
   });
   return { data, isPending, error };
 }

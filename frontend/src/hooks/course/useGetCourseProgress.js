@@ -12,6 +12,7 @@ function useGetCourseProgress() {
     onError: (error) => {
       toast.error(error.message || "Failed to get course progress");
     },
+    enabled: !!courseId,
   });
   return {
     data,

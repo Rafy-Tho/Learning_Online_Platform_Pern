@@ -1,7 +1,8 @@
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useLessonNavigation } from "../../hooks/course/useLessonNavigation";
 import useCreateCompletedLesson from "../../hooks/course/useCreateCompletedLesson";
 import { useGetCompletedLesson } from "../../hooks/course/useGetCompletedLesson";
+import { useLessonNavigation } from "../../hooks/course/useLessonNavigation";
 
 function NextPrevious() {
   const { courseId } = useParams();
@@ -26,7 +27,6 @@ function NextPrevious() {
     if (isNextQuiz)
       navigate(`/courses/${courseId}/lessons/${nextLessonId}/quiz`);
     else navigate(`/courses/${courseId}/lessons/${nextLessonId}`);
-    handleCompleteLesson();
   };
 
   const goToPrevPage = () => {
@@ -65,14 +65,29 @@ function NextPrevious() {
         Previous
       </button>
 
-      <div className="text-sm text-slate-500 dark:text-slate-400 font-medium px-3 py-1 bg-slate-50 dark:bg-slate-700/50 rounded-full sm:bg-transparent sm:dark:bg-transparent">
+      <div className="text-sm text-slate-500 dark:text-slate-400 font-medium px-3 py-1 bg-slate-50 dark:bg-slate-700/50 rounded-full sm:bg-transparent sm:dark:bg-transparent ">
         Lesson {currentLessonIndex + 1} of {totalLessons}
       </div>
-
-      <button
-        onClick={goToNextPage}
-        disabled={!nextLessonId}
-        className={`
+      <div className="flex items-center gap-2 w-full sm:w-auto">
+        {!completedLesson?.data && (
+          <button
+            onClick={handleCompleteLesson}
+            className={`
+                  flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-200 w-full sm:w-auto justify-center
+                  ${
+                    !completedLesson?.data
+                      ? "bg-orange-500 text-white hover:bg-orange-600 active:bg-orange-700 cursor-pointer"
+                      : "bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-600 cursor-not-allowed"
+                  }
+                `}
+          >
+            Complete
+          </button>
+        )}
+        <button
+          onClick={goToNextPage}
+          disabled={!nextLessonId}
+          className={`
                   flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-200 w-full sm:w-auto justify-center
                   ${
                     nextLessonId
@@ -80,22 +95,23 @@ function NextPrevious() {
                       : "bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-600 cursor-not-allowed"
                   }
                 `}
-      >
-        Next
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M9 5l7 7-7 7"
-          />
-        </svg>
-      </button>
+          Next
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </button>
+      </div>
     </div>
   );
 }

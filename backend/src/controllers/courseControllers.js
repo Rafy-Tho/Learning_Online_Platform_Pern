@@ -32,7 +32,7 @@ export const createCourse = asyncHandler(async (req, res, next) => {
     accessType,
   });
 
-  res.status(201).json({
+  res.status(StatusCode.CREATED).json({
     success: true,
     statusCode: StatusCode.CREATED,
     message: "Course created successfully",
@@ -46,7 +46,7 @@ export const createCourse = asyncHandler(async (req, res, next) => {
 export const getAllCourses = asyncHandler(async (req, res, next) => {
   const { data, pagination } = await Course.getAllCourses(req.query);
   const query = req.query;
-  res.status(200).json({
+  res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
     message: "Courses retrieved successfully",
@@ -65,7 +65,7 @@ export const getCoursesByCategoryId = asyncHandler(async (req, res, next) => {
     return next(
       new ApiError(StatusCode.NOT_FOUND, "No courses found for this category"),
     );
-  res.status(200).json({
+  res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
     message: "Courses retrieved successfully",
@@ -85,7 +85,7 @@ export const getCoursesByInstructorId = asyncHandler(async (req, res, next) => {
         "No courses found for this instructor",
       ),
     );
-  res.status(200).json({
+  res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
     message: "Courses retrieved successfully",
@@ -132,7 +132,7 @@ export const updateCourse = asyncHandler(async (req, res, next) => {
     accessType,
   });
 
-  res.status(200).json({
+  res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
     message: "Course updated successfully",
@@ -157,7 +157,7 @@ export const deleteCourse = asyncHandler(async (req, res, next) => {
       ),
     );
   const deletedCourse = await Course.delete(id);
-  res.status(200).json({
+  res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
     message: "Course deleted successfully",
@@ -231,7 +231,7 @@ export const getRecommendedCourses = asyncHandler(async (req, res, next) => {
   if (recommendedCourses.length === 0)
     recommendedCourses = await Course.getHighlyRated();
 
-  res.status(200).json({
+  res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
     message: "Recommended courses retrieved successfully",
@@ -244,7 +244,7 @@ export const getRecommendedCourses = asyncHandler(async (req, res, next) => {
 // @access public
 export const getPopularCourses = asyncHandler(async (req, res, next) => {
   const popularCourses = await Course.getPopular();
-  res.status(200).json({
+  res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
     message: "Popular courses retrieved successfully",
@@ -261,7 +261,24 @@ export const getCourseInprogress = asyncHandler(async (req, res, next) => {
     userId,
     queryString: req.query,
   });
-  res.status(200).json({
+  res.status(StatusCode.OK).json({
+    success: true,
+    statusCode: StatusCode.OK,
+    message: "Courses retrieved successfully",
+    data: courses,
+  });
+});
+
+export const getCourseCompleted = asyncHandler(async (req, res, next) => {
+  const userId = req.session?.user.id;
+  const user = await User.findById(userId);
+
+  if (!user) return next(new ApiError(StatusCode.NOT_FOUND, "User not found"));
+  const courses = await Course.getCompletedCourses({
+    userId,
+    queryString: req.query,
+  });
+  res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
     message: "Courses retrieved successfully",

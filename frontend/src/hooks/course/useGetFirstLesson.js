@@ -8,6 +8,7 @@ function useGetFirstLesson() {
   const { data, isPending, error } = useQuery({
     queryKey: ["first-lesson", courseId],
     queryFn: async () => courseApi.getFirstLesson(courseId),
+    enabled: !!courseId,
   });
 
   return { data, isPending, error };

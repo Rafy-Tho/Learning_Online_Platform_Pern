@@ -7,6 +7,7 @@ function useGetLessonContent() {
   const { data, isPending, error } = useQuery({
     queryKey: ["lesson-content", lessonId],
     queryFn: async () => lessonApi.getLessonContent(lessonId),
+    enabled: !!lessonId,
   });
   return { data, isPending, error };
 }
