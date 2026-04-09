@@ -1,14 +1,19 @@
 import { BookOpen, Bookmark, Clock, BarChart2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import formatMinutes from "../utils/formatMinutes";
-import formatCapitalize from "../utils/formatCapitalize";
-import truncateText from "../utils/truncateText";
+import truncateText from "../../utils/truncateText";
+import formatMinutes from "../../utils/formatMinutes";
+import formatCapitalize from "../../utils/formatCapitalize";
+
 function CourseCardProgress({ course }) {
   const navigate = useNavigate();
+  const progressPercentage = course?.progress_percentage || 0;
+
   return (
     <article
       className="flex shrink-0 flex-col rounded-xl border border-slate-100 bg-white p-6 shadow-sm transition hover:shadow-md dark:border-slate-800 dark:bg-slate-900 h-full w-full cursor-pointer"
-      onClick={() => navigate(`/courses/${course.id}`)}
+      onClick={() =>
+        navigate(`/courses/${course.id}/lessons/${course.lesson_progress}`)
+      }
     >
       <div className="mb-4 flex items-start justify-between">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400 ">
@@ -44,6 +49,24 @@ function CourseCardProgress({ course }) {
           <BarChart2 className="size-3.5" />
           {formatCapitalize(course.level)}
         </span>
+      </div>
+
+      {/* Progress Bar Section */}
+      <div className="mt-4 pt-2 border-t border-slate-100 dark:border-slate-800">
+        <div className="flex items-center justify-between mb-1.5">
+          <span className="text-xs font-medium text-slate-600 dark:text-slate-400">
+            Progress
+          </span>
+          <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+            {Math.round(progressPercentage)}%
+          </span>
+        </div>
+        <div className="w-full bg-slate-100 rounded-full h-1.5 dark:bg-slate-800">
+          <div
+            className="bg-indigo-600 h-1.5 rounded-full transition-all duration-300"
+            style={{ width: `${progressPercentage}%` }}
+          />
+        </div>
       </div>
     </article>
   );

@@ -188,6 +188,20 @@ class CourseApi {
     }
     return result;
   }
+  async getCourseInProgress() {
+    const res = await fetch(`${this.baseUrl}/in-progress`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.message || "Failed to get course progress");
+    }
+    return result;
+  }
 }
 
 const courseApi = new CourseApi();

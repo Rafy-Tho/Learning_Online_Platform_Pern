@@ -20,6 +20,7 @@ import Testing from "./pages/Testing";
 import NotFoundPage from "./ui/NotFoundPage";
 import HomeDashboard from "./pages/HomeDashboard";
 import RecentViewDashboard from "./pages/RecentViewDashboard";
+import InprogressDashboard from "./pages/InprogressDashboard";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
             <Route path="/learning-dashboard" element={<LearningDashboard />}>
               <Route index element={<HomeDashboard />} />
               <Route path="recent-viewed" element={<RecentViewDashboard />} />
+              <Route path="in-progress" element={<InprogressDashboard />} />
             </Route>
           </Route>
           {/* Courses */}
