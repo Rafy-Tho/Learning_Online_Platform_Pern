@@ -155,6 +155,18 @@ class CourseApi {
     }
     return result;
   }
+  async getRecentlyViewedCourses() {
+    const res = await fetch(`${this.baseUrl}/recently-viewed`, {
+      credentials: "include",
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(
+        result.message || "Failed to fetch recently viewed courses",
+      );
+    }
+    return result;
+  }
 }
 
 const courseApi = new CourseApi();

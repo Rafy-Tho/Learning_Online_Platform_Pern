@@ -18,6 +18,7 @@ import ResetPasswordFlow from "./pages/ResetPasswordFlow";
 import Signup from "./pages/Signup";
 import Testing from "./pages/Testing";
 import NotFoundPage from "./ui/NotFoundPage";
+import HomeDashboard from "./pages/HomeDashboard";
 
 function App() {
   return (
@@ -34,7 +35,9 @@ function App() {
           </Route>
           {/* Learning Dashboard */}
           <Route element={<ProtectRoute />}>
-            <Route path="/learning-dashboard" element={<LearningDashboard />} />
+            <Route path="/learning-dashboard" element={<LearningDashboard />}>
+              <Route index element={<HomeDashboard />} />
+            </Route>
           </Route>
           {/* Courses */}
           <Route path="/courses" element={<CoursePage />} />
