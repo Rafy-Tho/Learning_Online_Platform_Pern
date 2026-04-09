@@ -32,6 +32,20 @@ class UserApi {
     }
     return result;
   }
+  async getXpEarned() {
+    const res = await fetch(`${this.baseUrl}/xp-earned`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.message || "Failed to get xp earned");
+    }
+    return result;
+  }
 }
 const userApi = new UserApi();
 export default userApi;

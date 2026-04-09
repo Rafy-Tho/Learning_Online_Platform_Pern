@@ -29,13 +29,6 @@ export default function Tabs() {
           {t.label}
         </NavLink>
       ))}
-      <button
-        type="button"
-        className="inline-flex shrink-0 items-center gap-1.5 border-b-2 border-transparent pb-3 text-sm font-medium text-slate-600 dark:text-slate-400"
-      >
-        <Gamepad2 className="size-4" />
-        Coding Challenge
-      </button>
     </nav>
   );
 }
