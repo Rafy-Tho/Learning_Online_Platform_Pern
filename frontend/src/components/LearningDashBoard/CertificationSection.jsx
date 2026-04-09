@@ -3,7 +3,7 @@ import { Award, Lock } from "lucide-react";
 
 export default function CertificationSection() {
   return (
-    <div>
+    <div className=" my-8 md:my-16">
       <h2 className="mb-4 flex items-center gap-2 text-lg font-bold">
         <span className="flex size-9 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-950/60">
           <Award className="size-4 text-indigo-600 dark:text-indigo-400" />

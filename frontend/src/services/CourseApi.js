@@ -167,6 +167,27 @@ class CourseApi {
     }
     return result;
   }
+
+  async getRecommendedCourses() {
+    const res = await fetch(`${this.baseUrl}/recommended`, {
+      credentials: "include",
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.message || "Failed to fetch recommended courses");
+    }
+    return result;
+  }
+  async getPopularCourses() {
+    const res = await fetch(`${this.baseUrl}/popular`, {
+      credentials: "include",
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.message || "Failed to fetch popular courses");
+    }
+    return result;
+  }
 }
 
 const courseApi = new CourseApi();
