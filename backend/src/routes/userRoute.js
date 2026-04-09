@@ -39,6 +39,7 @@ userRoute.post("/logout", requireAuth, logout);
 // @desc    Get user profile
 userRoute.get("/me", requireAuth, getProfile);
 userRoute.get("/xp-earned", requireAuth, getXpEarning);
+
 // @desc    Update user profile
 userRoute.patch(
   "/me",

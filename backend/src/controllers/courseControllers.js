@@ -251,3 +251,20 @@ export const getPopularCourses = asyncHandler(async (req, res, next) => {
     data: popularCourses,
   });
 });
+
+export const getCourseInprogress = asyncHandler(async (req, res, next) => {
+  const userId = req.session?.user.id;
+  const user = await User.findById(userId);
+
+  if (!user) return next(new ApiError(StatusCode.NOT_FOUND, "User not found"));
+  const courses = await Course.getCourseInProgress({
+    userId,
+    queryString: req.query,
+  });
+  res.status(200).json({
+    success: true,
+    statusCode: StatusCode.OK,
+    message: "Courses retrieved successfully",
+    data: courses,
+  });
+});
