@@ -4,7 +4,7 @@ import { navLinks } from "../../constants/navLinks";
 function Desktop({ closeAll }) {
   return (
     <nav className="hidden lg:flex items-center flex-1 justify-center">
-      <ul className="flex items-center gap-1">
+      <ul className="flex items-center gap-4">
         {navLinks.map((link) => (
           <li key={link.label}>
             <NavLink
@@ -13,7 +13,13 @@ function Desktop({ closeAll }) {
                 closeAll();
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }}
-              className="px-3 xl:px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 font-medium text-sm whitespace-nowrap transition-colors rounded-md hover:bg-gray-50 dark:hover:bg-gray-700"
+              className={({ isActive }) =>
+                `${
+                  isActive
+                    ? "border-b-2 border-blue-500 text-blue-500"
+                    : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
+                } whitespace-nowrap px-1 pb-3 text-sm font-medium transition-colors`
+              }
             >
               {link.label}
             </NavLink>

@@ -6,22 +6,20 @@ import Quiz from "./components/courseLearning/quiz/Quiz";
 import IsAuthenticate from "./components/redirectRoutes/IsAuthenticate";
 import ProtectRoute from "./components/redirectRoutes/ProtectRoute";
 import RedirectToFirstLesson from "./components/redirectRoutes/RedirectToFirstLesson";
-import Coaching from "./pages/Coaching";
-import Community from "./pages/Community";
+import CompletedCourseDashboard from "./pages/CompletedCourseDashboard";
 import CourseDetailScreen from "./pages/CourseDetailScreen";
 import CourseLearningScreen from "./pages/CourseLearningScreen";
 import CoursePage from "./pages/CourseScreen";
 import Home from "./pages/Home";
+import HomeDashboard from "./pages/HomeDashboard";
+import InprogressDashboard from "./pages/InprogressDashboard";
 import LearningDashboard from "./pages/LearningDashboard";
 import Login from "./pages/Login";
+import RecentViewDashboard from "./pages/RecentViewDashboard";
 import ResetPasswordFlow from "./pages/ResetPasswordFlow";
 import Signup from "./pages/Signup";
-import Testing from "./pages/Testing";
 import NotFoundPage from "./ui/NotFoundPage";
-import HomeDashboard from "./pages/HomeDashboard";
-import RecentViewDashboard from "./pages/RecentViewDashboard";
-import InprogressDashboard from "./pages/InprogressDashboard";
-import CompletedCourseDashboard from "./pages/CompletedCourseDashboard";
+import PricingScreen from "./pages/PricingScreen";
 
 function App() {
   return (
@@ -48,9 +46,7 @@ function App() {
           {/* Courses */}
           <Route path="/courses" element={<CoursePage />} />
           <Route path="/courses/:courseId" element={<CourseDetailScreen />} />
-          <Route path="/testing" element={<Testing />} />
-          <Route path="/community" element={<Community />} />
-          <Route path="/coaching" element={<Coaching />} />
+          <Route path="/pricing" element={<PricingScreen />} />
         </Route>
         {/* Learning Layout */}
         <Route element={<ProtectRoute />}>

@@ -1,5 +1,4 @@
 import { NavLink } from "react-router-dom";
-
 import useLogout from "../../hooks/auth/useLogout";
 import useAuth from "../../hooks/useAuth";
 import ThemeSelector from "../ThemSelector";
@@ -26,12 +25,19 @@ function Mobile({
             {navLinks.map((link) => (
               <NavLink
                 key={link.label}
-                href={link.href}
+                to={link.href}
+                end={true}
                 onClick={() => {
                   closeAll();
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
-                className="block px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg font-medium transition-colors"
+                className={({ isActive }) =>
+                  `${
+                    isActive
+                      ? "border-b-2 border-blue-500 text-blue-500"
+                      : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
+                  } whitespace-nowrap px-1 pb-3 text-sm font-medium transition-colors block`
+                }
               >
                 {link.label}
               </NavLink>
