@@ -356,11 +356,25 @@ class CourseRepository {
     const result = await pgPool.query(query, [userId]);
     return result.rows;
   }
-
   async getRecommended(userId) {
     const query = `
-      SELECT c.*
+      SELECT 
+        c.*,
+        COALESCE(d.total_duration, 0) AS total_duration
+  
       FROM courses c
+  
+      -- ✅ duration subquery (correct way)
+      LEFT JOIN (
+        SELECT 
+          m.course_id,
+          SUM(l.duration_minutes) AS total_duration
+        FROM modules m
+        JOIN chapters ch ON ch.module_id = m.id
+        JOIN lessons l ON l.chapter_id = ch.id
+        GROUP BY m.course_id
+      ) d ON d.course_id = c.id
+  
       WHERE c.category_id IN (
         SELECT DISTINCT c2.category_id
         FROM lesson_completion lc
@@ -373,45 +387,77 @@ class CourseRepository {
         WHERE user_id = $1
       )
       AND c.status = 'PUBLISHED'
+  
       LIMIT 10;
-     `;
+    `;
+
     const result = await pgPool.query(query, [userId]);
     return result.rows;
   }
-
   async getPopular() {
     const query = `
-     SELECT 
-       c.*,
-       COUNT(lc.id) AS enroll_count
-     FROM courses c
-     LEFT JOIN lesson_completion lc 
-       ON lc.course_id = c.id
-     WHERE c.status = 'PUBLISHED'
-     GROUP BY c.id
-     ORDER BY enroll_count DESC
-     LIMIT 10;
-     `;
+      SELECT 
+        c.*,
+        COUNT(DISTINCT lc.id) AS enroll_count,
+        COALESCE(d.total_duration, 0) AS total_duration
+  
+      FROM courses c
+  
+      LEFT JOIN lesson_completion lc 
+        ON lc.course_id = c.id
+  
+      LEFT JOIN (
+        SELECT 
+          m.course_id,
+          SUM(l.duration_minutes) AS total_duration
+        FROM modules m
+        JOIN chapters ch ON ch.module_id = m.id
+        JOIN lessons l ON l.chapter_id = ch.id
+        GROUP BY m.course_id
+      ) d ON d.course_id = c.id
+  
+      WHERE c.status = 'PUBLISHED'
+  
+      GROUP BY c.id, d.total_duration
+      ORDER BY enroll_count DESC
+      LIMIT 10;
+    `;
+
     const result = await pgPool.query(query);
     return result.rows;
   }
-
   async getHighlyRated() {
     const query = `
-     SELECT 
-       c.*,
-       COALESCE(AVG(r.rating), 0) AS average_rating,
-       COUNT(r.id) AS total_reviews
-     FROM courses c
-     LEFT JOIN course_reviews r 
-       ON r.course_id = c.id
-     WHERE c.status = 'PUBLISHED'
-     GROUP BY c.id
-     ORDER BY 
-       average_rating DESC,
-       total_reviews DESC
-     LIMIT 10;
+      SELECT 
+        c.*,
+        COALESCE(AVG(r.rating), 0) AS average_rating,
+        COUNT(DISTINCT r.id) AS total_reviews,
+        COALESCE(d.total_duration, 0) AS total_duration
+  
+      FROM courses c
+  
+      LEFT JOIN course_reviews r 
+        ON r.course_id = c.id
+  
+      LEFT JOIN (
+        SELECT 
+          m.course_id,
+          SUM(l.duration_minutes) AS total_duration
+        FROM modules m
+        JOIN chapters ch ON ch.module_id = m.id
+        JOIN lessons l ON l.chapter_id = ch.id
+        GROUP BY m.course_id
+      ) d ON d.course_id = c.id
+  
+      WHERE c.status = 'PUBLISHED'
+  
+      GROUP BY c.id, d.total_duration
+      ORDER BY 
+        average_rating DESC,
+        total_reviews DESC
+      LIMIT 10;
     `;
+
     const result = await pgPool.query(query);
     return result.rows;
   }
