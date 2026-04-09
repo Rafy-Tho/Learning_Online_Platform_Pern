@@ -1,6 +1,7 @@
 import ENV from "../configs/Env.js";
 import StatusCode from "../constants/StatusCode.js";
 import createRandomCode from "../helper/createRadomCode.js";
+import Course from "../repositories/CourseRepository.js";
 import PasswordResetCode from "../repositories/PasswordResetCodeRepository.js";
 import User from "../repositories/UserRepository.js";
 import emailService from "../services/EmailService.js";
@@ -278,5 +279,21 @@ export const updatePassword = asyncHandler(async (req, res, next) => {
     success: true,
     statusCode: StatusCode.OK,
     data: null,
+  });
+});
+// @desc    Get user earning
+// @route   GET /api/users/xp-earning
+// @access  Private
+export const getXpEarning = asyncHandler(async (req, res, next) => {
+  const userId = req.session.user.id;
+  const user = await User.findById(userId);
+  if (!user)
+    return next(new ApiError(StatusCode.NOT_FOUND, "User Doesn't Exist"));
+  const earning = await Course.getXpEarning(userId);
+  res.status(StatusCode.OK).json({
+    message: "Earning retrieved successfully",
+    success: true,
+    statusCode: StatusCode.OK,
+    data: earning,
   });
 });

@@ -1,6 +1,7 @@
 import express from "express";
 import {
   getProfile,
+  getXpEarning,
   login,
   logout,
   register,
@@ -37,6 +38,7 @@ userRoute.post("/login", validateLogin, validateResult, login);
 userRoute.post("/logout", requireAuth, logout);
 // @desc    Get user profile
 userRoute.get("/me", requireAuth, getProfile);
+userRoute.get("/xp-earned", requireAuth, getXpEarning);
 // @desc    Update user profile
 userRoute.patch(
   "/me",

@@ -461,6 +461,25 @@ class CourseRepository {
     const result = await pgPool.query(query);
     return result.rows;
   }
+  async getXpEarning(userId) {
+    const query = `
+    SELECT 
+      COALESCE(SUM(xp_earned), 0) AS total_xp,
+
+      COALESCE(SUM(
+    CASE 
+      WHEN created_at >= CURRENT_DATE 
+      THEN xp_earned 
+      ELSE 0 
+       END
+      ), 0) AS today_xp
+
+    FROM lesson_completion
+    WHERE user_id = $1;
+      `;
+    const result = await pgPool.query(query, [userId]);
+    return result.rows[0];
+  }
 }
 const Course = new CourseRepository();
 
