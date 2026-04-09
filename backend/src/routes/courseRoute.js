@@ -6,7 +6,9 @@ import {
   getAllCourses,
   getCourseDetails,
   getCourseLearningData,
+  getPopularCourses,
   getRecentlyViewedCourses,
+  getRecommendedCourses,
   updateCourse,
 } from "../controllers/courseControllers.js";
 import authorize from "../middlewares/authorize.js";
@@ -41,6 +43,8 @@ courseRoute
   );
 // get recently viewed courses
 courseRoute.get("/recently-viewed", requireAuth, getRecentlyViewedCourses);
+courseRoute.get("/recommended", requireAuth, getRecommendedCourses);
+courseRoute.get("/popular", getPopularCourses);
 // @desc Update a course
 courseRoute
   .route("/:id")

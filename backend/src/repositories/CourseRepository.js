@@ -356,6 +356,65 @@ class CourseRepository {
     const result = await pgPool.query(query, [userId]);
     return result.rows;
   }
+
+  async getRecommended(userId) {
+    const query = `
+      SELECT c.*
+      FROM courses c
+      WHERE c.category_id IN (
+        SELECT DISTINCT c2.category_id
+        FROM lesson_completion lc
+        JOIN courses c2 ON c2.id = lc.course_id
+        WHERE lc.user_id = $1
+      )
+      AND c.id NOT IN (
+        SELECT course_id 
+        FROM lesson_completion 
+        WHERE user_id = $1
+      )
+      AND c.status = 'PUBLISHED'
+      LIMIT 10;
+     `;
+    const result = await pgPool.query(query, [userId]);
+    return result.rows;
+  }
+
+  async getPopular() {
+    const query = `
+     SELECT 
+       c.*,
+       COUNT(lc.id) AS enroll_count
+     FROM courses c
+     LEFT JOIN lesson_completion lc 
+       ON lc.course_id = c.id
+     WHERE c.status = 'PUBLISHED'
+     GROUP BY c.id
+     ORDER BY enroll_count DESC
+     LIMIT 10;
+     `;
+    const result = await pgPool.query(query);
+    return result.rows;
+  }
+
+  async getHighlyRated() {
+    const query = `
+     SELECT 
+       c.*,
+       COALESCE(AVG(r.rating), 0) AS average_rating,
+       COUNT(r.id) AS total_reviews
+     FROM courses c
+     LEFT JOIN course_reviews r 
+       ON r.course_id = c.id
+     WHERE c.status = 'PUBLISHED'
+     GROUP BY c.id
+     ORDER BY 
+       average_rating DESC,
+       total_reviews DESC
+     LIMIT 10;
+    `;
+    const result = await pgPool.query(query);
+    return result.rows;
+  }
 }
 const Course = new CourseRepository();
 

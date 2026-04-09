@@ -216,3 +216,38 @@ export const getRecentlyViewedCourses = asyncHandler(async (req, res, next) => {
     data: recentlyReviewed,
   });
 });
+// @desc Get course recommended
+// @route GET /api/v1/courses/recommended
+// @access private
+export const getRecommendedCourses = asyncHandler(async (req, res, next) => {
+  const userId = req.session.user.id;
+
+  const user = await User.findById(userId);
+
+  if (!user) return next(new ApiError(StatusCode.NOT_FOUND, "User not found"));
+
+  let recommendedCourses = await Course.getRecommended(userId);
+
+  if (recommendedCourses.length === 0)
+    recommendedCourses = await Course.getHighlyRated();
+
+  res.status(200).json({
+    success: true,
+    statusCode: StatusCode.OK,
+    message: "Recommended courses retrieved successfully",
+    data: recommendedCourses,
+  });
+});
+
+// @desc Get course popular
+// @route GET /api/v1/courses/popular
+// @access public
+export const getPopularCourses = asyncHandler(async (req, res, next) => {
+  const popularCourses = await Course.getPopular();
+  res.status(200).json({
+    success: true,
+    statusCode: StatusCode.OK,
+    message: "Popular courses retrieved successfully",
+    data: popularCourses,
+  });
+});
