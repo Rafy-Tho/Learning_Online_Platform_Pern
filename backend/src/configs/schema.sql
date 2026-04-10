@@ -19,7 +19,6 @@ CREATE TYPE subscription_status AS ENUM ('ACTIVE','EXPIRED','CANCELLED');
 
 CREATE TYPE payment_status AS ENUM ('PENDING','COMPLETED','FAILED','REFUNDED');
 
-CREATE TYPE refund_status AS ENUM ('PENDING','COMPLETED','FAILED');
 
 -- Create enum for discount types
 CREATE TYPE discount_type AS ENUM ('PERCENTAGE', 'FIXED_AMOUNT');
@@ -362,25 +361,6 @@ CREATE TRIGGER trg_subscription_payments_updated_at
 BEFORE UPDATE ON subscription_payments
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
--- ========================
--- SUBSCRIPTION REFUND PAYMENTS
--- ========================
-CREATE TABLE subscription_refunds(
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_subscription_id UUID NOT NULL REFERENCES user_subscriptions(id) ON DELETE CASCADE,
-  amount NUMERIC(10,2) NOT NULL CHECK (amount >= 0),
-  confirm BOOLEAN DEFAULT FALSE,
-  refund_status refund_status DEFAULT 'PENDING',
-  stripe_refund_id TEXT UNIQUE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE INDEX idx_subscription_refund_user_subscription ON subscription_refunds(user_subscription_id);
-
-CREATE TRIGGER trg_subscription_refunds_updated_at
-BEFORE UPDATE ON subscription_refunds
-FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 -- =========================
 -- COURSE REVIEWS
