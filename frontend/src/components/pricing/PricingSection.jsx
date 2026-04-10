@@ -2,7 +2,9 @@ import PricingCard from "./PricingCard";
 
 const plans = [
   {
+    id: "00c7b88f-fcf3-4d7c-a10d-c83efe587e9d",
     tier: "1 Month",
+    duration: 30,
     price: 5,
     description: "Perfect for getting started with your learning journey",
     features: [
@@ -15,7 +17,9 @@ const plans = [
     highlighted: false,
   },
   {
+    id: "618a46ae-30e6-4983-ad0b-fa3126df19e6",
     tier: "6 Months",
+    duration: 180,
     price: 20,
     description: "Best value for consistent learners and skill builders",
     features: [
@@ -28,7 +32,9 @@ const plans = [
     highlighted: true,
   },
   {
+    id: "d196d5c8-3cd0-46ac-b6ec-0a676d189216",
     tier: "12 Months",
+    duration: 360,
     price: 30,
     description: "Complete package for mastering skills and career growth",
     features: [
@@ -65,14 +71,7 @@ export default function PricingSection() {
         {/* Enhanced Grid Layout with better responsiveness and spacing */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 justify-items-center">
           {plans.map((plan) => (
-            <PricingCard
-              key={plan.tier}
-              tier={plan.tier}
-              price={plan.price}
-              description={plan.description}
-              features={plan.features}
-              highlighted={plan.highlighted}
-            />
+            <PricingCard key={plan.tier} plan={plan} />
           ))}
         </div>
 

@@ -1,12 +1,18 @@
 import { CheckCircle2, Info } from "lucide-react";
 
-export default function PricingCard({
-  tier,
-  price,
-  description,
-  features,
-  highlighted = false,
-}) {
+export default function PricingCard({ plan }) {
+  const { id, tier, price, description, features, highlighted = false } = plan;
+  async function payment() {
+    const response = await fetch(
+      import.meta.env.VITE_BASE_URL + `/users/payment-stripe/${id}`,
+      {
+        method: "POST",
+        credentials: "include",
+      },
+    );
+    const data = await response.json();
+    window.location.href = data.session_url;
+  }
   return (
     <div
       className={`
@@ -63,6 +69,7 @@ export default function PricingCard({
       </ul>
 
       <button
+        onClick={payment}
         className={`
           w-full py-3.5 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer
           ${

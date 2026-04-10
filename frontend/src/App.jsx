@@ -3,6 +3,8 @@ import AppLayout from "./components/AppLayout";
 import LearningLayout from "./components/LearningLayout";
 import LessonContent from "./components/courseLearning/LessonContent";
 import Quiz from "./components/courseLearning/quiz/Quiz";
+import PaymentCancel from "./components/pricing/PaymentCancel";
+import PaymentSuccess from "./components/pricing/PaymentSuccess";
 import IsAuthenticate from "./components/redirectRoutes/IsAuthenticate";
 import ProtectRoute from "./components/redirectRoutes/ProtectRoute";
 import RedirectToFirstLesson from "./components/redirectRoutes/RedirectToFirstLesson";
@@ -15,11 +17,11 @@ import HomeDashboard from "./pages/HomeDashboard";
 import InprogressDashboard from "./pages/InprogressDashboard";
 import LearningDashboard from "./pages/LearningDashboard";
 import Login from "./pages/Login";
+import PricingScreen from "./pages/PricingScreen";
 import RecentViewDashboard from "./pages/RecentViewDashboard";
 import ResetPasswordFlow from "./pages/ResetPasswordFlow";
 import Signup from "./pages/Signup";
 import NotFoundPage from "./ui/NotFoundPage";
-import PricingScreen from "./pages/PricingScreen";
 
 function App() {
   return (
@@ -47,6 +49,10 @@ function App() {
           <Route path="/courses" element={<CoursePage />} />
           <Route path="/courses/:courseId" element={<CourseDetailScreen />} />
           <Route path="/pricing" element={<PricingScreen />} />
+          <Route element={<ProtectRoute />}>
+            <Route path="/payment-success" element={<PaymentSuccess />} />
+            <Route path="/payment-cancel" element={<PaymentCancel />} />
+          </Route>
         </Route>
         {/* Learning Layout */}
         <Route element={<ProtectRoute />}>
