@@ -1,32 +1,35 @@
-import cookieParser from "cookie-parser";
-import cors from "cors";
-import express from "express";
-import morgan from "morgan";
-import path from "path";
-import { fileURLToPath } from "url";
-import ENV from "./configs/Env.js";
-import errorHandler from "./middlewares/errorHandler.js";
-import { globalLimiter } from "./middlewares/rateLimitMiddlewares.js";
-import sessionMiddleware from "./middlewares/sessionMiddleware.js";
-import categoryRoute from "./routes/categoryRoute.js";
-import chapterRoute from "./routes/chapterRoute.js";
-import courseObjectiveRoute from "./routes/courseObjectiveRoute.js";
-import courseRoute from "./routes/courseRoute.js";
-import lessonContentRoute from "./routes/lessonContentRoute.js";
-import lessonRoute from "./routes/lessonRoute.js";
-import moduleRoute from "./routes/moduleRoute.js";
-import userRoute from "./routes/userRoute.js";
-import notFoundUrl from "./utils/notFoundUrl.js";
-import reviewRoute from "./routes/reviewRoute.js";
-import questionRoute from "./routes/questionRoute.js";
-import answerRoute from "./routes/answerRoute.js";
-import enrollmentRoute from "./routes/enrollmentRoute.js";
-import learningProgressRoute from "./routes/learningProgressRoute.js";
-import lessonCompletionRoute from "./routes/lessonCompletionRoute.js";
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import express from 'express';
+import morgan from 'morgan';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import ENV from './configs/Env.js';
+import errorHandler from './middlewares/errorHandler.js';
+import { globalLimiter } from './middlewares/rateLimitMiddlewares.js';
+import sessionMiddleware from './middlewares/sessionMiddleware.js';
+import answerRoute from './routes/answerRoute.js';
+import categoryRoute from './routes/categoryRoute.js';
+import chapterRoute from './routes/chapterRoute.js';
+import courseObjectiveRoute from './routes/courseObjectiveRoute.js';
+import courseRoute from './routes/courseRoute.js';
+import enrollmentRoute from './routes/enrollmentRoute.js';
+import learningProgressRoute from './routes/learningProgressRoute.js';
+import lessonCompletionRoute from './routes/lessonCompletionRoute.js';
+import lessonContentRoute from './routes/lessonContentRoute.js';
+import lessonRoute from './routes/lessonRoute.js';
+import moduleRoute from './routes/moduleRoute.js';
+import questionRoute from './routes/questionRoute.js';
+import reviewRoute from './routes/reviewRoute.js';
+import subscriptionRoute from './routes/subscriptionRoute.js';
+import userRoute from './routes/userRoute.js';
+import webhookRoute from './routes/webhookRoute.js';
+import notFoundUrl from './utils/notFoundUrl.js';
 
 // configure variable
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+app.use('/api/v1/', webhookRoute);
 // configure middleware express
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -37,28 +40,29 @@ app.use(
     credentials: true,
   }),
 );
-app.use(morgan("dev"));
+app.use(morgan('dev'));
 // configure middleware rate limit
 app.use(globalLimiter);
 // configure middleware session
 app.use(sessionMiddleware);
 // configure middleware static
-app.use(express.static(path.join(__dirname, "../uploads")));
+app.use(express.static(path.join(__dirname, '../uploads')));
 // configure middleware routes
-app.use("/api/v1/users", userRoute);
-app.use("/api/v1/categories", categoryRoute);
-app.use("/api/v1/courses", courseRoute);
-app.use("/api/v1/objectives", courseObjectiveRoute);
-app.use("/api/v1/modules", moduleRoute);
-app.use("/api/v1/chapters", chapterRoute);
-app.use("/api/v1/lessons", lessonRoute);
-app.use("/api/v1/contents", lessonContentRoute);
-app.use("/api/v1/reviews", reviewRoute);
-app.use("/api/v1/questions", questionRoute);
-app.use("/api/v1/answers", answerRoute);
-app.use("/api/v1/enrollments", enrollmentRoute);
-app.use("/api/v1/progresses", learningProgressRoute);
-app.use("/api/v1/completions", lessonCompletionRoute);
+app.use('/api/v1/users', userRoute);
+app.use('/api/v1/categories', categoryRoute);
+app.use('/api/v1/courses', courseRoute);
+app.use('/api/v1/objectives', courseObjectiveRoute);
+app.use('/api/v1/modules', moduleRoute);
+app.use('/api/v1/chapters', chapterRoute);
+app.use('/api/v1/lessons', lessonRoute);
+app.use('/api/v1/contents', lessonContentRoute);
+app.use('/api/v1/reviews', reviewRoute);
+app.use('/api/v1/questions', questionRoute);
+app.use('/api/v1/answers', answerRoute);
+app.use('/api/v1/enrollments', enrollmentRoute);
+app.use('/api/v1/progresses', learningProgressRoute);
+app.use('/api/v1/completions', lessonCompletionRoute);
+app.use('/api/v1/subscriptions', subscriptionRoute);
 // configure middleware handle error
 app.use(notFoundUrl);
 app.use(errorHandler);

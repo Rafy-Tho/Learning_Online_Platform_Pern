@@ -306,7 +306,6 @@ FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 CREATE TABLE subscription_plans (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name VARCHAR(50) NOT NULL, -- STANDARD, PREMIUM, etc.
-  duration_name VARCHAR(20) NOT NULL, -- MONTHLY, YEARLY
   duration_days INT NOT NULL, -- 30, 365, etc.
   price NUMERIC(10,2) NOT NULL CHECK (price >= 0),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -353,7 +352,6 @@ CREATE TABLE subscription_payments(
   amount NUMERIC(10,2) NOT NULL CHECK (amount >= 0),
   payment_status payment_status DEFAULT 'PENDING',
   stripe_payment_intent_id TEXT UNIQUE,
-  stripe_invoice_id TEXT UNIQUE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

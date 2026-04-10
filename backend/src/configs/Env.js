@@ -1,4 +1,4 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -24,6 +24,9 @@ const ENV = {
   MAIL_PASSWORD: process.env.MAIL_PASSWORD,
   EMAIL_SENDER: process.env.EMAIL_SENDER,
   EMAIL_SENDER_CODE: process.env.EMAIL_SENDER_CODE,
+  // Stripe api key
+  STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+  STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
 };
 
 export default ENV;

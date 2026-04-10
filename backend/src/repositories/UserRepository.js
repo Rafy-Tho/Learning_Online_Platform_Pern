@@ -1,4 +1,4 @@
-import pgPool from "../configs/database.js";
+import pgPool from '../configs/database.js';
 
 class UserRepository {
   async create({ email, password, name, imageUrl }) {
