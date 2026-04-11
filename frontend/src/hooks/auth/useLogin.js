@@ -3,7 +3,7 @@ import authApi from "../../services/AuthApi";
 
 function useLogin() {
   const {
-    mutate: login,
+    mutateAsync: login,
     isPending,
     error,
   } = useMutation({

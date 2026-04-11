@@ -1,6 +1,6 @@
-import { createServer } from "http";
-import ENV from "./src/configs/Env.js";
-import app from "./src/app.js";
+import { createServer } from 'http';
+import app from './src/app.js';
+import ENV from './src/configs/Env.js';
 
 const server = createServer(app);
 

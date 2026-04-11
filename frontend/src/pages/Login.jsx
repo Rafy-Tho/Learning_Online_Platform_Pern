@@ -36,18 +36,19 @@ const Login = () => {
   const navigate = useNavigate();
   const { login, isPending } = useLogin();
   const { saveAuth } = useAuth();
-  const onSubmit = (data) => {
-    login(data, {
-      onSuccess: (data) => {
-        saveAuth(data);
-        toast.success("Login successful");
-        reset();
-        navigate("/");
-      },
-      onError: (err) => {
-        toast.error(err.message || "Login failed");
-      },
-    });
+  const onSubmit = async (formData) => {
+    try {
+      const res = await login(formData);
+
+      toast.success("Login successful");
+
+      saveAuth(res);
+      reset();
+
+      navigate("/");
+    } catch (err) {
+      toast.error(err.message || "Login failed");
+    }
   };
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">

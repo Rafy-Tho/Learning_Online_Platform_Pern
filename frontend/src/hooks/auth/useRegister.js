@@ -3,7 +3,7 @@ import authApi from "../../services/AuthApi";
 
 function useRegister() {
   const {
-    mutate: registerUser,
+    mutateAsync: registerUser,
     isPending,
     error,
   } = useMutation({

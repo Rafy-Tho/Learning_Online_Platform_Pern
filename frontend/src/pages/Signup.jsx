@@ -38,18 +38,19 @@ const Signup = () => {
   const navigate = useNavigate();
   const { registerUser, isPending } = useRegister();
   const { saveAuth } = useAuth();
-  const onSubmit = (data) => {
-    registerUser(data, {
-      onSuccess: (data) => {
-        toast.success("Register successfully");
-        saveAuth(data);
-        reset();
-        navigate("/");
-      },
-      onError: (err) => {
-        toast.error(err.message || "Register failed");
-      },
-    });
+  const onSubmit = async (formData) => {
+    try {
+      const res = await registerUser(formData);
+
+      toast.success("Register successfully");
+
+      saveAuth(res);
+      reset();
+
+      navigate("/");
+    } catch (err) {
+      toast.error(err.message || "Register failed");
+    }
   };
   return (
     <div className="min-h-screen  flex items-center justify-center p-4 bg-slate-50 dark:bg-slate-900">
