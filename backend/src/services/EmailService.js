@@ -1,38 +1,27 @@
-import nodemailer from "nodemailer";
+// services/EmailService.js
+import { Resend } from "resend";
 import ENV from "../configs/Env.js";
 
-class EmailService {
-  constructor() {
-    this.transporter = nodemailer.createTransport({
-      host: ENV.MAIL_HOST,
-      port: Number(ENV.MAIL_PORT),
-      secure: false,
-      family: 4,
-      auth: {
-        user: ENV.MAIL_USER,
-        pass: ENV.MAIL_PASSWORD,
-      },
-    });
-  }
+const resend = new Resend(ENV.RESEND_API_KEY);
 
-  async send(from = ENV.EMAIL_SENDER, to, subject, text) {
+class EmailService {
+  async send(to, subject, text) {
     try {
-      await this.transporter.sendMail({
-        from: `"Learning Online Platform" <${from}>`,
+      await resend.emails.send({
+        from: "Learning Platform <onboarding@resend.dev>",
         to,
         subject,
         text,
       });
       console.log("✅ Email sent");
     } catch (err) {
-      console.error("❌ Email error:", err); // 👈 VERY IMPORTANT
+      console.error("❌ Email error:", err);
       throw err;
     }
   }
 
   async sendResetCode(to, code) {
     await this.send(
-      ENV.EMAIL_SENDER_CODE,
       to,
       "Password Reset Code",
       `Your password reset code is: ${code}`,
