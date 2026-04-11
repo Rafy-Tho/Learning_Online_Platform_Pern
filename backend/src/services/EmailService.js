@@ -4,10 +4,10 @@ import ENV from "../configs/Env.js";
 class EmailService {
   constructor() {
     this.transporter = nodemailer.createTransport({
-      // host: ENV.MAIL_HOST,
-      // port: ENV.MAIL_PORT,
-      // secure: false,
-      service: "gmail",
+      host: ENV.MAIL_HOST,
+      port: Number(ENV.MAIL_PORT),
+      secure: false,
+      family: 4,
       auth: {
         user: ENV.MAIL_USER,
         pass: ENV.MAIL_PASSWORD,
