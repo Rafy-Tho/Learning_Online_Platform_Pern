@@ -8,7 +8,7 @@ class EmailService {
   async send(to, subject, text) {
     try {
       await resend.emails.send({
-        from: "Learning Platform <onboarding@resend.dev>",
+        from: `Learning Platform <${ENV.DOMAIN_NAME}>`,
         to,
         subject,
         text,

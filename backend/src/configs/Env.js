@@ -14,6 +14,7 @@ const ENV = {
   CLIENT_URL: process.env.CLIENT_URL,
   // mail
   RESEND_API_KEY: process.env.RESEND_API_KEY,
+  DOMAIN_NAME: process.env.DOMAIN_NAME,
   // Stripe api key
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
