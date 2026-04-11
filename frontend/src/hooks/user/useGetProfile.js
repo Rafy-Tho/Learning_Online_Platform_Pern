@@ -6,7 +6,7 @@ function useGetProfile() {
     queryKey: ["me"],
     queryFn: async () => userApi.getProfile(),
     retry: false,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
   return { data, isPending, error };
 }
