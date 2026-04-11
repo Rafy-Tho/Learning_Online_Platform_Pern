@@ -16,12 +16,18 @@ class EmailService {
   }
 
   async send(from = ENV.EMAIL_SENDER, to, subject, text) {
-    await this.transporter.sendMail({
-      from: `"Learning Online Platform" <${from}>`,
-      to,
-      subject,
-      text,
-    });
+    try {
+      await this.transporter.sendMail({
+        from: `"Learning Online Platform" <${from}>`,
+        to,
+        subject,
+        text,
+      });
+      console.log("✅ Email sent");
+    } catch (err) {
+      console.error("❌ Email error:", err); // 👈 VERY IMPORTANT
+      throw err;
+    }
   }
 
   async sendResetCode(to, code) {
