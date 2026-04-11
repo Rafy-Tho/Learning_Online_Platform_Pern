@@ -26,6 +26,7 @@ import subscriptionRoute from './routes/subscriptionRoute.js';
 import userRoute from './routes/userRoute.js';
 import webhookRoute from './routes/webhookRoute.js';
 import notFoundUrl from './utils/notFoundUrl.js';
+console.log(ENV);
 // configure variable
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
