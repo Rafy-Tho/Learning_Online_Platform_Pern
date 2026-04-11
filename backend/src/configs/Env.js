@@ -12,7 +12,6 @@ const ENV = {
   COOKIE_NAME: process.env.COOKIE_NAME,
   // url
   CLIENT_URL: process.env.CLIENT_URL,
-  BASE_URL: process.env.BASE_URL,
   // mail
   MAIL_HOST: process.env.MAIL_HOST,
   MAIL_PORT: process.env.MAIL_PORT,
@@ -23,6 +22,10 @@ const ENV = {
   // Stripe api key
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+  // cloudinary
+  CLOUDINARY_NAME: process.env.CLOUDINARY_NAME,
+  CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+  CLOUDINARY_SECRET_KEY: process.env.CLOUDINARY_SECRET_KEY,
 };
 
 export default ENV;
