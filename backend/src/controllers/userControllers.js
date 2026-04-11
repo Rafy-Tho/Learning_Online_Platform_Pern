@@ -1,3 +1,5 @@
+import { v2 as cloudinary } from 'cloudinary';
+import fs from 'fs';
 import Stripe from 'stripe';
 import ENV from '../configs/Env.js';
 import StatusCode from '../constants/StatusCode.js';
@@ -25,7 +27,7 @@ export const register = asyncHandler(async (req, res, next) => {
   // hash password
   const hashedPassword = await hashService.hash(password);
   // put default profile image
-  const imageUrl = `${ENV.BASE_URL}/profile.jpg`;
+  const imageUrl = `https://res.cloudinary.com/dmuu7x5vm/image/upload/v1775903021/men_oquwmw.jpg`;
   // create user
   const user = await User.create({
     email,
@@ -130,11 +132,22 @@ export const updateProfile = asyncHandler(async (req, res, next) => {
   //  check if user exists
   const user = await User.findById(userId);
   if (!user) return next(new ApiError(StatusCode.NOT_FOUND, 'User not found'));
-  //  update image url
-  const imageUrl = req.file
-    ? `${ENV.BASE_URL}/${req.file.filename}`
-    : user.image_url;
 
+  let imageUrl = user.image_url;
+  //  update image url
+  const imageFile = req.file;
+  if (imageFile) {
+    const imageUpload = await cloudinary.uploader.upload(imageFile.path, {
+      resource_type: 'image',
+      folder: 'image',
+    });
+
+    imageUrl = imageUpload.secure_url;
+    // Delete local file
+    fs.unlink(imageFile.path, (err) => {
+      if (err) console.error('Failed to delete local file:', err);
+    });
+  }
   //  update user info
   await User.update(userId, {
     name: name || user.name,

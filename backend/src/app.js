@@ -4,6 +4,7 @@ import express from 'express';
 import morgan from 'morgan';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import connectCloudinary from './configs/cloudinary.js';
 import ENV from './configs/Env.js';
 import errorHandler from './middlewares/errorHandler.js';
 import { globalLimiter } from './middlewares/rateLimitMiddlewares.js';
@@ -40,6 +41,8 @@ app.use(
     credentials: true,
   }),
 );
+// configure cloudinary
+connectCloudinary();
 app.use(morgan('dev'));
 // configure middleware rate limit
 app.use(globalLimiter);
