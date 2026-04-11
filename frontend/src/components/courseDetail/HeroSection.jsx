@@ -18,6 +18,10 @@ export default function HeroSection({ scrollToSection }) {
   function handleEnroll() {
     if (enrollmentsData?.data || !user) return;
     mutate();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   }
   if (isPending) return <SpinnerLoader />;
   if (error) return <ErrorMessage message={error.message} />;

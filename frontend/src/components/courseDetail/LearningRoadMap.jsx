@@ -8,13 +8,13 @@ import {
   Search,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import useCreateCourseProgress from "../../hooks/course/useCreateCourseProgress";
 import useGetCourseLearningData from "../../hooks/course/useGetCourseLearningData";
+import useGetCourseProgress from "../../hooks/course/useGetCourseProgress";
+import useAuth from "../../hooks/useAuth";
 import ErrorMessage from "../../ui/ErrorMessage";
 import SpinnerLoader from "../../ui/SpinnerLoader";
-import { Link } from "react-router-dom";
-import useGetCourseProgress from "../../hooks/course/useGetCourseProgress";
-import useCreateCourseProgress from "../../hooks/course/useCreateCourseProgress";
-import useAuth from "../../hooks/useAuth";
 export default function LearningRoadmap({ sectionRef }) {
   const [expandedSections, setExpandedSections] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -62,6 +62,7 @@ export default function LearningRoadmap({ sectionRef }) {
     else setExpandedSections(target.map((m) => m.id));
   };
   const handleProgress = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
     if (progress?.data || !user) return;
     mutate();
   };
@@ -153,13 +154,18 @@ export default function LearningRoadmap({ sectionRef }) {
                     QUIZ: CircleQuestionMark,
                   };
                   const Icon = lessonIcons[lesson.type] || Circle;
-
                   const isLocked = lesson.access_type === "SUBSCRIPTION";
+                  const isQuiz = lesson.type === "QUIZ";
+                  const link = isLocked
+                    ? "/pricing"
+                    : isQuiz
+                      ? `/courses/${course.id}/lessons/${lesson.id}/quiz`
+                      : `/courses/${course.id}/lessons/${lesson.id}`;
                   return (
                     <Link
                       key={index}
                       onClick={handleProgress}
-                      to={`/courses/${course.id}/lessons/${lesson.id}`}
+                      to={link}
                       className="flex items-center gap-3 py-2 text-sm sm:text-base"
                     >
                       {isLocked ? (

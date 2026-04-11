@@ -1,3 +1,4 @@
+import useGetActiveSubscription from "../../hooks/subscription/useGetActiveSubscription";
 import PricingCard from "./PricingCard";
 
 const plans = [
@@ -48,6 +49,8 @@ const plans = [
   },
 ];
 export default function PricingSection() {
+  const { data } = useGetActiveSubscription();
+  const activeSubscription = data?.data || null;
   return (
     <section className="min-h-screen transition-colors duration-300 bg-gradient-to-br from-gray-50 to-blue-50/30 dark:from-slate-900 dark:to-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">
@@ -71,7 +74,11 @@ export default function PricingSection() {
         {/* Enhanced Grid Layout with better responsiveness and spacing */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 justify-items-center">
           {plans.map((plan) => (
-            <PricingCard key={plan.tier} plan={plan} />
+            <PricingCard
+              key={plan.tier}
+              plan={plan}
+              activeSubscription={activeSubscription}
+            />
           ))}
         </div>
 

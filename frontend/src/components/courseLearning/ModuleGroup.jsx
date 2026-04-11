@@ -34,9 +34,11 @@ function ModuleGroup({ module, isOpen, onToggle, index }) {
             const Icon = lessonIcons[lesson.type] || Circle;
             const isLocked = lesson.access_type === "SUBSCRIPTION";
             const isQuiz = lesson.type === "QUIZ";
-            const link = isQuiz
-              ? `/courses/${courseId}/lessons/${lesson.id}/quiz`
-              : `/courses/${courseId}/lessons/${lesson.id}`;
+            const link = isLocked
+              ? "/pricing"
+              : isQuiz
+                ? `/courses/${courseId}/lessons/${lesson.id}/quiz`
+                : `/courses/${courseId}/lessons/${lesson.id}`;
             return (
               <li key={lesson.id}>
                 <NavLink

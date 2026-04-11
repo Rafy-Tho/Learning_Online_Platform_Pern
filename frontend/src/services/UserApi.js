@@ -46,6 +46,17 @@ class UserApi {
     }
     return result;
   }
+  async createPayment(id) {
+    const response = await fetch(`${this.baseUrl}/payment-stripe/${id}`, {
+      method: "POST",
+      credentials: "include",
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.message || "Failed to create payment");
+    }
+    return result;
+  }
 }
 const userApi = new UserApi();
 export default userApi;

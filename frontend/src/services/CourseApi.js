@@ -20,7 +20,9 @@ class CourseApi {
     return result;
   }
   async getCourseLearningData(courseId) {
-    const res = await fetch(`${this.baseUrl}/${courseId}/learn`);
+    const res = await fetch(`${this.baseUrl}/${courseId}/learn`, {
+      credentials: "include",
+    });
     const result = await res.json();
     if (!res.ok) {
       throw new Error(result.message || "Failed to fetch course learning data");
@@ -36,7 +38,9 @@ class CourseApi {
     return result;
   }
   async getFirstLesson(courseId) {
-    const res = await fetch(`${this.baseUrl}/${courseId}/lessons/first`);
+    const res = await fetch(`${this.baseUrl}/${courseId}/lessons/first`, {
+      credentials: "include",
+    });
     const result = await res.json();
     if (!res.ok) {
       throw new Error(result.message || "Failed to fetch first lesson");
@@ -58,7 +62,9 @@ class CourseApi {
   }
 
   async getReviewDetails(courseId) {
-    const res = await fetch(`${this.baseUrl}/${courseId}/reviews/summary`);
+    const res = await fetch(`${this.baseUrl}/${courseId}/reviews/summary`, {
+      credentials: "include",
+    });
     const result = await res.json();
     if (!res.ok) {
       throw new Error(result.message || "Failed to fetch review details");
