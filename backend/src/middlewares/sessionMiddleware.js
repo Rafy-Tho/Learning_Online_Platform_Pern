@@ -24,11 +24,10 @@ const sessionMiddleware = session({
   rolling: true,
   unset: 'destroy',
   cookie: {
-    secure: ENV.NODE_ENV === 'production',
     httpOnly: true,
+    secure: ENV.NODE_ENV === 'production',
+    sameSite: ENV.NODE_ENV === 'production' ? 'none' : 'lax',
     maxAge: COOKIE_MAX_AGE_MSEC,
-    // i don't know why but it doesn't work with sameSite: 'none'
-    // sameSite: ENV.NODE_ENV === 'production' ? 'none' : 'lax',
   },
 });
 export default sessionMiddleware;
