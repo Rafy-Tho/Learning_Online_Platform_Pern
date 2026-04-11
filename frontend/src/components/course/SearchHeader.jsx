@@ -24,7 +24,7 @@ export function SearchHeader({ setShowMobileFilter, showMobileFilter }) {
     params.delete("page");
     params.delete("limit");
     setSearchParams(params);
-  }, [searchQuery, searchParams, setSearchParams]);
+  }, [searchQuery]);
   return (
     <form
       onSubmit={handleSearch}
