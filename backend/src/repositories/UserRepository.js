@@ -19,7 +19,6 @@ class UserRepository {
       FROM users
       WHERE email = $1
     `;
-
     const result = await pgPool.query(query, [email]);
 
     return result.rows[0];

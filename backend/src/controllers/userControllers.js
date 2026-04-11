@@ -171,6 +171,7 @@ export const sendPasswordResetCode = asyncHandler(async (req, res, next) => {
   const user = await User.findByEmail(email);
   if (!user)
     return next(new ApiError(StatusCode.NOT_FOUND, "User Doesn't Exist"));
+  console.log(user);
   // delete all previous codes
   await PasswordResetCode.delete(user.id);
   // 2. Generate 6-digit numeric code
@@ -180,7 +181,11 @@ export const sendPasswordResetCode = asyncHandler(async (req, res, next) => {
   //  hash code
   const hashedCode = hashCode(code);
   // save password reset code to user
-  await PasswordResetCode.create(hashedCode, user.id, expiresAt);
+  await PasswordResetCode.create({
+    code: hashedCode,
+    userId: user.id,
+    expiresAt,
+  });
   // send password reset code to user
   await emailService.sendResetCode(email, code);
   // send response
@@ -207,7 +212,10 @@ export const verifyPasswordResetCode = asyncHandler(async (req, res, next) => {
   if (attempt > 5)
     return next(new ApiError(StatusCode.BAD_REQUEST, 'Too many attempts'));
   // check if code exists
-  const codeExist = await PasswordResetCode.findCode(hashedCode, user.id);
+  const codeExist = await PasswordResetCode.findCode({
+    code: hashedCode,
+    userId: user.id,
+  });
   if (!codeExist)
     return next(new ApiError(StatusCode.NOT_FOUND, "Code Doesn't Exist"));
   // check if code expired
@@ -238,7 +246,10 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
   if (attempt > 5)
     return next(new ApiError(StatusCode.BAD_REQUEST, 'Too many attempts'));
   // check if code exists
-  const codeExist = await PasswordResetCode.findCode(hashedCode, user.id);
+  const codeExist = await PasswordResetCode.findCode({
+    code: hashedCode,
+    userId: user.id,
+  });
   if (!codeExist)
     return next(new ApiError(StatusCode.NOT_FOUND, "Code Doesn't Exist"));
   // check if code expired

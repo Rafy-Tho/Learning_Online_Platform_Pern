@@ -6,11 +6,7 @@ const ENV = {
   PORT: process.env.PORT,
   NODE_ENV: process.env.NODE_ENV,
   // database
-  DB_HOST: process.env.DB_HOST,
-  DB_PORT: process.env.DB_PORT,
-  DB_USER: process.env.DB_USER,
-  DB_PASSWORD: process.env.DB_PASSWORD,
-  DB_NAME: process.env.DB_NAME,
+  DATABASE_URL: process.env.DATABASE_URL,
   // session
   SESSION_SECRET: process.env.SESSION_SECRET,
   COOKIE_NAME: process.env.COOKIE_NAME,
