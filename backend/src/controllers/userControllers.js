@@ -1,19 +1,19 @@
-import { v2 as cloudinary } from 'cloudinary';
-import fs from 'fs';
-import Stripe from 'stripe';
-import ENV from '../configs/Env.js';
-import StatusCode from '../constants/StatusCode.js';
-import createRandomCode from '../helper/createRadomCode.js';
-import Course from '../repositories/CourseRepository.js';
-import PasswordResetCode from '../repositories/PasswordResetCodeRepository.js';
-import Subscription from '../repositories/SubscriptionRepository.js';
-import User from '../repositories/UserRepository.js';
-import emailService from '../services/EmailService.js';
-import hashCode from '../services/HashCode.js';
-import hashService from '../services/HashService.js';
-import sessionService from '../services/SessionService.js';
-import ApiError from '../utils/ApiError.js';
-import asyncHandler from '../utils/asyncHandler.js';
+import { v2 as cloudinary } from "cloudinary";
+import fs from "fs";
+import Stripe from "stripe";
+import ENV from "../configs/Env.js";
+import StatusCode from "../constants/StatusCode.js";
+import createRandomCode from "../helper/createRadomCode.js";
+import Course from "../repositories/CourseRepository.js";
+import PasswordResetCode from "../repositories/PasswordResetCodeRepository.js";
+import Subscription from "../repositories/SubscriptionRepository.js";
+import User from "../repositories/UserRepository.js";
+import emailService from "../services/EmailService.js";
+import hashCode from "../services/HashCode.js";
+import hashService from "../services/HashService.js";
+import sessionService from "../services/SessionService.js";
+import ApiError from "../utils/ApiError.js";
+import asyncHandler from "../utils/asyncHandler.js";
 const stripeInstance = new Stripe(ENV.STRIPE_SECRET_KEY);
 // @desc    Register a new user
 // @route   POST /api/users/register
@@ -23,7 +23,7 @@ export const register = asyncHandler(async (req, res, next) => {
   // check if user already exists
   const userExists = await User.findByEmail(email);
   if (userExists)
-    return next(new ApiError(StatusCode.BAD_REQUEST, 'User already exists'));
+    return next(new ApiError(StatusCode.BAD_REQUEST, "User already exists"));
   // hash password
   const hashedPassword = await hashService.hash(password);
   // put default profile image
@@ -45,7 +45,7 @@ export const register = asyncHandler(async (req, res, next) => {
   res.status(StatusCode.CREATED).json({
     success: true,
     statusCode: StatusCode.CREATED,
-    message: 'User registered successfully',
+    message: "User registered successfully",
     data: userProfile,
   });
 });
@@ -57,12 +57,12 @@ export const login = asyncHandler(async (req, res, next) => {
   // check if user exists
   const user = await User.findByEmail(email);
   if (!user)
-    return next(new ApiError(StatusCode.BAD_REQUEST, 'Invalid credentials'));
+    return next(new ApiError(StatusCode.BAD_REQUEST, "Invalid credentials"));
   // verify password
   const isPasswordMatch = await hashService.verify(password, user.password);
   // check if password is valid
   if (!isPasswordMatch)
-    return next(new ApiError(StatusCode.BAD_REQUEST, 'Invalid credentials'));
+    return next(new ApiError(StatusCode.BAD_REQUEST, "Invalid credentials"));
   // find user with profile
   const userProfile = await User.profile(user.id);
   // update last login
@@ -73,7 +73,7 @@ export const login = asyncHandler(async (req, res, next) => {
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
-    message: 'User logged in successfully',
+    message: "User logged in successfully",
     data: userProfile,
   });
 });
@@ -94,23 +94,36 @@ export const logout = asyncHandler(async (req, res, next) => {
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
-    message: 'User logged out successfully',
+    message: "User logged out successfully",
     data: null,
   });
 });
+
+export const getMe = asyncHandler(async (req, res, next) => {
+  const userId = req.session?.user?.id || null;
+  //  check if user exists
+  const user = userId ? await User.findById(userId) : null;
+  //  send response
+  res.status(StatusCode.OK).json({
+    success: true,
+    statusCode: StatusCode.OK,
+    message: "User info retrieved successfully",
+    data: user,
+  });
+});
 // @desc    Get user info
-// @route   GET /api/users/me
+// @route   GET /api/users/profile
 // @access  Private
 export const getProfile = asyncHandler(async (req, res, next) => {
   const userId = req.session.user.id;
   //  check if user exists
   const user = await User.profile(userId);
-  if (!user) return next(new ApiError(StatusCode.NOT_FOUND, 'User not found'));
+  if (!user) return next(new ApiError(StatusCode.NOT_FOUND, "User not found"));
   //  send response
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
-    message: 'User info retrie  ved successfully',
+    message: "User info retrie  ved successfully",
     data: user,
   });
 });
@@ -131,21 +144,21 @@ export const updateProfile = asyncHandler(async (req, res, next) => {
   } = req.body;
   //  check if user exists
   const user = await User.findById(userId);
-  if (!user) return next(new ApiError(StatusCode.NOT_FOUND, 'User not found'));
+  if (!user) return next(new ApiError(StatusCode.NOT_FOUND, "User not found"));
 
   let imageUrl = user.image_url;
   //  update image url
   const imageFile = req.file;
   if (imageFile) {
     const imageUpload = await cloudinary.uploader.upload(imageFile.path, {
-      resource_type: 'image',
-      folder: 'image',
+      resource_type: "image",
+      folder: "image",
     });
 
     imageUrl = imageUpload.secure_url;
     // Delete local file
     fs.unlink(imageFile.path, (err) => {
-      if (err) console.error('Failed to delete local file:', err);
+      if (err) console.error("Failed to delete local file:", err);
     });
   }
   //  update user info
@@ -170,7 +183,7 @@ export const updateProfile = asyncHandler(async (req, res, next) => {
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
-    message: 'User info updated successfully',
+    message: "User info updated successfully",
     data: userProfile,
   });
 });
@@ -205,7 +218,7 @@ export const sendPasswordResetCode = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     statusCode: StatusCode.OK,
-    message: 'Password reset code sent successfully',
+    message: "Password reset code sent successfully",
     data: null,
   });
 });
@@ -223,7 +236,7 @@ export const verifyPasswordResetCode = asyncHandler(async (req, res, next) => {
   // track attempt used
   const attempt = await PasswordResetCode.incrementAttempt(user.id);
   if (attempt > 5)
-    return next(new ApiError(StatusCode.BAD_REQUEST, 'Too many attempts'));
+    return next(new ApiError(StatusCode.BAD_REQUEST, "Too many attempts"));
   // check if code exists
   const codeExist = await PasswordResetCode.findCode({
     code: hashedCode,
@@ -233,13 +246,13 @@ export const verifyPasswordResetCode = asyncHandler(async (req, res, next) => {
     return next(new ApiError(StatusCode.NOT_FOUND, "Code Doesn't Exist"));
   // check if code expired
   if (codeExist.expires_at < new Date())
-    return next(new ApiError(StatusCode.BAD_REQUEST, 'Code expired'));
+    return next(new ApiError(StatusCode.BAD_REQUEST, "Code expired"));
 
   // send response
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
-    message: 'Verification successful',
+    message: "Verification successful",
     data: null,
   });
 });
@@ -257,7 +270,7 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
   // track attempt used
   const attempt = await PasswordResetCode.incrementAttempt(user.id);
   if (attempt > 5)
-    return next(new ApiError(StatusCode.BAD_REQUEST, 'Too many attempts'));
+    return next(new ApiError(StatusCode.BAD_REQUEST, "Too many attempts"));
   // check if code exists
   const codeExist = await PasswordResetCode.findCode({
     code: hashedCode,
@@ -267,7 +280,7 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
     return next(new ApiError(StatusCode.NOT_FOUND, "Code Doesn't Exist"));
   // check if code expired
   if (codeExist.expires_at < new Date())
-    return next(new ApiError(StatusCode.BAD_REQUEST, 'Code expired'));
+    return next(new ApiError(StatusCode.BAD_REQUEST, "Code expired"));
   // hash password
   const passwordHash = await hashService.hash(password);
   // update user password
@@ -276,7 +289,7 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
   await PasswordResetCode.delete(user.id);
   // send response
   res.status(StatusCode.OK).json({
-    message: 'Password reset successfully',
+    message: "Password reset successfully",
     success: true,
     statusCode: StatusCode.OK,
     data: null,
@@ -295,14 +308,14 @@ export const updatePassword = asyncHandler(async (req, res, next) => {
   // check if old password is correct
   const isMatch = await hashService.verify(oldPassword, user.password);
   if (!isMatch)
-    return next(new ApiError(StatusCode.BAD_REQUEST, 'Invalid credentials'));
+    return next(new ApiError(StatusCode.BAD_REQUEST, "Invalid credentials"));
   // hash new password
   const passwordHash = await hashService.hash(newPassword);
   // update user password
   await User.updatePassword({ userId, passwordHash });
   // send response
   res.status(StatusCode.OK).json({
-    message: 'Password updated successfully',
+    message: "Password updated successfully",
     success: true,
     statusCode: StatusCode.OK,
     data: null,
@@ -318,7 +331,7 @@ export const getXpEarning = asyncHandler(async (req, res, next) => {
     return next(new ApiError(StatusCode.NOT_FOUND, "User Doesn't Exist"));
   const earning = await Course.getXpEarning(userId);
   res.status(StatusCode.OK).json({
-    message: 'Earning retrieved successfully',
+    message: "Earning retrieved successfully",
     success: true,
     statusCode: StatusCode.OK,
     data: earning,
@@ -335,25 +348,25 @@ export const createStripeSession = asyncHandler(async (req, res, next) => {
   const subscription = await Subscription.findById(subscriptionId);
 
   if (!subscription) {
-    return next(new ApiError(404, 'Subscription not found'));
+    return next(new ApiError(404, "Subscription not found"));
   }
   const activePlan = await Subscription.getActivePaidSubscription(userId);
   if (activePlan) {
     return next(
       new ApiError(
         StatusCode.BAD_REQUEST,
-        'You already have an active subscription',
+        "You already have an active subscription",
       ),
     );
   }
   await Subscription.setUserSubscriptionStatusToExpired(userId);
   const session = await stripeInstance.checkout.sessions.create({
-    payment_method_types: ['card'],
-    mode: 'payment',
+    payment_method_types: ["card"],
+    mode: "payment",
     line_items: [
       {
         price_data: {
-          currency: 'usd',
+          currency: "usd",
           product_data: {
             name: subscription.name,
           },
@@ -372,7 +385,7 @@ export const createStripeSession = asyncHandler(async (req, res, next) => {
   });
   return res.status(StatusCode.OK).json({
     success: true,
-    message: 'Checkout session created successfully',
+    message: "Checkout session created successfully",
     statusCode: StatusCode.OK,
     session_url: session.url,
   });

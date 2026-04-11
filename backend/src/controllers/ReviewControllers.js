@@ -11,7 +11,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 // @access Public
 export const getReviews = asyncHandler(async (req, res, next) => {
   const courseId = req.params.id;
-  const userId = req.session?.user?.id || null;
+  const userId = req?.session?.user?.id || null;
   const course = await Course.findById(courseId);
   if (!course)
     return next(new ApiError(StatusCode.NOT_FOUND, "Course not found"));
@@ -96,7 +96,7 @@ export const reviewHelpfulVote = asyncHandler(async (req, res, next) => {
   const reviewId = req.params.id;
   const { isHelpful } = req.body;
 
-  const users = await User.findById(userId);
+  const users = userId ? await User.findById(userId) : null;
   if (!users) return next(new ApiError(StatusCode.NOT_FOUND, "User not found"));
 
   const review = await Review.findById(reviewId);
@@ -144,7 +144,7 @@ export const createReviewReport = asyncHandler(async (req, res, next) => {
   const userId = req.session?.user?.id || null;
   const reviewId = req.params.id;
   const { reason, description } = req.body;
-  const user = await User.findById(userId);
+  const user = userId ? await User.findById(userId) : null;
   // Check if the user exists
   if (!user) return next(new ApiError(StatusCode.NOT_FOUND, "User not found"));
   // Check if the review exists

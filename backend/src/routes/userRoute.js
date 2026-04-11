@@ -1,6 +1,7 @@
-import express from 'express';
+import express from "express";
 import {
   createStripeSession,
+  getMe,
   getProfile,
   getXpEarning,
   login,
@@ -11,14 +12,14 @@ import {
   updatePassword,
   updateProfile,
   verifyPasswordResetCode,
-} from '../controllers/userControllers.js';
-import { upload } from '../middlewares/multer.js';
+} from "../controllers/userControllers.js";
+import { upload } from "../middlewares/multer.js";
 import {
   codeAttemptsLimiter,
   passwordResetLimiter,
-} from '../middlewares/rateLimitMiddlewares.js';
-import requireAuth from '../middlewares/requireAuth.js';
-import { validateResult } from '../middlewares/validateResult.js';
+} from "../middlewares/rateLimitMiddlewares.js";
+import requireAuth from "../middlewares/requireAuth.js";
+import { validateResult } from "../middlewares/validateResult.js";
 import {
   validateEmailResetCode,
   validateLogin,
@@ -27,32 +28,33 @@ import {
   validateSendResetPasswordCode,
   validateUpdatePassword,
   validateUpdateProfile,
-} from '../validators/userValidators.js';
+} from "../validators/userValidators.js";
 
 const userRoute = express.Router();
 
 // @desc    Register a new user
-userRoute.post('/register', validateRegister, validateResult, register);
+userRoute.post("/register", validateRegister, validateResult, register);
 // @desc    Login a user
-userRoute.post('/login', validateLogin, validateResult, login);
+userRoute.post("/login", validateLogin, validateResult, login);
 // @desc    Logout a user
-userRoute.post('/logout', requireAuth, logout);
+userRoute.post("/logout", requireAuth, logout);
 // @desc    Get user profile
-userRoute.get('/me', requireAuth, getProfile);
-userRoute.get('/xp-earned', requireAuth, getXpEarning);
+userRoute.get("/me", getMe);
+userRoute.get("/profile", requireAuth, getProfile);
+userRoute.get("/xp-earned", requireAuth, getXpEarning);
 
 // @desc    Update user profile
 userRoute.patch(
-  '/me',
+  "/profile",
   requireAuth,
-  upload.single('image'),
+  upload.single("image"),
   validateUpdateProfile,
   validateResult,
   updateProfile,
 );
 // @desc    Update user password
 userRoute.post(
-  '/password',
+  "/password",
   requireAuth,
   validateUpdatePassword,
   validateResult,
@@ -60,7 +62,7 @@ userRoute.post(
 );
 // @desc    Send password reset code
 userRoute.post(
-  '/password-reset-code',
+  "/password-reset-code",
   passwordResetLimiter,
   validateEmailResetCode,
   validateResult,
@@ -68,7 +70,7 @@ userRoute.post(
 );
 // @desc    Verify password reset code
 userRoute.post(
-  '/verify-password-reset-code',
+  "/verify-password-reset-code",
   codeAttemptsLimiter,
   validateSendResetPasswordCode,
   validateResult,
@@ -76,7 +78,7 @@ userRoute.post(
 );
 // @desc    Reset user password
 userRoute.post(
-  '/reset-password',
+  "/reset-password",
   codeAttemptsLimiter,
   validateResetPassword,
   validateResult,
@@ -84,7 +86,7 @@ userRoute.post(
 );
 
 userRoute.post(
-  '/payment-stripe/:subscriptionId',
+  "/payment-stripe/:subscriptionId",
   requireAuth,
   createStripeSession,
 );
