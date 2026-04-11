@@ -1,18 +1,18 @@
-import connectPgSimple from 'connect-pg-simple';
-import session from 'express-session';
-import pgPool from '../configs/database.js';
-import ENV from '../configs/Env.js';
+import connectPgSimple from "connect-pg-simple";
+import session from "express-session";
+import pgPool from "../configs/database.js";
+import ENV from "../configs/Env.js";
 import {
   COOKIE_MAX_AGE_MSEC,
   SESSION_INTERVAL_SEC,
   SESSION_MAX_AGE_SEC,
-} from '../constants/constants.js';
+} from "../constants/constants.js";
 const pgSession = connectPgSimple(session);
 // your config values
 const sessionMiddleware = session({
   store: new pgSession({
     pool: pgPool,
-    tableName: 'session',
+    tableName: "session",
     createTableIfMissing: true,
     pruneSessionInterval: SESSION_INTERVAL_SEC,
     ttl: SESSION_MAX_AGE_SEC,
@@ -22,12 +22,13 @@ const sessionMiddleware = session({
   saveUninitialized: false,
   name: ENV.COOKIE_NAME,
   rolling: true,
-  unset: 'destroy',
+  unset: "destroy",
   cookie: {
     httpOnly: true,
-    secure: ENV.NODE_ENV === 'production',
-    sameSite: ENV.NODE_ENV === 'production' ? 'none' : 'lax',
+    secure: ENV.NODE_ENV === "production",
+    sameSite: ENV.NODE_ENV === "production" ? "none" : "lax",
     maxAge: COOKIE_MAX_AGE_MSEC,
+    // domain: ENV.NODE_ENV === "production" ? `.${ENV.ROOT_DOMAIN}` : undefined,
   },
 });
 export default sessionMiddleware;
