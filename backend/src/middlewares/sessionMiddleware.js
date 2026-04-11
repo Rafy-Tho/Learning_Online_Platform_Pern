@@ -27,7 +27,8 @@ const sessionMiddleware = session({
     secure: ENV.NODE_ENV === 'production',
     httpOnly: true,
     maxAge: COOKIE_MAX_AGE_MSEC,
-    sameSite: ENV.NODE_ENV === 'production' ? 'none' : 'lax',
+    // i don't know why but it doesn't work with sameSite: 'none'
+    // sameSite: ENV.NODE_ENV === 'production' ? 'none' : 'lax',
   },
 });
 export default sessionMiddleware;
