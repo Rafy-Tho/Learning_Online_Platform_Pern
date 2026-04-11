@@ -1,8 +1,9 @@
-import StatusCode from "../constants/StatusCode.js";
-import LessonContent from "../repositories/LessonContentRepository.js";
-import Lesson from "../repositories/LessonRepository.js";
-import ApiError from "../utils/ApiError.js";
-import asyncHandler from "../utils/asyncHandler.js";
+import StatusCode from '../constants/StatusCode.js';
+import LessonContent from '../repositories/LessonContentRepository.js';
+import Lesson from '../repositories/LessonRepository.js';
+import Subscription from '../repositories/SubscriptionRepository.js';
+import ApiError from '../utils/ApiError.js';
+import asyncHandler from '../utils/asyncHandler.js';
 
 // @desc Create a lesson content
 // @route POST /api/v1/lessons/:id/contents
@@ -13,7 +14,7 @@ export const createLessonContent = asyncHandler(async (req, res, next) => {
 
   const lesson = await Lesson.findById(lessonId);
   if (!lesson)
-    return next(new ApiError(StatusCode.NOT_FOUND, "Lesson not found"));
+    return next(new ApiError(StatusCode.NOT_FOUND, 'Lesson not found'));
   const lessonContent = await LessonContent.create({
     lessonId,
     name,
@@ -23,7 +24,7 @@ export const createLessonContent = asyncHandler(async (req, res, next) => {
   res.status(StatusCode.CREATED).json({
     success: true,
     statusCode: StatusCode.CREATED,
-    message: "Lesson content created successfully",
+    message: 'Lesson content created successfully',
     data: lessonContent,
   });
 });
@@ -35,7 +36,7 @@ export const updateLessonContent = asyncHandler(async (req, res, next) => {
   const { name, position, content } = req.body;
   const lessonContent = await LessonContent.findById(id);
   if (!lessonContent)
-    return next(new ApiError(StatusCode.NOT_FOUND, "Lesson content not found"));
+    return next(new ApiError(StatusCode.NOT_FOUND, 'Lesson content not found'));
   const updatedLessonContent = await LessonContent.update({
     id,
     name,
@@ -45,7 +46,7 @@ export const updateLessonContent = asyncHandler(async (req, res, next) => {
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
-    message: "Lesson content updated successfully",
+    message: 'Lesson content updated successfully',
     data: updatedLessonContent,
   });
 });
@@ -54,15 +55,26 @@ export const updateLessonContent = asyncHandler(async (req, res, next) => {
 // @route get GET /api/v1/lessons/:id/contents
 // @access public
 export const getLessonContents = asyncHandler(async (req, res, next) => {
+  const userId = req.session.user.id;
   const lessonId = req.params.id;
   const lesson = await Lesson.findById(lessonId);
   if (!lesson)
-    return next(new ApiError(StatusCode.NOT_FOUND, "Lesson not found"));
+    return next(new ApiError(StatusCode.NOT_FOUND, 'Lesson not found'));
+  if (lesson.access_type === 'SUBSCRIPTION') {
+    const activePlan = await Subscription.getActivePaidSubscription(userId);
+    if (!activePlan)
+      return next(
+        new ApiError(
+          StatusCode.FORBIDDEN,
+          "You don't have a paid subscription",
+        ),
+      );
+  }
   const lessonContents = await LessonContent.findByLessonId(lessonId);
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
-    message: "Lesson contents fetched successfully",
+    message: 'Lesson contents fetched successfully',
     data: lessonContents,
   });
 });

@@ -9,7 +9,6 @@ import asyncHandler from "../utils/asyncHandler.js";
 export const createQuestion = asyncHandler(async (req, res, next) => {
   const lessonId = req.params.id;
   const { question, explanation, position } = req.body;
-  console.log(lessonId);
   const lesson = await Lesson.findById(lessonId);
   if (!lesson)
     return next(new ApiError(StatusCode.NOT_FOUND, "Lesson not found"));

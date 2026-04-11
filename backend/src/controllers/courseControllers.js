@@ -1,8 +1,9 @@
-import StatusCode from "../constants/StatusCode.js";
-import Course from "../repositories/CourseRepository.js";
-import User from "../repositories/UserRepository.js";
-import ApiError from "../utils/ApiError.js";
-import asyncHandler from "../utils/asyncHandler.js";
+import StatusCode from '../constants/StatusCode.js';
+import Course from '../repositories/CourseRepository.js';
+import Subscription from '../repositories/SubscriptionRepository.js';
+import User from '../repositories/UserRepository.js';
+import ApiError from '../utils/ApiError.js';
+import asyncHandler from '../utils/asyncHandler.js';
 // @desc Create a new course
 // @route POST /api/v1/courses
 // @access Private/Instructor
@@ -35,7 +36,7 @@ export const createCourse = asyncHandler(async (req, res, next) => {
   res.status(StatusCode.CREATED).json({
     success: true,
     statusCode: StatusCode.CREATED,
-    message: "Course created successfully",
+    message: 'Course created successfully',
     data: course,
   });
 });
@@ -49,7 +50,7 @@ export const getAllCourses = asyncHandler(async (req, res, next) => {
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
-    message: "Courses retrieved successfully",
+    message: 'Courses retrieved successfully',
     data: data,
     pagination,
     query,
@@ -63,12 +64,12 @@ export const getCoursesByCategoryId = asyncHandler(async (req, res, next) => {
   const courses = await Course.findByCategoryId(category_id);
   if (!courses.length)
     return next(
-      new ApiError(StatusCode.NOT_FOUND, "No courses found for this category"),
+      new ApiError(StatusCode.NOT_FOUND, 'No courses found for this category'),
     );
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
-    message: "Courses retrieved successfully",
+    message: 'Courses retrieved successfully',
     data: courses,
   });
 });
@@ -82,13 +83,13 @@ export const getCoursesByInstructorId = asyncHandler(async (req, res, next) => {
     return next(
       new ApiError(
         StatusCode.NOT_FOUND,
-        "No courses found for this instructor",
+        'No courses found for this instructor',
       ),
     );
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
-    message: "Courses retrieved successfully",
+    message: 'Courses retrieved successfully',
     data: courses,
   });
 });
@@ -110,12 +111,12 @@ export const updateCourse = asyncHandler(async (req, res, next) => {
   // Check if the course exists
   const course = await Course.findById(id);
   if (!course)
-    return next(new ApiError(StatusCode.NOT_FOUND, "Course not found"));
+    return next(new ApiError(StatusCode.NOT_FOUND, 'Course not found'));
   if (course.instructor_id !== instructorId)
     return next(
       new ApiError(
         StatusCode.FORBIDDEN,
-        "You are not authorized to update this course",
+        'You are not authorized to update this course',
       ),
     );
   // Update the course
@@ -135,7 +136,7 @@ export const updateCourse = asyncHandler(async (req, res, next) => {
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
-    message: "Course updated successfully",
+    message: 'Course updated successfully',
     data: updatedCourse,
   });
 });
@@ -148,19 +149,19 @@ export const deleteCourse = asyncHandler(async (req, res, next) => {
   // Check if the course exists
   const course = await Course.findById(id);
   if (!course)
-    return next(new ApiError(StatusCode.NOT_FOUND, "Course not found"));
+    return next(new ApiError(StatusCode.NOT_FOUND, 'Course not found'));
   if (course.instructor_id !== instructorId)
     return next(
       new ApiError(
         StatusCode.FORBIDDEN,
-        "You are not authorized to delete this course",
+        'You are not authorized to delete this course',
       ),
     );
   const deletedCourse = await Course.delete(id);
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
-    message: "Course deleted successfully",
+    message: 'Course deleted successfully',
     data: deletedCourse,
   });
 });
@@ -171,12 +172,12 @@ export const getCourseDetails = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const course = await Course.findById(id);
   if (!course)
-    return next(new ApiError(StatusCode.NOT_FOUND, "Course not found"));
+    return next(new ApiError(StatusCode.NOT_FOUND, 'Course not found'));
   const courseDetails = await Course.getCourseDetailsById(id);
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
-    message: "Course retrieved successfully",
+    message: 'Course retrieved successfully',
     data: courseDetails,
   });
 });
@@ -184,18 +185,36 @@ export const getCourseDetails = asyncHandler(async (req, res, next) => {
 // @route GET /api/v1/courses/:id/modules
 // @access Public
 export const getCourseLearningData = asyncHandler(async (req, res, next) => {
+  const userId = req?.session?.user?.id;
   const { id } = req.params;
   const course = await Course.findById(id);
   if (!course)
-    return next(new ApiError(StatusCode.NOT_FOUND, "Course not found"));
+    return next(new ApiError(StatusCode.NOT_FOUND, 'Course not found'));
+
+  const activePlan = userId
+    ? await Subscription.getActivePaidSubscription(userId)
+    : null;
 
   const moduleDetails = await Course.getLearningData(id);
+
+  const data = {
+    ...moduleDetails,
+    modules: moduleDetails.modules.map((module) => ({
+      ...module,
+      lessons: module.lessons.map((lesson) => {
+        if (lesson.access_type === 'SUBSCRIPTION' && activePlan) {
+          return { ...lesson, access_type: 'FREE' };
+        }
+        return lesson;
+      }),
+    })),
+  };
 
   res.status(200).json({
     success: true,
     statusCode: StatusCode.OK,
-    message: "Module details retrieved successfully",
-    data: moduleDetails,
+    message: 'Module details retrieved successfully',
+    data: data,
   });
 });
 // @desc Get course recently viewed
@@ -206,13 +225,13 @@ export const getRecentlyViewedCourses = asyncHandler(async (req, res, next) => {
 
   const user = await User.findById(userId);
 
-  if (!user) return next(new ApiError(StatusCode.NOT_FOUND, "User not found"));
+  if (!user) return next(new ApiError(StatusCode.NOT_FOUND, 'User not found'));
   const recentlyReviewed = await Course.getRecentlyViewed(userId);
 
   res.status(200).json({
     success: true,
     statusCode: StatusCode.OK,
-    message: "Recently reviewed retrieved successfully",
+    message: 'Recently reviewed retrieved successfully',
     data: recentlyReviewed,
   });
 });
@@ -224,7 +243,7 @@ export const getRecommendedCourses = asyncHandler(async (req, res, next) => {
 
   const user = await User.findById(userId);
 
-  if (!user) return next(new ApiError(StatusCode.NOT_FOUND, "User not found"));
+  if (!user) return next(new ApiError(StatusCode.NOT_FOUND, 'User not found'));
 
   let recommendedCourses = await Course.getRecommended(userId);
 
@@ -234,7 +253,7 @@ export const getRecommendedCourses = asyncHandler(async (req, res, next) => {
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
-    message: "Recommended courses retrieved successfully",
+    message: 'Recommended courses retrieved successfully',
     data: recommendedCourses,
   });
 });
@@ -247,7 +266,7 @@ export const getPopularCourses = asyncHandler(async (req, res, next) => {
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
-    message: "Popular courses retrieved successfully",
+    message: 'Popular courses retrieved successfully',
     data: popularCourses,
   });
 });
@@ -256,7 +275,7 @@ export const getCourseInprogress = asyncHandler(async (req, res, next) => {
   const userId = req.session?.user.id;
   const user = await User.findById(userId);
 
-  if (!user) return next(new ApiError(StatusCode.NOT_FOUND, "User not found"));
+  if (!user) return next(new ApiError(StatusCode.NOT_FOUND, 'User not found'));
   const courses = await Course.getCourseInProgress({
     userId,
     queryString: req.query,
@@ -264,7 +283,7 @@ export const getCourseInprogress = asyncHandler(async (req, res, next) => {
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
-    message: "Courses retrieved successfully",
+    message: 'Courses retrieved successfully',
     data: courses,
   });
 });
@@ -273,7 +292,7 @@ export const getCourseCompleted = asyncHandler(async (req, res, next) => {
   const userId = req.session?.user.id;
   const user = await User.findById(userId);
 
-  if (!user) return next(new ApiError(StatusCode.NOT_FOUND, "User not found"));
+  if (!user) return next(new ApiError(StatusCode.NOT_FOUND, 'User not found'));
   const courses = await Course.getCompletedCourses({
     userId,
     queryString: req.query,
@@ -281,7 +300,7 @@ export const getCourseCompleted = asyncHandler(async (req, res, next) => {
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
-    message: "Courses retrieved successfully",
+    message: 'Courses retrieved successfully',
     data: courses,
   });
 });

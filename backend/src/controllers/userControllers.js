@@ -346,8 +346,10 @@ export const createStripeSession = asyncHandler(async (req, res, next) => {
       subscriptionId,
     },
   });
-  return res.json({
+  return res.status(StatusCode.OK).json({
     success: true,
+    message: 'Checkout session created successfully',
+    statusCode: StatusCode.OK,
     session_url: session.url,
   });
 });
