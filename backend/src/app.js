@@ -35,7 +35,7 @@ app.set("trust proxy", 1);
 app.use(cors({ origin: ENV.CLIENT_URL, credentials: true }));
 
 // 3. Webhook route (needs raw body, so before json parser)
-app.use("/api/v1/", webhookRoute);
+app.use("/api/v1/stripe-webhook", webhookRoute);
 
 // 4. Body parsers
 app.use(express.json());
