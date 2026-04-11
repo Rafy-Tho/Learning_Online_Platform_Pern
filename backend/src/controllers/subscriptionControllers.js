@@ -19,3 +19,18 @@ export const getSubscription = asyncHandler(async (req, res, next) => {
     data: subscription,
   });
 });
+// @desc Get user active subscriptions
+// @route GET /api/v1/subscriptions/user-active
+// @access Private
+export const getUserActiveSubscriptions = asyncHandler(
+  async (req, res, next) => {
+    const userId = req.session.user.id;
+    const subscriptions = await Subscription.getActivePaidSubscription(userId);
+    res.status(StatusCode.OK).json({
+      success: true,
+      statusCode: StatusCode.OK,
+      message: 'Subscriptions retrieved successfully',
+      data: subscriptions ? subscriptions : null,
+    });
+  },
+);
