@@ -27,7 +27,7 @@ const sessionMiddleware = session({
     secure: ENV.NODE_ENV === 'production',
     httpOnly: true,
     maxAge: COOKIE_MAX_AGE_MSEC,
-    sameSite: 'none',
+    sameSite: ENV.NODE_ENV === 'production' ? 'none' : 'lax',
   },
 });
 export default sessionMiddleware;
