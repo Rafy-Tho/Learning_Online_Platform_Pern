@@ -5,16 +5,9 @@ import { AuthContext } from "./context";
 
 function AuthProvider({ children }) {
   const queryClient = useQueryClient();
-  const { data, isPending, error } = useGetProfile();
+  const { data, isPending } = useGetProfile();
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    if (data?.data) {
-      setUser(data.data);
-    } else if (error) {
-      setUser(null);
-    }
-  }, [data, error]);
   const saveAuth = (data) => {
     setUser(data.data);
   };
@@ -24,6 +17,11 @@ function AuthProvider({ children }) {
     queryClient.clear();
   };
 
+  useEffect(() => {
+    if (data?.data) {
+      saveAuth(data);
+    }
+  }, [data]);
   return (
     <AuthContext.Provider
       value={{

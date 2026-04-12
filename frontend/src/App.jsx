@@ -24,6 +24,7 @@ import ResetPasswordFlow from "./pages/ResetPasswordFlow";
 import Signup from "./pages/Signup";
 import FullScreenSkeletonLoader from "./ui/FullScreenSkeletonLoader";
 import NotFoundPage from "./ui/NotFoundPage";
+import UserSetting from "./pages/UserSetting";
 
 function App() {
   const { isPending } = useAuth();
@@ -48,15 +49,14 @@ function App() {
               <Route path="in-progress" element={<InprogressDashboard />} />
               <Route path="completed" element={<CompletedCourseDashboard />} />
             </Route>
+            <Route path="/payment-success" element={<PaymentSuccess />} />
+            <Route path="/payment-cancel" element={<PaymentCancel />} />
+            <Route path="/user-setting" element={<UserSetting />} />
           </Route>
           {/* Courses */}
           <Route path="/courses" element={<CoursePage />} />
           <Route path="/courses/:courseId" element={<CourseDetailScreen />} />
           <Route path="/pricing" element={<PricingScreen />} />
-          <Route element={<ProtectRoute />}>
-            <Route path="/payment-success" element={<PaymentSuccess />} />
-            <Route path="/payment-cancel" element={<PaymentCancel />} />
-          </Route>
         </Route>
         {/* Learning Layout */}
         <Route element={<ProtectRoute />}>

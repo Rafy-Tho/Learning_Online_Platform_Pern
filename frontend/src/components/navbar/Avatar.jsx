@@ -44,7 +44,7 @@ function Avatar({ avatarOpen, toggleAvatar, closeAll }) {
               return (
                 <NavLink
                   key={item.label}
-                  href={item.href}
+                  to={item.href}
                   onClick={closeAll}
                   className={`flex items-center gap-3 px-4 py-2.5 text-sm transition-colors text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600
                 `}
