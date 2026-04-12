@@ -1,33 +1,55 @@
-// services/EmailService.js
-import { Resend } from "resend";
 import ENV from "../configs/Env.js";
 
-const resend = new Resend(ENV.RESEND_API_KEY);
-
 class EmailService {
-  async send(to, subject, text) {
+  async send({ to, subject, text, html }) {
     try {
-      await resend.emails.send({
-        from: `Learning Platform <${ENV.DOMAIN_NAME}>`,
-        to,
-        subject,
-        text,
+      const res = await fetch("https://api.brevo.com/v3/smtp/email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "api-key": ENV.BREVO_API_KEY,
+        },
+        body: JSON.stringify({
+          sender: {
+            name: "Learning Platform",
+            email: ENV.SENDER_EMAIL,
+          },
+          to: [{ email: to }],
+          subject: subject,
+          textContent: text,
+          htmlContent: html || `<p>${text}</p>`,
+        }),
       });
-      console.log("✅ Email sent");
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(JSON.stringify(data));
+      }
+
+      console.log("✅ Email sent:", data.messageId);
+      return data;
     } catch (err) {
-      console.error("❌ Email error:", err);
+      console.error("❌ Email error:", err.message);
       throw err;
     }
   }
 
   async sendResetCode(to, code) {
-    await this.send(
+    return this.send({
       to,
-      "Password Reset Code",
-      `Your password reset code is: ${code}`,
-    );
+      subject: "Password Reset Code",
+      text: `Your password reset code is: ${code}`,
+      html: `
+        <div style="font-family: Arial;">
+          <h2>Password Reset</h2>
+          <p>Your code:</p>
+          <h1 style="color:green;">${code}</h1>
+          <p>Expires in 5 minutes</p>
+        </div>
+      `,
+    });
   }
 }
 
-const emailService = new EmailService();
-export default emailService;
+export default new EmailService();
