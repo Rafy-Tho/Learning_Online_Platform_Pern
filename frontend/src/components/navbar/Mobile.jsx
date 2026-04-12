@@ -79,8 +79,11 @@ function Mobile({
                     return (
                       <NavLink
                         key={item.label}
-                        href={item.href}
-                        onClick={closeAll}
+                        to={item.href}
+                        onClick={() => {
+                          closeAll();
+                          window.scrollTo({ top: 0, behavior: "smooth" });
+                        }}
                         className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700
                     `}
                       >

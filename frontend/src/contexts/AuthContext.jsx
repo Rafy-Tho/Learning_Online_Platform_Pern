@@ -19,6 +19,7 @@ function AuthProvider({ children }) {
 
   useEffect(() => {
     if (data?.data) {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       saveAuth(data);
     }
   }, [data]);

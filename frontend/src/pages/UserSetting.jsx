@@ -1,26 +1,8 @@
-import {
-  Calendar,
-  Camera,
-  Check,
-  Crown,
-  Edit3,
-  Lock,
-  Mail,
-  MapPin,
-  Moon,
-  Phone,
-  Shield,
-  Star,
-  Sun,
-  User,
-  X,
-  Zap,
-} from "lucide-react";
+import { Check, Crown, Lock, Shield, Star, X, Zap } from "lucide-react";
 import { useState } from "react";
-import Avatar from "../components/setting/Avatar";
-import InputField from "../components/setting/InputField";
-import SectionCard from "../components/setting/SectionCard";
 import PasswordField from "../components/setting/PasswordField";
+import SectionCard from "../components/setting/SectionCard";
+import UserProfile from "../components/setting/UserProfile";
 
 const planConfig = {
   Free: {
@@ -65,35 +47,12 @@ const planConfig = {
 };
 
 export default function UserSetting() {
-  const [editMode, setEditMode] = useState(false);
-  const [user, setUser] = useState({
-    name: "Alexandra Morgan",
-    email: "alex.morgan@example.com",
-    phone: "+1 (555) 234-5678",
-    location: "San Francisco, CA",
-    bio: "Product designer passionate about clean interfaces and thoughtful UX. Coffee addict. Dog person.",
-    joinDate: "March 2022",
-    plan: "Pro",
-    avatar: "",
-  });
-
-  const [draft, setDraft] = useState(user);
   const [passwords, setPasswords] = useState({
     current: "",
     newPass: "",
     confirm: "",
   });
   const [pwError, setPwError] = useState("");
-
-  const handleSaveProfile = () => {
-    setUser(draft);
-    setEditMode(false);
-  };
-
-  const handleCancelEdit = () => {
-    setDraft(user);
-    setEditMode(false);
-  };
 
   const handleChangePassword = () => {
     setPwError("");
@@ -121,7 +80,7 @@ export default function UserSetting() {
       4,
     );
 
-  const planInfo = planConfig[user.plan];
+  // const planInfo = planConfig[user.plan];
 
   return (
     <div>
@@ -140,179 +99,12 @@ export default function UserSetting() {
           </div>
 
           <div className="flex flex-col gap-5">
-            {/* Profile header card */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden">
-              <div
-                className="h-24 relative"
-                style={{
-                  background:
-                    "linear-gradient(to right, #334155, #475569, #64748b)",
-                }}
-              >
-                <div
-                  className="absolute inset-0 opacity-20"
-                  style={{
-                    backgroundImage:
-                      "radial-gradient(circle, white 1px, transparent 1px)",
-                    backgroundSize: "24px 24px",
-                  }}
-                />
-              </div>
+            {/* Profile */}
 
-              <div className="px-6 pb-6">
-                <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 -mt-10 mb-4">
-                  <div className="relative w-fit">
-                    <Avatar src={user.avatar} name={user.name} />
-                    {editMode && (
-                      <button
-                        type="button"
-                        className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-slate-700 dark:bg-slate-200 text-white dark:text-slate-900 flex items-center justify-center shadow-md hover:scale-105 transition-transform"
-                      >
-                        <Camera size={13} />
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="flex items-center gap-3 mt-2 sm:mt-0">
-                    <span
-                      className={`inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border ${planInfo.color} ${planInfo.darkColor}`}
-                    >
-                      {planInfo.icon}
-                      {planInfo.label}
-                    </span>
-                    {!editMode ? (
-                      <button
-                        onClick={() => {
-                          setDraft(user);
-                          setEditMode(true);
-                        }}
-                        className="inline-flex items-center gap-2 text-xs font-medium px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-all"
-                      >
-                        <Edit3 size={13} /> Edit Profile
-                      </button>
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={handleCancelEdit}
-                          className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
-                        >
-                          <X size={13} /> Cancel
-                        </button>
-                        <button
-                          onClick={handleSaveProfile}
-                          className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-lg bg-slate-800 dark:bg-slate-100 text-white dark:text-slate-900 hover:bg-slate-700 dark:hover:bg-white transition-all shadow-sm"
-                        >
-                          <Check size={13} /> Save Changes
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {!editMode ? (
-                  <div>
-                    <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-50">
-                      {user.name}
-                    </h2>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                      {user.bio}
-                    </p>
-                    <div className="flex flex-wrap items-center gap-4 mt-3 text-xs text-slate-400 dark:text-slate-500">
-                      <span className="flex items-center gap-1.5">
-                        <MapPin size={12} />
-                        {user.location}
-                      </span>
-                      <span className="flex items-center gap-1.5">
-                        <Calendar size={12} />
-                        Joined {user.joinDate}
-                      </span>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex flex-col gap-3">
-                    <InputField
-                      label="Display Name"
-                      icon={<User size={15} />}
-                      value={draft.name}
-                      onChange={(v) => setDraft({ ...draft, name: v })}
-                    />
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Bio
-                      </label>
-                      <textarea
-                        value={draft.bio}
-                        onChange={(e) =>
-                          setDraft({ ...draft, bio: e.target.value })
-                        }
-                        rows={2}
-                        className="w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/60 text-slate-800 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-500 focus:border-transparent transition-all resize-none"
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Personal Information */}
-            <SectionCard title="Personal Information" icon={<User size={15} />}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <InputField
-                  label="Email Address"
-                  icon={<Mail size={15} />}
-                  value={editMode ? draft.email : user.email}
-                  onChange={
-                    editMode
-                      ? (v) => setDraft({ ...draft, email: v })
-                      : undefined
-                  }
-                  type="email"
-                  disabled={!editMode}
-                />
-                <InputField
-                  label="Phone Number"
-                  icon={<Phone size={15} />}
-                  value={editMode ? draft.phone : user.phone}
-                  onChange={
-                    editMode
-                      ? (v) => setDraft({ ...draft, phone: v })
-                      : undefined
-                  }
-                  disabled={!editMode}
-                />
-                <InputField
-                  label="Location"
-                  icon={<MapPin size={15} />}
-                  value={editMode ? draft.location : user.location}
-                  onChange={
-                    editMode
-                      ? (v) => setDraft({ ...draft, location: v })
-                      : undefined
-                  }
-                  disabled={!editMode}
-                />
-                <InputField
-                  label="Member Since"
-                  icon={<Calendar size={15} />}
-                  value={user.joinDate}
-                  disabled
-                />
-              </div>
-              {!editMode && (
-                <button
-                  onClick={() => {
-                    setDraft(user);
-                    setEditMode(true);
-                  }}
-                  className="mt-4 inline-flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-100 transition-colors"
-                >
-                  <Edit3 size={12} /> Edit information
-                </button>
-              )}
-            </SectionCard>
+            <UserProfile />
 
             {/* Subscription */}
-            <SectionCard title="Subscription" icon={<Crown size={15} />}>
+            {/* <SectionCard title="Subscription" icon={<Crown size={15} />}>
               <div className="flex flex-col sm:flex-row gap-6">
                 <div className="flex-1 p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40">
                   <div className="flex items-center gap-2 mb-3">
@@ -379,10 +171,10 @@ export default function UserSetting() {
                   </p>
                 </div>
               </div>
-            </SectionCard>
+            </SectionCard> */}
 
             {/* Change Password */}
-            <SectionCard title="Change Password" icon={<Shield size={15} />}>
+            {/* <SectionCard title="Change Password" icon={<Shield size={15} />}>
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -463,7 +255,7 @@ export default function UserSetting() {
                   </button>
                 </div>
               </form>
-            </SectionCard>
+            </SectionCard> */}
           </div>
         </div>
       </div>
