@@ -67,32 +67,6 @@ export const textValidator = (field, optional = false, maxLength = 50) => ({
   },
 });
 // validateUrl
-export const urlValidator = (field, optional = false) => ({
-  in: ["body"],
-  trim: true,
-  ...(optional && {
-    optional: {
-      options: { nullable: true, checkFalsy: true },
-    },
-  }),
-  ...(!optional && {
-    notEmpty: {
-      errorMessage: `${field} is required`,
-      bail: true,
-    },
-  }),
-  isURL: {
-    options: {
-      protocols: ["http", "https"],
-      require_protocol: true,
-    },
-    errorMessage: `${field} must be a valid URL`,
-  },
-  isLength: {
-    options: { max: 255 },
-    errorMessage: `${field} must be at most 255 characters`,
-  },
-});
 
 export const codeValidator = (fieldName) => ({
   in: ["body"],
@@ -162,14 +136,21 @@ export const floatValidator = (fieldName) => ({
   },
 });
 
-export const EnumValidator = (fieldName, values) => ({
+export const EnumValidator = (fieldName, values, option = false) => ({
   in: ["body"],
   trim: true,
   escape: true,
-  notEmpty: {
-    errorMessage: `${fieldName} is required`,
-    bail: true,
-  },
+  ...(option && {
+    optional: {
+      options: { nullable: true, checkFalsy: true },
+    },
+  }),
+  ...(!option && {
+    notEmpty: {
+      errorMessage: `${fieldName} is required`,
+      bail: true,
+    },
+  }),
   isIn: {
     options: [values],
     errorMessage: `${fieldName} must be either ${values.join(" or ")}`,
@@ -217,5 +198,25 @@ export const booleanValidator = (fieldName) => ({
   },
   isBoolean: {
     errorMessage: `${fieldName} must be a boolean`,
+  },
+});
+
+export const dateValidator = (fieldName, option = false) => ({
+  in: ["body"],
+  trim: true,
+  escape: true,
+  ...(option && {
+    optional: {
+      options: { nullable: true, checkFalsy: true },
+    },
+  }),
+  ...(!option && {
+    notEmpty: {
+      errorMessage: `${fieldName} is required`,
+      bail: true,
+    },
+  }),
+  isDate: {
+    errorMessage: `${fieldName} must be a date`,
   },
 });

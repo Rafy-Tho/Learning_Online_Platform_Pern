@@ -37,8 +37,6 @@ export const register = asyncHandler(async (req, res, next) => {
   });
   // create user profile
   await User.createProfile(user.id);
-  // find user with profile
-  const userProfile = await User.profile(user.id);
   // create session
   await sessionService.create(req, user);
   // send response
@@ -46,7 +44,7 @@ export const register = asyncHandler(async (req, res, next) => {
     success: true,
     statusCode: StatusCode.CREATED,
     message: "User registered successfully",
-    data: userProfile,
+    data: user,
   });
 });
 // @desc    Login a user
@@ -63,18 +61,18 @@ export const login = asyncHandler(async (req, res, next) => {
   // check if password is valid
   if (!isPasswordMatch)
     return next(new ApiError(StatusCode.BAD_REQUEST, "Invalid credentials"));
-  // find user with profile
-  const userProfile = await User.profile(user.id);
   // update last login
   await User.updateLastLogin({ userId: user.id, lastLogin: new Date() });
   // create session
   await sessionService.create(req, user);
+  // delete password
+  delete user.password;
   // send response
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
     message: "User logged in successfully",
-    data: userProfile,
+    data: user,
   });
 });
 // @desc    Logout a user
@@ -98,7 +96,10 @@ export const logout = asyncHandler(async (req, res, next) => {
     data: null,
   });
 });
-
+// @desc    Get user info
+// @route   GET /api/users/me
+// @access  Private/public
+// eslint-disable-next-line
 export const getMe = asyncHandler(async (req, res, next) => {
   const userId = req.session?.user?.id || null;
   //  check if user exists
@@ -123,7 +124,7 @@ export const getProfile = asyncHandler(async (req, res, next) => {
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
-    message: "User info retrie  ved successfully",
+    message: "User info retrieved successfully",
     data: user,
   });
 });
@@ -132,16 +133,7 @@ export const getProfile = asyncHandler(async (req, res, next) => {
 // @access  Private
 export const updateProfile = asyncHandler(async (req, res, next) => {
   const userId = req.session.user.id;
-  const {
-    name,
-    email,
-    bio,
-    headLine,
-    youtubeUrl,
-    twitterUrl,
-    websiteUrl,
-    linkedInUrl,
-  } = req.body;
+  const { name, email, bio, location, phone, dateBirth, gender } = req.body;
   //  check if user exists
   const user = await User.findById(userId);
   if (!user) return next(new ApiError(StatusCode.NOT_FOUND, "User not found"));
@@ -167,24 +159,22 @@ export const updateProfile = asyncHandler(async (req, res, next) => {
     email: email || user.email,
     imageUrl,
   });
-  //  update user profile
-
-  await User.updateProfile(userId, {
-    bio: bio || user.bio,
-    headLine: headLine || user.headline,
-    youtubeUrl: youtubeUrl || user.youtube_url,
-    twitterUrl: twitterUrl || user.twitter_url,
-    websiteUrl: websiteUrl || user.website_url,
-    linkedInUrl: linkedInUrl || user.linkedin_url,
-  });
   //  find user with profile
   const userProfile = await User.profile(userId);
+  //  update user profile
+  const updateProfile = await User.updateProfile(userId, {
+    bio: bio || userProfile.bio,
+    location: location || userProfile.location,
+    phone: phone || userProfile.phone,
+    dateBirth: dateBirth || userProfile.dateBirth,
+    gender: gender || userProfile.gender,
+  });
   //  send response
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
     message: "User info updated successfully",
-    data: userProfile,
+    data: updateProfile,
   });
 });
 
@@ -197,7 +187,6 @@ export const sendPasswordResetCode = asyncHandler(async (req, res, next) => {
   const user = await User.findByEmail(email);
   if (!user)
     return next(new ApiError(StatusCode.NOT_FOUND, "User Doesn't Exist"));
-  console.log(user);
   // delete all previous codes
   await PasswordResetCode.delete(user.id);
   // 2. Generate 6-digit numeric code

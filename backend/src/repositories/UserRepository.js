@@ -5,7 +5,7 @@ class UserRepository {
     const query = `
       INSERT INTO users (email, password, name, image_url)
       VALUES ($1, $2, $3, $4)
-      RETURNING id, email, role
+      RETURNING id, email, role, name, image_url, 
     `;
 
     const result = await pgPool.query(query, [email, password, name, imageUrl]);
@@ -15,7 +15,7 @@ class UserRepository {
 
   async findByEmail(email) {
     const query = `
-      SELECT id, email, role, password
+      SELECT id, email, role, password, last_login
       FROM users
       WHERE email = $1
     `;
@@ -48,35 +48,25 @@ class UserRepository {
     return result.rows[0];
   }
 
-  async updateProfile({
-    userId,
-    bio,
-    headLine,
-    websiteUrl,
-    youtubeUrl,
-    twitterUrl,
-    linkedInUrl,
-  }) {
+  async updateProfile({ userId, bio, location, phone, dateBirth, gender }) {
     const query = `
       UPDATE user_profiles
       SET
         bio = $1,
-        headline = $2,
-        website_url = $3,
-        youtube_url = $4,
-        twitter_url = $5,
-        linkedin_url = $6
-      WHERE user_id = $7
+        location = $2,
+        phone = $3,
+        date_birth = $4,
+        gender = $5,
+      WHERE user_id = $6
       RETURNING *
     `;
 
     const result = await pgPool.query(query, [
       bio,
-      headLine,
-      websiteUrl,
-      youtubeUrl,
-      twitterUrl,
-      linkedInUrl,
+      location,
+      phone,
+      dateBirth,
+      gender,
       userId,
     ]);
 
@@ -92,11 +82,12 @@ class UserRepository {
         u.image_url,
         u.role,
         up.bio,
-        up.headline,
-        up.website_url,
-        up.youtube_url,
-        up.twitter_url,
-        up.linkedin_url
+        up.location,
+        up.phone,
+        up.date_birth,
+        up.gender,
+        up.created_at,
+        up.updated_at
       FROM users u
       LEFT JOIN user_profiles up
       ON u.id = up.user_id
@@ -120,7 +111,8 @@ class UserRepository {
 
   async findById(userId) {
     const query = `
-      SELECT *
+      SELECT 
+         id, email, role, last_login, name, image_url
       FROM users
       WHERE id = $1
     `;

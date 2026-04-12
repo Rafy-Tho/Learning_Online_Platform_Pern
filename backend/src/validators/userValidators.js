@@ -1,10 +1,12 @@
 import { checkSchema } from "express-validator";
 import {
   codeValidator,
+  dateValidator,
   emailValidator,
+  EnumValidator,
+  numberValidator,
   passwordValidator,
   textValidator,
-  urlValidator,
 } from "./common.validator.js";
 
 // validateRegister
@@ -23,11 +25,10 @@ export const validateUpdateProfile = checkSchema({
   name: textValidator("Name", true),
   email: emailValidator("Email", true),
   bio: textValidator("Bio", true, 200),
-  twitterUrl: urlValidator("Twitter URL", true),
-  websiteUrl: urlValidator("Website URL", true),
-  youtubeUrl: urlValidator("YouTube URL", true),
-  headLine: textValidator("Headline", true, 200),
-  linkedInUrl: urlValidator("LinkedIn URL", true),
+  location: textValidator("Location", true, 200),
+  dateBirth: dateValidator("Date of birth", true),
+  phone: numberValidator("Phone", true),
+  gender: EnumValidator("Gender", ["Male", "Female"], true),
 });
 // validateUpdatePassword
 export const validateUpdatePassword = checkSchema({

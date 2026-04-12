@@ -19,13 +19,9 @@ CREATE TYPE subscription_status AS ENUM ('ACTIVE','EXPIRED','CANCELLED');
 
 CREATE TYPE payment_status AS ENUM ('PENDING','COMPLETED','FAILED','REFUNDED');
 
-
--- Create enum for discount types
-CREATE TYPE discount_type AS ENUM ('PERCENTAGE', 'FIXED_AMOUNT');
-
-CREATE TYPE coupon_status AS ENUM ('ACTIVE', 'EXPIRED', 'DISABLED', 'DEPLETED');
-
 CREATE TYPE access_course_type AS ENUM ('FREE','SUBSCRIPTION');
+
+CREATE TYPE gender AS ENUM ('MALE','FEMALE');
 -- ========================
 -- UTILITY: AUTO-UPDATE update_at
 -- ========================
@@ -64,12 +60,11 @@ EXECUTE FUNCTION set_updated_at();
 CREATE TABLE user_profiles (
   id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id      UUID UNIQUE NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  headline     VARCHAR(255),
   bio          TEXT,
-  website_url  TEXT,
-  twitter_url  TEXT,
-  linkedin_url TEXT,
-  youtube_url  TEXT,
+  location     VARCHAR(255),
+  phone        VARCHAR(20),
+  date_birth   DATE,
+  gender   gender    VARCHAR(10),
   created_at   TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at   TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
