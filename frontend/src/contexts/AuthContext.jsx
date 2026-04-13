@@ -1,11 +1,11 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import useGetProfile from "../hooks/user/useGetProfile";
+import useGetMe from "../hooks/user/useGetMe";
 import { AuthContext } from "./context";
 
 function AuthProvider({ children }) {
   const queryClient = useQueryClient();
-  const { data, isPending } = useGetProfile();
+  const { data, isPending } = useGetMe();
   const [user, setUser] = useState(null);
 
   const saveAuth = (data) => {
