@@ -45,8 +45,8 @@ function PersonalInfoSection({ editMode, field, update, errors }) {
         <InputField
           label="Member Since"
           icon={<Calendar size={15} />}
-          value={new Date(field("joinDate")).toLocaleDateString()}
-          disabled={!editMode}
+          value={new Date(field("joinDate")).toDateString()}
+          disabled={true}
         />
         <SelectField
           label="Gender"
@@ -72,7 +72,7 @@ function PersonalInfoSection({ editMode, field, update, errors }) {
             icon={<Calendar size={15} />}
             value={
               field("dateBirth")
-                ? new Date(field("dateBirth")).toLocaleDateString()
+                ? new Date(field("dateBirth")).toDateString()
                 : "mm/dd/yyyy"
             }
             disabled={!editMode}

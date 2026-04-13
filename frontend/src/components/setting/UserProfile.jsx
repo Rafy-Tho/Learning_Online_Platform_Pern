@@ -46,7 +46,7 @@ function UserProfile() {
 
   const field = (key) => (editMode ? draft[key] : user[key]);
   const update = (key) =>
-    editMode ? (v) => setDraft((prev) => ({ ...prev, [key]: v })) : undefined;
+    editMode ? (v) => setDraft((prev) => ({ ...prev, [key]: v })) : () => {};
 
   const handleSaveProfile = async () => {
     setErrors({});

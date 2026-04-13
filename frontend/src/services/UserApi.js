@@ -82,6 +82,21 @@ class UserApi {
     }
     return result;
   }
+  async changePassword(data) {
+    const res = await fetch(`${this.baseUrl}/update-password`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.message || "Failed to change password");
+    }
+    return result;
+  }
 }
 const userApi = new UserApi();
 export default userApi;

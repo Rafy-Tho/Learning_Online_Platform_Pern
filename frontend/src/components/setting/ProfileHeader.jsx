@@ -113,7 +113,7 @@ function ProfileHeader({
               </span>
               <span className="flex items-center gap-1.5">
                 <Calendar size={12} />
-                Joined {new Date(field("joinDate")).toLocaleDateString()}
+                Joined {new Date(field("joinDate")).toDateString()}
               </span>
             </div>
           </div>
