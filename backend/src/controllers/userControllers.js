@@ -134,6 +134,7 @@ export const getProfile = asyncHandler(async (req, res, next) => {
 export const updateProfile = asyncHandler(async (req, res, next) => {
   const userId = req.session.user.id;
   const { name, email, bio, location, phone, dateBirth, gender } = req.body;
+  console.log(req.body);
   //  check if user exists
   const user = await User.findById(userId);
   if (!user) return next(new ApiError(StatusCode.NOT_FOUND, "User not found"));
@@ -154,7 +155,8 @@ export const updateProfile = asyncHandler(async (req, res, next) => {
     });
   }
   //  update user info
-  await User.update(userId, {
+  await User.update({
+    userId,
     name: name || user.name,
     email: email || user.email,
     imageUrl,
@@ -162,7 +164,8 @@ export const updateProfile = asyncHandler(async (req, res, next) => {
   //  find user with profile
   const userProfile = await User.profile(userId);
   //  update user profile
-  const updateProfile = await User.updateProfile(userId, {
+  const updateProfile = await User.updateProfile({
+    userId,
     bio: bio || userProfile.bio,
     location: location || userProfile.location,
     phone: phone || userProfile.phone,

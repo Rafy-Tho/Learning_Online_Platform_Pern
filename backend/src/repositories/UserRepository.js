@@ -56,7 +56,7 @@ class UserRepository {
         location = $2,
         phone = $3,
         date_birth = $4,
-        gender = $5,
+        gender = $5
       WHERE user_id = $6
       RETURNING *
     `;
