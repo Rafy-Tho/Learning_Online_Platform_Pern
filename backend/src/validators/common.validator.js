@@ -204,19 +204,23 @@ export const booleanValidator = (fieldName) => ({
 export const dateValidator = (fieldName, option = false) => ({
   in: ["body"],
   trim: true,
-  escape: true,
+
   ...(option && {
     optional: {
       options: { nullable: true, checkFalsy: true },
     },
   }),
+
   ...(!option && {
     notEmpty: {
       errorMessage: `${fieldName} is required`,
       bail: true,
     },
   }),
-  isDate: {
-    errorMessage: `${fieldName} must be a date`,
-  },
+
+  // isISO8601: {
+  //   errorMessage: `${fieldName} must be a valid date`,
+  // },
+
+  toDate: true,
 });
