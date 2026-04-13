@@ -104,6 +104,8 @@ export const getMe = asyncHandler(async (req, res, next) => {
   const userId = req.session?.user?.id || null;
   //  check if user exists
   const user = userId ? await User.findById(userId) : null;
+  // delete password
+  delete user?.password;
   //  send response
   res.status(StatusCode.OK).json({
     success: true,

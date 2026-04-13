@@ -112,7 +112,7 @@ class UserRepository {
   async findById(userId) {
     const query = `
       SELECT 
-         id, email, role, last_login, name, image_url
+         id, email, role, last_login, name, image_url, password
       FROM users
       WHERE id = $1
     `;

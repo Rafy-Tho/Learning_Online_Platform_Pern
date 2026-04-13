@@ -53,8 +53,8 @@ userRoute.patch(
   updateProfile,
 );
 // @desc    Update user password
-userRoute.post(
-  "/password",
+userRoute.patch(
+  "/update-password",
   requireAuth,
   validateUpdatePassword,
   validateResult,
