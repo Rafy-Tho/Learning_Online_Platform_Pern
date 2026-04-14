@@ -5,6 +5,7 @@ Learning Online Platform is a full-stack web application for delivering structur
 ## Project Purpose
 
 This project is built to provide an end-to-end e-learning experience where:
+
 - learners can discover courses, enroll, and track learning progress,
 - instructors/admin workflows can manage course content (course -> module -> chapter -> lesson),
 - users can complete quizzes and lessons to build completion history,
@@ -23,6 +24,7 @@ The main goal is to combine a clean learning UI with a scalable backend/domain m
 ## Tech Stack
 
 ### Frontend
+
 - React 19
 - React Router DOM
 - TanStack React Query
@@ -33,6 +35,7 @@ The main goal is to combine a clean learning UI with a scalable backend/domain m
 - Swiper
 
 ### Backend
+
 - Node.js + Express 5
 - PostgreSQL (`pg`)
 - `express-session` + `connect-pg-simple`
@@ -45,6 +48,7 @@ The main goal is to combine a clean learning UI with a scalable backend/domain m
 - Nodemailer + Resend
 
 ### Database / Infrastructure
+
 - PostgreSQL (UUID-based primary keys via `pgcrypto`)
 - SQL schema defined in `backend/src/configs/schema.sql`
 - Environment-variable based configuration in `backend/src/configs/Env.js`
@@ -60,6 +64,7 @@ The backend follows a layered modular pattern:
 - **Configs** (`backend/src/configs`): Environment loading, DB pool, Cloudinary setup, SQL schema.
 
 Core API domains exposed from `backend/src/app.js`:
+
 - `/api/v1/users`
 - `/api/v1/categories`
 - `/api/v1/courses`
@@ -98,6 +103,7 @@ The frontend is a React single-page app with route-driven screens and hook-based
 - **UI structure:** pages + reusable components for home, course listing, learning dashboard, lesson player, quiz, pricing, and settings.
 
 Main user-facing flows include:
+
 - auth flow (signup/login/logout/password reset),
 - browsing courses and viewing details,
 - enrollment and learning route navigation,
@@ -110,11 +116,13 @@ Main user-facing flows include:
 Defined in `backend/src/configs/schema.sql`.
 
 ### Identity & User
+
 - `users`
 - `user_profiles`
 - `password_reset_codes`
 
 ### Catalog & Course Content
+
 - `categories`
 - `courses`
 - `course_objectives`
@@ -126,28 +134,41 @@ Defined in `backend/src/configs/schema.sql`.
 - `quiz_options`
 
 ### Enrollment & Learning Progress
+
 - `enrollments`
 - `learn_progress`
 - `lesson_completion`
 - `certificates`
 
 ### Subscriptions & Payments
+
 - `subscription_plans`
 - `user_subscriptions`
 - `subscription_payments`
 
 ### Reviews & Moderation
+
 - `course_reviews`
 - `review_helpful_votes`
 - `review_reports`
 
 ### Supporting Types / Utilities
+
 - Enum types: `user_role`, `user_status`, `course_level`, `content_status`, `lesson_type`, `subscription_status`, `payment_status`, `access_course_type`, `gender`
 - Trigger function: `set_updated_at()` used by update triggers on many tables
 
+### ERD Diagram
+
+  <img src="database.svg" alt="Description" >
+
+### ER Diagram
+
+  <img src="er-diagram.svg" alt="Description" >
+  
 ## How Things Flow (End-to-End)
 
 ### 1) Authentication Flow
+
 - User submits login/signup form in frontend.
 - Frontend service calls backend auth endpoint with `credentials: include`.
 - Backend validates input, hashes/checks password, creates session.
@@ -155,12 +176,14 @@ Defined in `backend/src/configs/schema.sql`.
 - Frontend fetches `/users/me` style profile data and updates auth context.
 
 ### 2) Course Discovery and Enrollment
+
 - Frontend requests course list/details via course service.
 - Backend returns course data with category/instructor metadata.
 - User enrolls in course.
 - Backend creates enrollment record (`enrollments`) and grants access based on free/subscription logic.
 
 ### 3) Learning and Progress Tracking
+
 - Learner opens `/courses/:courseId/lessons/:lessonId`.
 - Frontend fetches learning data, lesson content, and progress state.
 - On lesson completion/progress update, frontend sends progress request.
@@ -168,11 +191,13 @@ Defined in `backend/src/configs/schema.sql`.
 - Dashboard queries reflect in-progress/completed/recent courses.
 
 ### 4) Quiz and Assessment
+
 - Quiz endpoints return question/options for lesson quizzes.
 - User submits answer(s).
 - Backend validates/correctness checks and updates completion/progress logic.
 
 ### 5) Subscription and Payment
+
 - User chooses plan from pricing page.
 - Frontend calls subscription endpoints to start payment flow.
 - Backend creates Stripe payment intent and stores payment/subscription records.
@@ -181,6 +206,7 @@ Defined in `backend/src/configs/schema.sql`.
 - Frontend shows payment success/cancel pages.
 
 ### 6) Reviews and Feedback
+
 - Enrolled learner posts a review/rating for course.
 - Backend stores review in `course_reviews`.
 - Users can vote report/helpfulness, stored in moderation tables.
@@ -202,6 +228,7 @@ cd ../frontend && npm install
 Create environment files for backend and frontend.
 
 ### Backend variables (example names)
+
 - `PORT`
 - `NODE_ENV`
 - `DATABASE_URL`
@@ -217,6 +244,7 @@ Create environment files for backend and frontend.
 - `CLOUDINARY_SECRET_KEY`
 
 ### Frontend variables (example names)
+
 - `VITE_BASE_URL` (example: `http://localhost:5000/api/v1`)
 
 ### 3. Run database schema
@@ -226,12 +254,14 @@ Execute `backend/src/configs/schema.sql` against your PostgreSQL database.
 ### 4. Start development servers
 
 Backend:
+
 ```bash
 cd backend
 npm run dev
 ```
 
 Frontend:
+
 ```bash
 cd frontend
 npm run dev
