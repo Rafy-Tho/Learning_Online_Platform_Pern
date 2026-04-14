@@ -267,6 +267,12 @@ cd frontend
 npm run dev
 ```
 
+### Project Preview
+
+   <img src="image-1.png" alt="Description" >
+
+- Link: https://learning-online-platform-pern.onrender.com/
+
 ## Current Core Features
 
 - Session-based authentication
