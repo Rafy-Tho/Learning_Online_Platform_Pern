@@ -271,7 +271,9 @@ npm run dev
 
    <img src="image-1.png" alt="Description" >
 
-- Link: https://learning-online-platform-pern.onrender.com/
+- Link: <a target="_blank" href="https://learning-online-platform-pern.onrender.com/">
+  https://learning-online-platform-pern.onrender.com/
+  </a>
 
 ## Current Core Features
 
