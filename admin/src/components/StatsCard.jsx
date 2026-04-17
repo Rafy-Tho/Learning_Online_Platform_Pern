@@ -1,5 +1,3 @@
-import { LucideIcon } from "lucide-react";
-
 export function StatsCard({ title, value, icon: Icon, trend, trendUp }) {
   return (
     <div className="glass-card rounded-xl p-6 transition-all hover:shadow-md">

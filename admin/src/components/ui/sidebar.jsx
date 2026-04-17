@@ -2,7 +2,7 @@ import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
 import { PanelLeft } from "lucide-react";
-import { useIsMobile } from "./use-mobile";
+import { useIsMobile } from "../../hooks/use-mobile";
 import { cn } from "../../libs/utils";
 import { Button } from "./button";
 import { Input } from "./input";
@@ -23,7 +23,7 @@ const SIDEBAR_WIDTH_MOBILE = "18rem";
 const SIDEBAR_WIDTH_ICON = "3rem";
 const SIDEBAR_KEYBOARD_SHORTCUT = "b";
 
-const SidebarContext = (React.createContext < SidebarContext) | (null > null);
+const SidebarContext = React.createContext(null);
 
 function useSidebar() {
   const context = React.useContext(SidebarContext);

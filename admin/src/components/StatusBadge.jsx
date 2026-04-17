@@ -1,4 +1,4 @@
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "./ui/badge";
 
 const statusStyles = {
   PUBLISHED: "bg-success/15 text-success border-success/30",
