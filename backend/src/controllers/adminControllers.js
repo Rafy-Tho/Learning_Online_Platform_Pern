@@ -1,5 +1,6 @@
 import StatusCode from "../constants/StatusCode.js";
 import Course from "../repositories/CourseRepository.js";
+import Enrollment from "../repositories/EnrollmentRepository.js";
 import User from "../repositories/UserRepository.js";
 import ApiError from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
@@ -13,14 +14,21 @@ export const getDashboardData = asyncHandler(async (req, res, next) => {
   const user = await User.findById(userId);
   if (!user) return next(new ApiError(StatusCode.NOT_FOUND, "User not found"));
 
-  const [totalCourses, totalInstructors, totalStudents, courses, instructors] =
-    await Promise.all([
-      Course.getTotalCourse(),
-      User.getTotalInstructors(),
-      User.getTotalStudents(),
-      Course.getRecentCourses(),
-      User.getInstructors(),
-    ]);
+  const [
+    totalCourses,
+    totalInstructors,
+    totalStudents,
+    totalEnrollments,
+    courses,
+    instructors,
+  ] = await Promise.all([
+    Course.getTotalCourse(),
+    User.getTotalInstructors(),
+    User.getTotalStudents(),
+    Enrollment.getTotalEnrollments(),
+    Course.getRecentCourses(),
+    User.getInstructors(),
+  ]);
 
   res.status(StatusCode.OK).json({
     statusCode: StatusCode.OK,
@@ -30,6 +38,7 @@ export const getDashboardData = asyncHandler(async (req, res, next) => {
       totalCourses,
       totalInstructors,
       totalStudents,
+      totalEnrollments,
       courses,
       instructors,
     },

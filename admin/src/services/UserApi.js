@@ -42,6 +42,20 @@ class UserApi {
     }
     return result;
   }
+  async getDashboardData() {
+    const res = await fetch(`${this.baseUrl}/dashboard-data`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.message || "Failed to fetch dashboard data");
+    }
+    return result;
+  }
 }
 const userApi = new UserApi();
 export default userApi;

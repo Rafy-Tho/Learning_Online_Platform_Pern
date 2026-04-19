@@ -4,19 +4,15 @@ import { StatsCard } from "../components/StatsCard";
 import { StatusBadge } from "../components/StatusBadge";
 import { DashboardSkeleton } from "../components/ui/skeleton";
 import { mockCourses, mockUsers } from "../data/mockData";
+import useGetDashboardData from "../hooks/dashboard-data/use-get-dashboard-data";
 export default function DashboardPage() {
   const navigate = useNavigate();
-  const totalCourses = mockCourses.length;
-  const totalUsers = mockUsers.length;
-  const t = true;
-  const totalInstructors = mockUsers.filter(
-    (u) => u.role === "INSTRUCTOR",
-  ).length;
-  const totalEnrollments = mockCourses.reduce(
-    (sum, c) => sum + (c.enrollments_count || 0),
-    0,
-  );
-  if (t) return <DashboardSkeleton />;
+  const { data, isPending, error } = useGetDashboardData();
+  const totalCourses = data?.data?.totalCourses || 0;
+  const totalUsers = data?.data?.totalStudents || 0;
+  const totalInstructors = data?.data?.totalInstructors || 0;
+  const totalEnrollments = data?.data?.totalEnrollments || 0;
+  if (isPending) return <DashboardSkeleton />;
   return (
     <div className="space-y-8">
       <div>
@@ -53,7 +49,7 @@ export default function DashboardPage() {
             </button>
           </div>
           <div className="space-y-3">
-            {mockCourses.slice(0, 3).map((course) => (
+            {data?.data?.courses?.slice(0, 3).map((course) => (
               <div
                 key={course.id}
                 className="flex items-center justify-between p-3 rounded-lg hover:bg-accent/50 transition-colors cursor-pointer"
@@ -87,27 +83,25 @@ export default function DashboardPage() {
             </button>
           </div>
           <div className="space-y-3">
-            {mockUsers
-              .filter((u) => u.role === "INSTRUCTOR")
-              .map((user) => (
-                <div
-                  key={user.id}
-                  className="flex items-center justify-between p-3 rounded-lg hover:bg-accent/50 transition-colors"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold text-sm">
-                      {user.name.charAt(0)}
-                    </div>
-                    <div>
-                      <p className="font-medium text-foreground">{user.name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {user.email}
-                      </p>
-                    </div>
+            {data?.data?.instructors?.map((user) => (
+              <div
+                key={user.id}
+                className="flex items-center justify-between p-3 rounded-lg hover:bg-accent/50 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold text-sm">
+                    {user.name.charAt(0)}
                   </div>
-                  <StatusBadge status={user.status} />
+                  <div>
+                    <p className="font-medium text-foreground">{user.name}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {user.email}
+                    </p>
+                  </div>
                 </div>
-              ))}
+                <StatusBadge status={user.status} />
+              </div>
+            ))}
           </div>
         </div>
       </div>
