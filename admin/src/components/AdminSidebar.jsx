@@ -1,34 +1,34 @@
 import {
-  LayoutDashboard,
-  Users,
   BookOpen,
+  CreditCard,
   FolderTree,
   GraduationCap,
-  CreditCard,
+  LayoutDashboard,
+  LogOut,
   Moon,
   Sun,
-  LogOut,
-  UserCircle,
+  Users,
 } from "lucide-react";
-import { NavLink } from "./NavLink";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { useTheme } from "../hooks/use-theme";
+import { NavLink } from "./NavLink";
+import { Avatar, AvatarFallback } from "./ui/avatar";
+import { Button } from "./ui/button";
+import { Separator } from "./ui/separator";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarFooter,
   useSidebar,
 } from "./ui/sidebar";
-import { useTheme } from "../hooks/use-theme";
-import { useAuth } from "../contexts/AuthContext";
-import { Button } from "./ui/button";
-import { Avatar, AvatarFallback } from "./ui/avatar";
-import { Separator } from "./ui/separator";
+import { LogoutButton } from "./ui/alert-dialog";
 
 const mainItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
@@ -132,16 +132,16 @@ export function AdminSidebar() {
             <span>{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
           )}
         </Button>
-
-        <Button
-          variant="ghost"
-          size={collapsed ? "icon" : "default"}
-          onClick={handleLogout}
-          className="w-full justify-start gap-3 text-destructive hover:bg-destructive/10 hover:text-destructive"
-        >
-          <LogOut className="h-4 w-4 shrink-0" />
-          {!collapsed && <span>Logout</span>}
-        </Button>
+        <LogoutButton onLogout={logout}>
+          <Button
+            variant="ghost"
+            size={collapsed ? "icon" : "default"}
+            className="w-full justify-start gap-3 text-destructive hover:bg-destructive/10 hover:text-destructive"
+          >
+            <LogOut className="h-4 w-4 shrink-0" />
+            {!collapsed && <span>Logout</span>}
+          </Button>
+        </LogoutButton>
       </SidebarFooter>
     </Sidebar>
   );

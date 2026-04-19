@@ -1,8 +1,8 @@
-import * as React from "react";
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
+import { Trash2 } from "lucide-react";
+import * as React from "react";
 import { cn } from "../../libs/utils";
 import { Button, buttonVariants } from "./button";
-import { Trash, Trash2 } from "lucide-react";
 
 const AlertDialog = AlertDialogPrimitive.Root;
 
@@ -80,13 +80,15 @@ const AlertDialogDescription = React.forwardRef(
 AlertDialogDescription.displayName =
   AlertDialogPrimitive.Description.displayName;
 
-const AlertDialogAction = React.forwardRef(({ className, ...props }, ref) => (
-  <AlertDialogPrimitive.Action
-    ref={ref}
-    className={cn(buttonVariants(), className)}
-    {...props}
-  />
-));
+const AlertDialogAction = React.forwardRef(
+  ({ className, variant, ...props }, ref) => (
+    <AlertDialogPrimitive.Action
+      ref={ref}
+      className={cn(buttonVariants({ variant }), className)}
+      {...props}
+    />
+  ),
+);
 AlertDialogAction.displayName = AlertDialogPrimitive.Action.displayName;
 
 const AlertDialogCancel = React.forwardRef(({ className, ...props }, ref) => (
@@ -117,13 +119,15 @@ const DeleteButton = ({ onDelete }) => {
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            This action cannot be undone. This will permanently delete and
+            remove your data from our servers.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={onDelete}>Delete</AlertDialogAction>
+          <AlertDialogAction onClick={onDelete} variant="destructive">
+            Delete
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
@@ -151,20 +155,23 @@ const UnsavedChangesDialog = ({ isOpen, onConfirm, onCancel }) => {
 };
 UnsavedChangesDialog.displayName = "UnsavedChangesDialog";
 // Logout confirmation
-const LogoutButton = () => {
+const LogoutButton = ({ onLogout, children }) => {
   return (
     <AlertDialog>
-      <AlertDialogTrigger>Logout</AlertDialogTrigger>
+      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Logout?</AlertDialogTitle>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            You will need to log in again to access your account.
+            This action cannot be undone. This will permanently log out of your
+            account.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Stay Logged In</AlertDialogCancel>
-          <AlertDialogAction>Logout</AlertDialogAction>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={onLogout} variant="destructive">
+            Logout
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
@@ -174,17 +181,17 @@ LogoutButton.displayName = "LogoutButton";
 
 export {
   AlertDialog,
-  AlertDialogPortal,
-  AlertDialogOverlay,
-  AlertDialogTrigger,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogFooter,
-  AlertDialogTitle,
-  AlertDialogDescription,
   AlertDialogAction,
   AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  AlertDialogPortal,
+  AlertDialogTitle,
+  AlertDialogTrigger,
   DeleteButton,
-  UnsavedChangesDialog,
   LogoutButton,
+  UnsavedChangesDialog,
 };
