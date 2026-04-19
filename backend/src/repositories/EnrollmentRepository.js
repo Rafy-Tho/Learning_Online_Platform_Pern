@@ -17,6 +17,10 @@ class EnrollmentRepository {
     );
     return result.rows[0];
   }
+  async getTotalEnrollments() {
+    const result = await pgPool.query(`SELECT COUNT(*) FROM enrollments`);
+    return result.rows[0].count;
+  }
 }
 
 const Enrollment = new EnrollmentRepository();

@@ -29,6 +29,9 @@ import {
   validateUpdatePassword,
   validateUpdateProfile,
 } from "../validators/userValidators.js";
+import authorize from "../middlewares/authorize.js";
+import { ADMIN, INSTRUCTOR } from "../constants/constants.js";
+import { getDashboardData } from "../controllers/adminControllers.js";
 
 const userRoute = express.Router();
 
@@ -90,4 +93,8 @@ userRoute.post(
   requireAuth,
   createStripeSession,
 );
+
+userRoute
+  .route("/dashboard-data")
+  .get(requireAuth, authorize(INSTRUCTOR, ADMIN), getDashboardData);
 export default userRoute;

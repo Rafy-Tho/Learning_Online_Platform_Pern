@@ -663,6 +663,17 @@ class CourseRepository {
       },
     };
   }
+  async getTotalCourse() {
+    const query = `SELECT COUNT(*) FROM courses`;
+    const result = await pgPool.query(query);
+    return parseInt(result.rows[0].count);
+  }
+
+  async getRecentCourses() {
+    const query = `SELECT * FROM courses ORDER BY created_at DESC LIMIT 5`;
+    const result = await pgPool.query(query);
+    return result.rows;
+  }
 }
 
 const Course = new CourseRepository();
