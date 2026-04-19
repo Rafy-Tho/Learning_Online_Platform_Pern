@@ -6,6 +6,7 @@ import { Textarea } from "../components/ui/textarea";
 import { DataTable } from "../components/DataTable";
 import { FormModal } from "../components/FormModal";
 import { mockCategories } from "../data/mockData";
+import { DeleteButton } from "../components/ui/alert-dialog";
 export default function CategoriesPage() {
   const [categories, setCategories] = useState(mockCategories);
   const [modalOpen, setModalOpen] = useState(false);
@@ -86,17 +87,7 @@ export default function CategoriesPage() {
           >
             <Pencil className="h-4 w-4" />
           </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleDelete(c.id);
-            }}
-            className="text-destructive hover:text-destructive"
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
+          <DeleteButton onDelete={() => handleDelete(c.id)} />
         </div>
       ),
     },

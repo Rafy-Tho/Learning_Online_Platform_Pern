@@ -107,20 +107,6 @@ export default function LoginPage() {
                 )}
               </Button>
             </form>
-
-            <div className="mt-4 rounded-lg bg-muted/50 border border-border p-3">
-              <p className="text-xs text-muted-foreground font-medium mb-1">
-                Demo Credentials
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Email:{" "}
-                <span className="font-mono text-foreground">admin@lms.com</span>
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Password:{" "}
-                <span className="font-mono text-foreground">admin123</span>
-              </p>
-            </div>
           </CardContent>
         </Card>
       </div>

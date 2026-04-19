@@ -1,7 +1,8 @@
 import * as React from "react";
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import { cn } from "../../libs/utils";
-import { buttonVariants } from "./button";
+import { Button, buttonVariants } from "./button";
+import { Trash, Trash2 } from "lucide-react";
 
 const AlertDialog = AlertDialogPrimitive.Root;
 
@@ -100,6 +101,76 @@ const AlertDialogCancel = React.forwardRef(({ className, ...props }, ref) => (
   />
 ));
 AlertDialogCancel.displayName = AlertDialogPrimitive.Cancel.displayName;
+const DeleteButton = ({ onDelete }) => {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-destructive hover:text-destructive"
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete your
+            account and remove your data from our servers.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={onDelete}>Delete</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+};
+DeleteButton.displayName = "DeleteButton";
+// Unsaved changes warning
+const UnsavedChangesDialog = ({ isOpen, onConfirm, onCancel }) => {
+  return (
+    <AlertDialog open={isOpen}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Unsaved Changes</AlertDialogTitle>
+          <AlertDialogDescription>
+            You have unsaved changes. Do you want to save them before leaving?
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel onClick={onCancel}>Stay</AlertDialogCancel>
+          <AlertDialogAction onClick={onConfirm}>Leave</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+};
+UnsavedChangesDialog.displayName = "UnsavedChangesDialog";
+// Logout confirmation
+const LogoutButton = () => {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger>Logout</AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Logout?</AlertDialogTitle>
+          <AlertDialogDescription>
+            You will need to log in again to access your account.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Stay Logged In</AlertDialogCancel>
+          <AlertDialogAction>Logout</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+};
+LogoutButton.displayName = "LogoutButton";
 
 export {
   AlertDialog,
@@ -113,4 +184,7 @@ export {
   AlertDialogDescription,
   AlertDialogAction,
   AlertDialogCancel,
+  DeleteButton,
+  UnsavedChangesDialog,
+  LogoutButton,
 };

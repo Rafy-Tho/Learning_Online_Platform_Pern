@@ -2,9 +2,10 @@ import { ArrowUpRight, BookOpen, TrendingUp, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { StatsCard } from "../components/StatsCard";
 import { StatusBadge } from "../components/StatusBadge";
+import { ErrorAlert } from "../components/ui/alert";
 import { DashboardSkeleton } from "../components/ui/skeleton";
 import useGetDashboardData from "../hooks/dashboard-data/use-get-dashboard-data";
-import { ErrorAlert } from "../components/ui/alert";
+import { DeleteButton } from "../components/ui/alert-dialog";
 export default function DashboardPage() {
   const navigate = useNavigate();
   const { data, isPending, error } = useGetDashboardData();

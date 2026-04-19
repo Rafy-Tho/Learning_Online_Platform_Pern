@@ -48,7 +48,7 @@ const AlertDescription = React.forwardRef(({ className, ...props }, ref) => (
 ));
 AlertDescription.displayName = "AlertDescription";
 // Success Alert
-function SuccessAlert() {
+const SuccessAlert = () => {
   return (
     <Alert variant="default" className="border-green-500 bg-green-50">
       <CheckCircle className="h-4 w-4 text-green-600" />
@@ -58,10 +58,10 @@ function SuccessAlert() {
       </AlertDescription>
     </Alert>
   );
-}
-
+};
+SuccessAlert.displayName = "SuccessAlert";
 // Error Alert
-function ErrorAlert({ message }) {
+const ErrorAlert = ({ message }) => {
   return (
     <Alert variant="destructive">
       <AlertCircle className="h-4 w-4" />
@@ -71,10 +71,10 @@ function ErrorAlert({ message }) {
       </AlertDescription>
     </Alert>
   );
-}
-
+};
+ErrorAlert.displayName = "ErrorAlert";
 // Warning Alert
-function WarningAlert() {
+const WarningAlert = () => {
   return (
     <Alert variant="default" className="border-yellow-500 bg-yellow-50">
       <AlertCircle className="h-4 w-4 text-yellow-600" />
@@ -84,10 +84,10 @@ function WarningAlert() {
       </AlertDescription>
     </Alert>
   );
-}
-
+};
+WarningAlert.displayName = "WarningAlert";
 // Info Alert
-function InfoAlert() {
+const InfoAlert = () => {
   return (
     <Alert variant="default">
       <Info className="h-4 w-4" />
@@ -95,8 +95,8 @@ function InfoAlert() {
       <AlertDescription>You can now import files up to 10MB.</AlertDescription>
     </Alert>
   );
-}
-
+};
+InfoAlert.displayName = "InfoAlert";
 export {
   Alert,
   AlertTitle,

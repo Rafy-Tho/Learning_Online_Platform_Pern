@@ -3,7 +3,7 @@ import userApi from "../../services/UserApi";
 
 export default function useGetDashboardData() {
   const { data, isPending, error } = useQuery({
-    queryKey: "dashboard-data",
+    queryKey: ["dashboard-data"],
     queryFn: () => userApi.getDashboardData(),
   });
   return { data, isPending, error };
