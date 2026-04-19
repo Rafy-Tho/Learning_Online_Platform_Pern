@@ -304,3 +304,15 @@ export const getCourseCompleted = asyncHandler(async (req, res, next) => {
     data: courses,
   });
 });
+
+export const getCoursesDashboard = asyncHandler(async (req, res, next) => {
+  const userId = req.session.user.id;
+  const { data, pagination } = await Course.getAllCoursesDashboard(req.query);
+  res.status(StatusCode.OK).json({
+    success: true,
+    statusCode: StatusCode.OK,
+    message: "Courses retrieved successfully",
+    data,
+    pagination,
+  });
+});

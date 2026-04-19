@@ -674,6 +674,56 @@ class CourseRepository {
     const result = await pgPool.query(query);
     return result.rows;
   }
+  async getAllCoursesDashboard(queryString) {
+    const baseQuery = `
+     FROM courses AS c
+     LEFT JOIN (
+        SELECT 
+          course_id,
+          COUNT(user_id) AS enrollment_count
+        FROM enrollments en
+        GROUP BY course_id
+      ) AS en ON en.course_id = c.id
+  `;
+
+    const filterMap = {
+      level: "c.level",
+      category: "c.category_id",
+      skill: "c.slug",
+      isFree: "c.access_type",
+    };
+
+    const sortMap = {
+      created_at: "c.created_at",
+    };
+
+    const features = new AdvancedQuery({
+      baseQuery,
+      queryString,
+      filterMap,
+      sortMap,
+    });
+
+    features.select = `
+   c.*, 
+   COALESCE(en.enrollment_count, 0) AS enrollment_count
+  `;
+
+    await features
+      .filter()
+      .search(["c.name", "c.description"])
+      .sort()
+      .paginate();
+
+    const { sql, values, pagination } = features.build();
+
+    const result = await pgPool.query(sql, values);
+
+    return {
+      data: result.rows,
+      pagination,
+    };
+  }
 }
 
 const Course = new CourseRepository();
