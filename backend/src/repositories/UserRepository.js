@@ -5,7 +5,7 @@ class UserRepository {
     const query = `
       INSERT INTO users (email, password, name, image_url)
       VALUES ($1, $2, $3, $4)
-      RETURNING id, email, role, name, image_url, 
+      RETURNING id, email, role, name, image_url, created_at, updated_at
     `;
 
     const result = await pgPool.query(query, [email, password, name, imageUrl]);
@@ -15,7 +15,7 @@ class UserRepository {
 
   async findByEmail(email) {
     const query = `
-      SELECT id, email, role, password, last_login
+      SELECT id, email, role, password, last_login, 
       FROM users
       WHERE email = $1
     `;
@@ -112,7 +112,7 @@ class UserRepository {
   async findById(userId) {
     const query = `
       SELECT 
-         id, email, role, last_login, name, image_url, password
+         id, email, role, last_login, name, image_url, password, created_at
       FROM users
       WHERE id = $1
     `;
@@ -126,6 +126,34 @@ class UserRepository {
       WHERE id = $2
     `;
     await pgPool.query(query, [lastLogin, userId]);
+  }
+  async getTotalStudents() {
+    const query = `
+      SELECT COUNT(*) AS total_users
+      FROM users
+      WHERE role = 'LEARNER'
+    `;
+    const result = await pgPool.query(query);
+    return result.rows[0].total_users;
+  }
+  async getTotalInstructors() {
+    const query = `
+      SELECT COUNT(*) AS total_users
+      FROM users
+      WHERE role = 'INSTRUCTOR'
+    `;
+    const result = await pgPool.query(query);
+    return result.rows[0].total_users;
+  }
+
+  async getInstructors() {
+    const query = `
+      SELECT *
+      FROM users
+      WHERE role = 'INSTRUCTOR'
+    `;
+    const result = await pgPool.query(query);
+    return result.rows;
   }
 }
 const User = new UserRepository();

@@ -12,27 +12,33 @@ import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import { GraduationCap, LogIn, AlertCircle } from "lucide-react";
+import useLogin from "../hooks/auth/useLogin";
+import { useToast } from "../components/ui/use-toast";
 
 export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState("admin@lms.com");
-  const [password, setPassword] = useState("admin123");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = (e) => {
+  const [email, setEmail] = useState("rafytho30@gmail.com");
+  const [password, setPassword] = useState("Password123!");
+  const { login: loginHook, isPending } = useLogin();
+  const { toast } = useToast();
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setLoading(true);
-    setTimeout(() => {
-      if (login(email, password)) {
-        navigate("/");
-      } else {
-        setError("Invalid credentials. Use admin@lms.com to login.");
-      }
-      setLoading(false);
-    }, 600);
+    try {
+      const res = await loginHook({ email, password });
+      toast({
+        title: "Success!",
+        description: "Your action was completed successfully.",
+      });
+      login(res);
+      navigate("/");
+    } catch (error) {
+      toast({
+        title: "Error!",
+        description: error.message || "Please check your credentials.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -63,13 +69,6 @@ export default function LoginPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              {error && (
-                <div className="flex items-center gap-2 rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
-                  <AlertCircle className="h-4 w-4 shrink-0" />
-                  {error}
-                </div>
-              )}
-
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -94,8 +93,8 @@ export default function LoginPage() {
                 />
               </div>
 
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? (
+              <Button type="submit" className="w-full" disabled={isPending}>
+                {isPending ? (
                   <span className="flex items-center gap-2">
                     <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
                     Signing in...

@@ -1,30 +1,23 @@
-import { createContext, useContext, useState } from "react";
-import { mockUsers } from "../constants/mockData";
+import { createContext, useContext, useEffect, useState } from "react";
+import useGetMe from "../hooks/user/useGetMe";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const { data, isPending } = useGetMe();
 
-  const login = (email, _password) => {
-    const found = mockUsers.find(
-      (u) => u.email === email && u.role === "ADMIN",
-    );
-    if (found) {
-      setUser(found);
-      return true;
-    }
-    return false;
-  };
-
+  const login = (data) => setUser(data.data);
   const logout = () => setUser(null);
 
-  const updateProfile = (data) => {
-    if (user) setUser({ ...user, ...data });
-  };
-
+  useEffect(() => {
+    if (data?.data) {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      login(data);
+    }
+  }, [data]);
   return (
-    <AuthContext.Provider value={{ user, login, logout, updateProfile }}>
+    <AuthContext.Provider value={{ user, login, logout, isPending }}>
       {children}
     </AuthContext.Provider>
   );
