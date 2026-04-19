@@ -1,45 +1,5 @@
-import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import {
-  ArrowLeft,
-  Plus,
-  Pencil,
-  Trash2,
-  ChevronDown,
-  ChevronRight,
-  FileText,
-  HelpCircle,
-  GripVertical,
-  BookOpen,
-  List,
-} from "lucide-react";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Textarea } from "../components/ui/textarea";
-import { FormModal } from "../components/FormModal";
-import { StatusBadge } from "../components/StatusBadge";
-import {
-  mockCourses,
-  mockModules,
-  mockChapters,
-  mockLessons,
-  mockLessonContents,
-  mockQuizzes,
-  mockQuizOptions,
-} from "../data/mockData";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../components/ui/select";
-import { Switch } from "../components/ui/switch";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "../components/ui/collapsible";
+import { FormModal } from '../components/FormModal';
+import { StatusBadge } from '../components/StatusBadge';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -49,7 +9,50 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "../components/ui/alert-dialog";
+} from '../components/ui/alert-dialog';
+import { Button } from '../components/ui/button';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '../components/ui/collapsible';
+import { Input } from '../components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../components/ui/select';
+import { Switch } from '../components/ui/switch';
+import { Textarea } from '../components/ui/textarea';
+import {
+  mockChapters,
+  mockCourses,
+  mockLessonContents,
+  mockLessons,
+  mockModules,
+  mockQuizOptions,
+  mockQuizzes,
+} from '../data/mockData';
+
+import {
+  ArrowLeft,
+  BookOpen,
+  Check,
+  ChevronDown,
+  ChevronRight,
+  FileText,
+  GripVertical,
+  HelpCircle,
+  List,
+  Pencil,
+  Plus,
+  Trash2,
+  X,
+} from 'lucide-react';
+import { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function CourseDetailPage() {
   const { courseId } = useParams();
@@ -64,6 +67,11 @@ export default function CourseDetailPage() {
   const [lessonContents, setLessonContents] = useState(mockLessonContents);
   const [quizzes, setQuizzes] = useState(mockQuizzes);
   const [quizOptions, setQuizOptions] = useState(mockQuizOptions);
+  const [objectives, setObjectives] = useState(course?.objectives ?? []);
+  const [editingObjectiveIdx, setEditingObjectiveIdx] = useState(null);
+  const [objectiveDraft, setObjectiveDraft] = useState('');
+  const [addingObjective, setAddingObjective] = useState(false);
+  const [newObjective, setNewObjective] = useState('');
 
   const [expandedModules, setExpandedModules] = useState(new Set());
   const [expandedChapters, setExpandedChapters] = useState(new Set());
@@ -82,35 +90,35 @@ export default function CourseDetailPage() {
   const [editingContent, setEditingContent] = useState(null);
   const [editingQuiz, setEditingQuiz] = useState(null);
 
-  const [parentId, setParentId] = useState("");
+  const [parentId, setParentId] = useState('');
 
   // Delete confirmation
   const [deleteDialog, setDeleteDialog] = useState(null);
 
   // Forms
   const [moduleForm, setModuleForm] = useState({
-    name: "",
-    description: "",
-    status: "DRAFT",
+    name: '',
+    description: '',
+    status: 'DRAFT',
   });
   const [chapterForm, setChapterForm] = useState({
-    name: "",
-    description: "",
-    status: "DRAFT",
+    name: '',
+    description: '',
+    status: 'DRAFT',
   });
   const [lessonForm, setLessonForm] = useState({
-    name: "",
-    description: "",
-    type: "TEXT",
-    status: "DRAFT",
+    name: '',
+    description: '',
+    type: 'TEXT',
+    status: 'DRAFT',
     xp_points: 10,
     duration_minutes: 15,
   });
-  const [contentForm, setContentForm] = useState({ name: "", content: "" });
-  const [quizForm, setQuizForm] = useState({ question: "", explanation: "" });
+  const [contentForm, setContentForm] = useState({ name: '', content: '' });
+  const [quizForm, setQuizForm] = useState({ question: '', explanation: '' });
   const [optionsForm, setOptionsForm] = useState([
-    { text: "", is_correct: false },
-    { text: "", is_correct: false },
+    { text: '', is_correct: false },
+    { text: '', is_correct: false },
   ]);
 
   const toggleModule = (id) => {
@@ -138,14 +146,14 @@ export default function CourseDetailPage() {
   // ========== Module CRUD ==========
   const openCreateModule = () => {
     setEditingModule(null);
-    setModuleForm({ name: "", description: "", status: "DRAFT" });
+    setModuleForm({ name: '', description: '', status: 'DRAFT' });
     setModuleModal(true);
   };
   const openEditModule = (m) => {
     setEditingModule(m);
     setModuleForm({
       name: m.name,
-      description: m.description || "",
+      description: m.description || '',
       status: m.status,
     });
     setModuleModal(true);
@@ -172,13 +180,13 @@ export default function CourseDetailPage() {
     setModuleModal(false);
   };
   const confirmDeleteModule = (m) =>
-    setDeleteDialog({ type: "module", id: m.id, name: m.name });
+    setDeleteDialog({ type: 'module', id: m.id, name: m.name });
 
   // ========== Chapter CRUD ==========
   const openCreateChapter = (moduleId) => {
     setParentId(moduleId);
     setEditingChapter(null);
-    setChapterForm({ name: "", description: "", status: "DRAFT" });
+    setChapterForm({ name: '', description: '', status: 'DRAFT' });
     setChapterModal(true);
   };
   const openEditChapter = (ch) => {
@@ -186,7 +194,7 @@ export default function CourseDetailPage() {
     setEditingChapter(ch);
     setChapterForm({
       name: ch.name,
-      description: ch.description || "",
+      description: ch.description || '',
       status: ch.status,
     });
     setChapterModal(true);
@@ -214,17 +222,17 @@ export default function CourseDetailPage() {
     setChapterModal(false);
   };
   const confirmDeleteChapter = (ch) =>
-    setDeleteDialog({ type: "chapter", id: ch.id, name: ch.name });
+    setDeleteDialog({ type: 'chapter', id: ch.id, name: ch.name });
 
   // ========== Lesson CRUD ==========
   const openCreateLesson = (chapterId) => {
     setParentId(chapterId);
     setEditingLesson(null);
     setLessonForm({
-      name: "",
-      description: "",
-      type: "TEXT",
-      status: "DRAFT",
+      name: '',
+      description: '',
+      type: 'TEXT',
+      status: 'DRAFT',
       xp_points: 10,
       duration_minutes: 15,
     });
@@ -235,7 +243,7 @@ export default function CourseDetailPage() {
     setEditingLesson(l);
     setLessonForm({
       name: l.name,
-      description: l.description || "",
+      description: l.description || '',
       type: l.type,
       status: l.status,
       xp_points: l.xp_points,
@@ -266,13 +274,13 @@ export default function CourseDetailPage() {
     setLessonModal(false);
   };
   const confirmDeleteLesson = (l) =>
-    setDeleteDialog({ type: "lesson", id: l.id, name: l.name });
+    setDeleteDialog({ type: 'lesson', id: l.id, name: l.name });
 
   // ========== Lesson Content CRUD ==========
   const openCreateContent = (lessonId) => {
     setParentId(lessonId);
     setEditingContent(null);
-    setContentForm({ name: "", content: "" });
+    setContentForm({ name: '', content: '' });
     setContentModal(true);
   };
   const openEditContent = (lc) => {
@@ -304,23 +312,23 @@ export default function CourseDetailPage() {
     setContentModal(false);
   };
   const confirmDeleteContent = (lc) =>
-    setDeleteDialog({ type: "content", id: lc.id, name: lc.name });
+    setDeleteDialog({ type: 'content', id: lc.id, name: lc.name });
 
   // ========== Quiz CRUD ==========
   const openCreateQuiz = (lessonId) => {
     setParentId(lessonId);
     setEditingQuiz(null);
-    setQuizForm({ question: "", explanation: "" });
+    setQuizForm({ question: '', explanation: '' });
     setOptionsForm([
-      { text: "", is_correct: false },
-      { text: "", is_correct: false },
+      { text: '', is_correct: false },
+      { text: '', is_correct: false },
     ]);
     setQuizModal(true);
   };
   const openEditQuiz = (q) => {
     setParentId(q.lesson_id);
     setEditingQuiz(q);
-    setQuizForm({ question: q.question, explanation: q.explanation || "" });
+    setQuizForm({ question: q.question, explanation: q.explanation || '' });
     const opts = quizOptions
       .filter((o) => o.quiz_id === q.id)
       .sort((a, b) => a.position - b.position);
@@ -328,8 +336,8 @@ export default function CourseDetailPage() {
       opts.length > 0
         ? opts.map((o) => ({ text: o.text, is_correct: o.is_correct }))
         : [
-            { text: "", is_correct: false },
-            { text: "", is_correct: false },
+            { text: '', is_correct: false },
+            { text: '', is_correct: false },
           ],
     );
     setQuizModal(true);
@@ -369,10 +377,10 @@ export default function CourseDetailPage() {
     setQuizModal(false);
   };
   const confirmDeleteQuiz = (q) =>
-    setDeleteDialog({ type: "quiz", id: q.id, name: q.question.slice(0, 30) });
+    setDeleteDialog({ type: 'quiz', id: q.id, name: q.question.slice(0, 30) });
 
   const addOption = () =>
-    setOptionsForm((f) => [...f, { text: "", is_correct: false }]);
+    setOptionsForm((f) => [...f, { text: '', is_correct: false }]);
   const removeOption = (i) =>
     setOptionsForm((f) => f.filter((_, idx) => idx !== i));
 
@@ -381,7 +389,7 @@ export default function CourseDetailPage() {
     if (!deleteDialog) return;
     const { type, id } = deleteDialog;
     switch (type) {
-      case "module": {
+      case 'module': {
         // Cascade: delete chapters, lessons, contents, quizzes under this module
         const moduleChapterIds = chapters
           .filter((c) => c.module_id === id)
@@ -408,7 +416,7 @@ export default function CourseDetailPage() {
         setModules((ms) => ms.filter((m) => m.id !== id));
         break;
       }
-      case "chapter": {
+      case 'chapter': {
         const chapterLessonIds = lessons
           .filter((l) => l.chapter_id === id)
           .map((l) => l.id);
@@ -428,7 +436,7 @@ export default function CourseDetailPage() {
         setChapters((cs) => cs.filter((c) => c.id !== id));
         break;
       }
-      case "lesson": {
+      case 'lesson': {
         const lessonQuizIds = quizzes
           .filter((q) => q.lesson_id === id)
           .map((q) => q.id);
@@ -440,15 +448,17 @@ export default function CourseDetailPage() {
         setLessons((ls) => ls.filter((l) => l.id !== id));
         break;
       }
-      case "content": {
+      case 'content': {
         setLessonContents((cs) => cs.filter((c) => c.id !== id));
         break;
       }
-      case "quiz": {
+      case 'quiz': {
         setQuizOptions((os) => os.filter((o) => o.quiz_id !== id));
         setQuizzes((qs) => qs.filter((q) => q.id !== id));
         break;
       }
+      default:
+        break;
     }
     setDeleteDialog(null);
   };
@@ -459,7 +469,7 @@ export default function CourseDetailPage() {
         <p className="text-muted-foreground">Course not found</p>
         <Button
           variant="outline"
-          onClick={() => navigate("/courses")}
+          onClick={() => navigate('/courses')}
           className="mt-4"
         >
           Back to Courses
@@ -475,7 +485,7 @@ export default function CourseDetailPage() {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => navigate("/courses")}
+          onClick={() => navigate('/courses')}
         >
           <ArrowLeft className="h-4 w-4" />
         </Button>
@@ -493,6 +503,158 @@ export default function CourseDetailPage() {
         <Button onClick={openCreateModule} className="gap-2">
           <Plus className="h-4 w-4" /> Add Module
         </Button>
+      </div>
+
+      <div className="glass-card rounded-xl p-5">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-semibold text-foreground uppercase tracking-wide">
+            What You'll Learn
+          </h2>
+          {!addingObjective && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 gap-1"
+              onClick={() => {
+                setAddingObjective(true);
+                setNewObjective('');
+              }}
+            >
+              <Plus className="h-3.5 w-3.5" /> Add
+            </Button>
+          )}
+        </div>
+
+        {objectives.length === 0 && !addingObjective && (
+          <p className="text-sm text-muted-foreground">
+            No learning objectives yet. Click "Add" to create one.
+          </p>
+        )}
+
+        <ul className="space-y-2">
+          {objectives.map((obj, i) => (
+            <li
+              key={i}
+              className="flex items-start gap-2 text-sm text-foreground group"
+            >
+              <span className="mt-2 inline-block h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+              {editingObjectiveIdx === i ? (
+                <>
+                  <Input
+                    autoFocus
+                    value={objectiveDraft}
+                    onChange={(e) => setObjectiveDraft(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && objectiveDraft.trim()) {
+                        setObjectives((os) =>
+                          os.map((o, idx) =>
+                            idx === i ? objectiveDraft.trim() : o,
+                          ),
+                        );
+                        setEditingObjectiveIdx(null);
+                      } else if (e.key === 'Escape') {
+                        setEditingObjectiveIdx(null);
+                      }
+                    }}
+                    className="h-8"
+                  />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 shrink-0"
+                    onClick={() => {
+                      if (!objectiveDraft.trim()) return;
+                      setObjectives((os) =>
+                        os.map((o, idx) =>
+                          idx === i ? objectiveDraft.trim() : o,
+                        ),
+                      );
+                      setEditingObjectiveIdx(null);
+                    }}
+                  >
+                    <Check className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 shrink-0"
+                    onClick={() => setEditingObjectiveIdx(null)}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <span className="flex-1 py-1">{obj}</span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={() => {
+                      setEditingObjectiveIdx(i);
+                      setObjectiveDraft(obj);
+                    }}
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive"
+                    onClick={() =>
+                      setObjectives((os) => os.filter((_, idx) => idx !== i))
+                    }
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
+
+        {addingObjective && (
+          <div className="flex items-center gap-2 mt-3">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+            <Input
+              autoFocus
+              value={newObjective}
+              onChange={(e) => setNewObjective(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && newObjective.trim()) {
+                  setObjectives((os) => [...os, newObjective.trim()]);
+                  setNewObjective('');
+                  setAddingObjective(false);
+                } else if (e.key === 'Escape') {
+                  setAddingObjective(false);
+                }
+              }}
+              placeholder="e.g. Build production-ready React apps"
+              className="h-8"
+            />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 shrink-0"
+              onClick={() => {
+                if (!newObjective.trim()) return;
+                setObjectives((os) => [...os, newObjective.trim()]);
+                setNewObjective('');
+                setAddingObjective(false);
+              }}
+            >
+              <Check className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 shrink-0"
+              onClick={() => setAddingObjective(false)}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Modules tree */}
@@ -668,7 +830,7 @@ export default function CourseDetailPage() {
                                         ) : (
                                           <div className="w-3" />
                                         )}
-                                        {lesson.type === "TEXT" ? (
+                                        {lesson.type === 'TEXT' ? (
                                           <FileText className="h-3.5 w-3.5 text-primary" />
                                         ) : (
                                           <HelpCircle className="h-3.5 w-3.5 text-amber-500" />
@@ -679,12 +841,12 @@ export default function CourseDetailPage() {
                                           </span>
                                           <StatusBadge status={lesson.status} />
                                           <span className="text-xs text-muted-foreground">
-                                            {lesson.duration_minutes}min ·{" "}
+                                            {lesson.duration_minutes}min ·{' '}
                                             {lesson.xp_points}XP
                                           </span>
                                         </div>
                                         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                          {lesson.type === "TEXT" && (
+                                          {lesson.type === 'TEXT' && (
                                             <Button
                                               variant="ghost"
                                               size="icon"
@@ -698,7 +860,7 @@ export default function CourseDetailPage() {
                                               <BookOpen className="h-3.5 w-3.5" />
                                             </Button>
                                           )}
-                                          {lesson.type === "QUIZ" && (
+                                          {lesson.type === 'QUIZ' && (
                                             <Button
                                               variant="ghost"
                                               size="icon"
@@ -839,10 +1001,10 @@ export default function CourseDetailPage() {
                                                   {opts.map((opt) => (
                                                     <div
                                                       key={opt.id}
-                                                      className={`flex items-center gap-2 text-xs px-2 py-1 rounded ${opt.is_correct ? "bg-emerald-500/10 text-emerald-400" : "text-muted-foreground"}`}
+                                                      className={`flex items-center gap-2 text-xs px-2 py-1 rounded ${opt.is_correct ? 'bg-emerald-500/10 text-emerald-400' : 'text-muted-foreground'}`}
                                                     >
                                                       <div
-                                                        className={`w-2 h-2 rounded-full ${opt.is_correct ? "bg-emerald-500" : "bg-muted-foreground/30"}`}
+                                                        className={`w-2 h-2 rounded-full ${opt.is_correct ? 'bg-emerald-500' : 'bg-muted-foreground/30'}`}
                                                       />
                                                       {opt.text}
                                                     </div>
@@ -902,7 +1064,7 @@ export default function CourseDetailPage() {
       <FormModal
         open={moduleModal}
         onOpenChange={setModuleModal}
-        title={editingModule ? "Edit Module" : "Add Module"}
+        title={editingModule ? 'Edit Module' : 'Add Module'}
       >
         <div className="space-y-4">
           <div>
@@ -951,7 +1113,7 @@ export default function CourseDetailPage() {
               Cancel
             </Button>
             <Button onClick={saveModule}>
-              {editingModule ? "Update" : "Create"}
+              {editingModule ? 'Update' : 'Create'}
             </Button>
           </div>
         </div>
@@ -961,7 +1123,7 @@ export default function CourseDetailPage() {
       <FormModal
         open={chapterModal}
         onOpenChange={setChapterModal}
-        title={editingChapter ? "Edit Chapter" : "Add Chapter"}
+        title={editingChapter ? 'Edit Chapter' : 'Add Chapter'}
       >
         <div className="space-y-4">
           <div>
@@ -1012,7 +1174,7 @@ export default function CourseDetailPage() {
               Cancel
             </Button>
             <Button onClick={saveChapter}>
-              {editingChapter ? "Update" : "Create"}
+              {editingChapter ? 'Update' : 'Create'}
             </Button>
           </div>
         </div>
@@ -1022,7 +1184,7 @@ export default function CourseDetailPage() {
       <FormModal
         open={lessonModal}
         onOpenChange={setLessonModal}
-        title={editingLesson ? "Edit Lesson" : "Add Lesson"}
+        title={editingLesson ? 'Edit Lesson' : 'Add Lesson'}
       >
         <div className="space-y-4">
           <div>
@@ -1126,7 +1288,7 @@ export default function CourseDetailPage() {
               Cancel
             </Button>
             <Button onClick={saveLesson}>
-              {editingLesson ? "Update" : "Create"}
+              {editingLesson ? 'Update' : 'Create'}
             </Button>
           </div>
         </div>
@@ -1136,7 +1298,7 @@ export default function CourseDetailPage() {
       <FormModal
         open={contentModal}
         onOpenChange={setContentModal}
-        title={editingContent ? "Edit Lesson Content" : "Add Lesson Content"}
+        title={editingContent ? 'Edit Lesson Content' : 'Add Lesson Content'}
       >
         <div className="space-y-4">
           <div>
@@ -1168,7 +1330,7 @@ export default function CourseDetailPage() {
               Cancel
             </Button>
             <Button onClick={saveContent}>
-              {editingContent ? "Update" : "Create"}
+              {editingContent ? 'Update' : 'Create'}
             </Button>
           </div>
         </div>
@@ -1178,7 +1340,7 @@ export default function CourseDetailPage() {
       <FormModal
         open={quizModal}
         onOpenChange={setQuizModal}
-        title={editingQuiz ? "Edit Quiz" : "Add Quiz"}
+        title={editingQuiz ? 'Edit Quiz' : 'Add Quiz'}
       >
         <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-1">
           <div>
@@ -1271,7 +1433,7 @@ export default function CourseDetailPage() {
               Cancel
             </Button>
             <Button onClick={saveQuiz}>
-              {editingQuiz ? "Update" : "Create"}
+              {editingQuiz ? 'Update' : 'Create'}
             </Button>
           </div>
         </div>

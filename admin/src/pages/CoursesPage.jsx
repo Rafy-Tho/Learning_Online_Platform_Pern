@@ -1,49 +1,60 @@
-import { useState } from "react";
-import { Plus, Pencil, Trash2, Eye } from "lucide-react";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Textarea } from "../components/ui/textarea";
-import { DataTable } from "../components/DataTable";
-import { FormModal } from "../components/FormModal";
-import { StatusBadge } from "../components/StatusBadge";
-import { mockCourses, mockCategories, mockUsers } from "../data/mockData";
-import { useNavigate } from "react-router-dom";
+import { Eye, Pencil, Plus, Trash2 } from 'lucide-react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { DataTable } from '../components/DataTable';
+import { FormModal } from '../components/FormModal';
+import { StatusBadge } from '../components/StatusBadge';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '../components/ui/alert-dialog';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../components/ui/select";
+} from '../components/ui/select';
+import { Textarea } from '../components/ui/textarea';
+import { mockCategories, mockCourses, mockUsers } from '../data/mockData';
 
 export default function CoursesPage() {
   const navigate = useNavigate();
   const [courses, setCourses] = useState(mockCourses);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
-  const instructors = mockUsers.filter((u) => u.role === "INSTRUCTOR");
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const instructors = mockUsers.filter((u) => u.role === 'INSTRUCTOR');
   const [form, setForm] = useState({
-    name: "",
-    slug: "",
-    description: "",
-    instructor_id: "",
-    category_id: "",
-    status: "DRAFT",
-    level: "BEGINNER",
-    access_type: "FREE",
+    name: '',
+    slug: '',
+    description: '',
+    instructor_id: '',
+    category_id: '',
+    status: 'DRAFT',
+    level: 'BEGINNER',
+    access_type: 'FREE',
   });
 
   const openCreate = () => {
     setEditing(null);
     setForm({
-      name: "",
-      slug: "",
-      description: "",
-      instructor_id: "",
-      category_id: "",
-      status: "DRAFT",
-      level: "BEGINNER",
-      access_type: "FREE",
+      name: '',
+      slug: '',
+      description: '',
+      instructor_id: '',
+      category_id: '',
+      status: 'DRAFT',
+      level: 'BEGINNER',
+      access_type: 'FREE',
     });
     setModalOpen(true);
   };
@@ -98,13 +109,20 @@ export default function CoursesPage() {
     setModalOpen(false);
   };
 
-  const handleDelete = (id) =>
-    setCourses((cs) => cs.filter((c) => c.id !== id));
+  const handleDelete = (id) => {
+    setDeleteTarget(id);
+  };
 
+  // Delete handler
+  const confirmDelete = () => {
+    if (!deleteTarget) return;
+    setCourses((cs) => cs.filter((c) => c.id !== deleteTarget));
+    setDeleteTarget(null);
+  };
   const columns = [
     {
-      key: "name",
-      header: "Course",
+      key: 'name',
+      header: 'Course',
       render: (c) => (
         <div>
           <p className="font-medium text-foreground">{c.name}</p>
@@ -112,34 +130,34 @@ export default function CoursesPage() {
         </div>
       ),
     },
-    { key: "instructor_name", header: "Instructor" },
+    { key: 'instructor_name', header: 'Instructor' },
     {
-      key: "level",
-      header: "Level",
+      key: 'level',
+      header: 'Level',
       render: (c) => (
         <span className="text-sm text-muted-foreground">{c.level}</span>
       ),
     },
     {
-      key: "status",
-      header: "Status",
+      key: 'status',
+      header: 'Status',
       render: (c) => <StatusBadge status={c.status} />,
     },
     {
-      key: "access_type",
-      header: "Access",
+      key: 'access_type',
+      header: 'Access',
       render: (c) => <StatusBadge status={c.access_type} />,
     },
     {
-      key: "enrollments_count",
-      header: "Enrollments",
+      key: 'enrollments_count',
+      header: 'Enrollments',
       render: (c) => (
         <span className="text-sm font-medium">{c.enrollments_count}</span>
       ),
     },
     {
-      key: "actions",
-      header: "Actions",
+      key: 'actions',
+      header: 'Actions',
       render: (c) => (
         <div className="flex gap-1">
           <Button
@@ -199,7 +217,7 @@ export default function CoursesPage() {
       <FormModal
         open={modalOpen}
         onOpenChange={setModalOpen}
-        title={editing ? "Edit Course" : "Add Course"}
+        title={editing ? 'Edit Course' : 'Add Course'}
       >
         <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-1">
           <div>
@@ -210,7 +228,7 @@ export default function CoursesPage() {
                 setForm((f) => ({
                   ...f,
                   name: e.target.value,
-                  slug: e.target.value.toLowerCase().replace(/\s+/g, "-"),
+                  slug: e.target.value.toLowerCase().replace(/\s+/g, '-'),
                 }))
               }
               placeholder="Course name"
@@ -344,11 +362,36 @@ export default function CoursesPage() {
               Cancel
             </Button>
             <Button onClick={handleSave}>
-              {editing ? "Update" : "Create"}
+              {editing ? 'Update' : 'Create'}
             </Button>
           </div>
         </div>
       </FormModal>
+      {/* Delete Confirmation */}
+      <AlertDialog
+        open={!!deleteTarget}
+        onOpenChange={() => setDeleteTarget(null)}
+      >
+        <AlertDialogContent className="bg-card border-border">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-foreground">
+              Confirm Delete
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
