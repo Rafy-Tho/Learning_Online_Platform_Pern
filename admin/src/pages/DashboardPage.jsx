@@ -2,12 +2,13 @@ import { ArrowUpRight, BookOpen, TrendingUp, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { StatsCard } from "../components/StatsCard";
 import { StatusBadge } from "../components/StatusBadge";
+import { DashboardSkeleton } from "../components/ui/skeleton";
 import { mockCourses, mockUsers } from "../data/mockData";
 export default function DashboardPage() {
   const navigate = useNavigate();
   const totalCourses = mockCourses.length;
   const totalUsers = mockUsers.length;
-
+  const t = true;
   const totalInstructors = mockUsers.filter(
     (u) => u.role === "INSTRUCTOR",
   ).length;
@@ -15,7 +16,7 @@ export default function DashboardPage() {
     (sum, c) => sum + (c.enrollments_count || 0),
     0,
   );
-
+  if (t) return <DashboardSkeleton />;
   return (
     <div className="space-y-8">
       <div>
