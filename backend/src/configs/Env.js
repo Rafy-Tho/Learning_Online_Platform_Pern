@@ -11,7 +11,8 @@ const ENV = {
   SESSION_SECRET: process.env.SESSION_SECRET,
   COOKIE_NAME: process.env.COOKIE_NAME,
   // url
-  CLIENT_URL: process.env.CLIENT_URL,
+  CLIENT_URL_1: process.env.CLIENT_URL_1,
+  CLIENT_URL_2: process.env.CLIENT_URL_2,
   // mail
   BREVO_API_KEY: process.env.BREVO_API_KEY,
   SENDER_EMAIL: process.env.SENDER_EMAIL,

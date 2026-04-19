@@ -32,7 +32,9 @@ const app = express();
 app.set("trust proxy", 1);
 
 // 2. CORS before everything
-app.use(cors({ origin: ENV.CLIENT_URL, credentials: true }));
+app.use(
+  cors({ origin: [ENV.CLIENT_URL_1, ENV.CLIENT_URL_2], credentials: true }),
+);
 
 // 3. Webhook route (needs raw body, so before json parser)
 app.use("/api/v1/stripe-webhook", webhookRoute);

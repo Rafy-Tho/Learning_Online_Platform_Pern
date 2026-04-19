@@ -337,7 +337,7 @@ export const getXpEarning = asyncHandler(async (req, res, next) => {
 export const createStripeSession = asyncHandler(async (req, res, next) => {
   const { subscriptionId } = req.params;
   const userId = req.session.user.id;
-  const origin = ENV.CLIENT_URL;
+  const origin = req.headers.origin;
 
   const subscription = await Subscription.findById(subscriptionId);
 
