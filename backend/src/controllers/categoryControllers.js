@@ -60,7 +60,8 @@ export const updateCategory = asyncHandler(async (req, res, next) => {
   if (!category) {
     return next(new ApiError(StatusCode.NOT_FOUND, "Category not found"));
   }
-  await Category.update(id, {
+  await Category.update({
+    categoryId: id,
     name: name || category.name,
     slug: slug || category.slug,
     description: description || category.description,

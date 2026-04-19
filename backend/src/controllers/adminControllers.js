@@ -4,7 +4,6 @@ import Enrollment from "../repositories/EnrollmentRepository.js";
 import User from "../repositories/UserRepository.js";
 import ApiError from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
-
 // @desc Get dashboard data
 // @route GET /api/admin/dashboard
 // @access Private

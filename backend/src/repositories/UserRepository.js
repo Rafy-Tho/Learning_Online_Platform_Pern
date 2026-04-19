@@ -15,7 +15,7 @@ class UserRepository {
 
   async findByEmail(email) {
     const query = `
-      SELECT id, email, role, password, last_login, 
+      SELECT id, email, role, password, last_login 
       FROM users
       WHERE email = $1
     `;
