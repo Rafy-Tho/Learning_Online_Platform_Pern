@@ -2,6 +2,7 @@ import * as React from "react";
 import { cva } from "class-variance-authority";
 
 import { cn } from "../../libs/utils";
+import { AlertCircle, Info } from "lucide-react";
 
 const alertVariants = cva(
   "relative w-full rounded-lg border p-4 [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground",
@@ -46,5 +47,62 @@ const AlertDescription = React.forwardRef(({ className, ...props }, ref) => (
   />
 ));
 AlertDescription.displayName = "AlertDescription";
+// Success Alert
+function SuccessAlert() {
+  return (
+    <Alert variant="default" className="border-green-500 bg-green-50">
+      <CheckCircle className="h-4 w-4 text-green-600" />
+      <AlertTitle>Success!</AlertTitle>
+      <AlertDescription>
+        Your changes have been saved successfully.
+      </AlertDescription>
+    </Alert>
+  );
+}
 
-export { Alert, AlertTitle, AlertDescription };
+// Error Alert
+function ErrorAlert({ message }) {
+  return (
+    <Alert variant="destructive">
+      <AlertCircle className="h-4 w-4" />
+      <AlertTitle>Error</AlertTitle>
+      <AlertDescription>
+        {message || "Something went wrong. Please try again."}
+      </AlertDescription>
+    </Alert>
+  );
+}
+
+// Warning Alert
+function WarningAlert() {
+  return (
+    <Alert variant="default" className="border-yellow-500 bg-yellow-50">
+      <AlertCircle className="h-4 w-4 text-yellow-600" />
+      <AlertTitle>Warning</AlertTitle>
+      <AlertDescription>
+        Your session will expire in 5 minutes.
+      </AlertDescription>
+    </Alert>
+  );
+}
+
+// Info Alert
+function InfoAlert() {
+  return (
+    <Alert variant="default">
+      <Info className="h-4 w-4" />
+      <AlertTitle>Heads up!</AlertTitle>
+      <AlertDescription>You can now import files up to 10MB.</AlertDescription>
+    </Alert>
+  );
+}
+
+export {
+  Alert,
+  AlertTitle,
+  AlertDescription,
+  SuccessAlert,
+  ErrorAlert,
+  WarningAlert,
+  InfoAlert,
+};

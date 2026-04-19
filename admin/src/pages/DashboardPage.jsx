@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { StatsCard } from "../components/StatsCard";
 import { StatusBadge } from "../components/StatusBadge";
 import { DashboardSkeleton } from "../components/ui/skeleton";
-import { mockCourses, mockUsers } from "../data/mockData";
 import useGetDashboardData from "../hooks/dashboard-data/use-get-dashboard-data";
+import { ErrorAlert } from "../components/ui/alert";
 export default function DashboardPage() {
   const navigate = useNavigate();
   const { data, isPending, error } = useGetDashboardData();
@@ -13,6 +13,7 @@ export default function DashboardPage() {
   const totalInstructors = data?.data?.totalInstructors || 0;
   const totalEnrollments = data?.data?.totalEnrollments || 0;
   if (isPending) return <DashboardSkeleton />;
+  if (error) return <ErrorAlert message={error.message} />;
   return (
     <div className="space-y-8">
       <div>
