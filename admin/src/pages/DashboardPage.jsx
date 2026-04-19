@@ -1,21 +1,13 @@
-import {
-  BookOpen,
-  Users,
-  FolderTree,
-  GraduationCap,
-  TrendingUp,
-  ArrowUpRight,
-} from "lucide-react";
-import { StatsCard } from "../components/StatsCard";
-import { mockCourses, mockUsers, mockCategories } from "../data/mockData";
-import { StatusBadge } from "../components/StatusBadge";
+import { ArrowUpRight, BookOpen, TrendingUp, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
+import { StatsCard } from "../components/StatsCard";
+import { StatusBadge } from "../components/StatusBadge";
+import { mockCourses, mockUsers } from "../data/mockData";
 export default function DashboardPage() {
   const navigate = useNavigate();
   const totalCourses = mockCourses.length;
   const totalUsers = mockUsers.length;
-  const totalCategories = mockCategories.length;
+
   const totalInstructors = mockUsers.filter(
     (u) => u.role === "INSTRUCTOR",
   ).length;
@@ -34,31 +26,17 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <StatsCard title="Total Courses" value={totalCourses} icon={BookOpen} />
+        <StatsCard title="Total Users" value={totalUsers} icon={Users} />
         <StatsCard
-          title="Total Courses"
-          value={totalCourses}
-          icon={BookOpen}
-          trend="+12% this month"
-          trendUp
-        />
-        <StatsCard
-          title="Total Users"
-          value={totalUsers}
+          title="Total Instructors"
+          value={totalInstructors}
           icon={Users}
-          trend="+8% this month"
-          trendUp
-        />
-        <StatsCard
-          title="Categories"
-          value={totalCategories}
-          icon={FolderTree}
         />
         <StatsCard
           title="Enrollments"
           value={totalEnrollments}
           icon={TrendingUp}
-          trend="+23% this month"
-          trendUp
         />
       </div>
 

@@ -1,4 +1,5 @@
 import { SidebarProvider, SidebarTrigger } from "./ui/sidebar";
+
 import { AdminSidebar } from "./AdminSidebar";
 import { Outlet } from "react-router-dom";
 
