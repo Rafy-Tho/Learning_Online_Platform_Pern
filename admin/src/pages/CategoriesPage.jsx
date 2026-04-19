@@ -1,21 +1,31 @@
-import { useState } from "react";
-import { Plus, Pencil, Trash2 } from "lucide-react";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Textarea } from "../components/ui/textarea";
-import { DataTable } from "../components/DataTable";
-import { FormModal } from "../components/FormModal";
-import { mockCategories } from "../data/mockData";
-import { DeleteButton } from "../components/ui/alert-dialog";
+import { Pencil, Plus } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { DataTable } from '../components/DataTable';
+import { FormModal } from '../components/FormModal';
+import { ErrorAlert } from '../components/ui/alert';
+import { DeleteButton } from '../components/ui/alert-dialog';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { DashboardSkeleton } from '../components/ui/skeleton';
+import { Textarea } from '../components/ui/textarea';
+import { useCreateCategory } from '../hooks/category/use-create-category';
+import useDeleteCategory from '../hooks/category/use-delete-category';
+import useGetCategories from '../hooks/category/use-get-categories';
+import { useUpdateCategory } from '../hooks/category/use-update-category';
+import { useToast } from '../hooks/use-toast';
 export default function CategoriesPage() {
-  const [categories, setCategories] = useState(mockCategories);
+  const { data, isPending, error } = useGetCategories();
+  const [categories, setCategories] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [form, setForm] = useState({ name: "", slug: "", description: "" });
-
+  const [form, setForm] = useState({ name: '', slug: '', description: '' });
+  const { updateCategory, isPending: isUpdating } = useUpdateCategory();
+  const { createCategory, isPending: isCreating } = useCreateCategory();
+  const { deleteCategory, isPending: isDeleting } = useDeleteCategory();
+  const { toast } = useToast();
   const openCreate = () => {
     setEditing(null);
-    setForm({ name: "", slug: "", description: "" });
+    setForm({ name: '', slug: '', description: '' });
     setModalOpen(true);
   };
 
@@ -24,39 +34,72 @@ export default function CategoriesPage() {
     setForm({
       name: cat.name,
       slug: cat.slug,
-      description: cat.description || "",
+      description: cat.description || '',
     });
     setModalOpen(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!form.name || !form.slug) return;
     if (editing) {
-      setCategories((cats) =>
-        cats.map((c) => (c.id === editing.id ? { ...c, ...form } : c)),
-      );
+      try {
+        await updateCategory({ id: editing.id, category: form });
+        setCategories((cats) =>
+          cats.map((c) => (c.id === editing.id ? { ...c, ...form } : c)),
+        );
+        toast({
+          title: 'Category updated',
+          description: 'The category has been updated successfully.',
+        });
+        setModalOpen(false);
+      } catch (error) {
+        toast({
+          title: 'Error',
+          description: error.message || 'Failed to update category.',
+          variant: 'destructive',
+        });
+      }
     } else {
-      setCategories((cats) => [
-        ...cats,
-        {
-          id: crypto.randomUUID(),
-          ...form,
-          created_at: new Date().toISOString(),
-        },
-      ]);
+      try {
+        const response = await createCategory(form);
+        toast({
+          title: 'Category created',
+          description: 'The category has been created successfully.',
+        });
+        setCategories((cats) => [...cats, response.data]);
+        setModalOpen(false);
+      } catch (error) {
+        toast({
+          title: 'Error',
+          description: error.message || 'Failed to create category.',
+          variant: 'destructive',
+        });
+      }
     }
-    setModalOpen(false);
   };
 
-  const handleDelete = (id) => {
-    setCategories((cats) => cats.filter((c) => c.id !== id));
+  const handleDelete = async (id) => {
+    try {
+      await deleteCategory(id);
+      setCategories((cats) => cats.filter((c) => c.id !== id));
+      toast({
+        title: 'Category deleted',
+        description: 'The category has been deleted successfully.',
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to delete category.',
+        variant: 'destructive',
+      });
+    }
   };
 
   const columns = [
-    { key: "name", header: "Name" },
+    { key: 'name', header: 'Name' },
     {
-      key: "slug",
-      header: "Slug",
+      key: 'slug',
+      header: 'Slug',
       render: (c) => (
         <span className="text-muted-foreground font-mono text-sm">
           {c.slug}
@@ -64,17 +107,17 @@ export default function CategoriesPage() {
       ),
     },
     {
-      key: "description",
-      header: "Description",
+      key: 'description',
+      header: 'Description',
       render: (c) => (
         <span className="text-muted-foreground text-sm truncate max-w-[200px] block">
-          {c.description || "—"}
+          {c.description || '—'}
         </span>
       ),
     },
     {
-      key: "actions",
-      header: "Actions",
+      key: 'actions',
+      header: 'Actions',
       render: (c) => (
         <div className="flex gap-2">
           <Button
@@ -87,12 +130,21 @@ export default function CategoriesPage() {
           >
             <Pencil className="h-4 w-4" />
           </Button>
-          <DeleteButton onDelete={() => handleDelete(c.id)} />
+          <DeleteButton
+            onDelete={() => handleDelete(c.id)}
+            isDeleting={isDeleting}
+          />
         </div>
       ),
     },
   ];
-
+  useEffect(() => {
+    if (data) {
+      setCategories([...data.data]);
+    }
+  }, [data]);
+  if (isPending) return <DashboardSkeleton />;
+  if (error) return <ErrorAlert message={error.message} />;
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -110,7 +162,7 @@ export default function CategoriesPage() {
       <FormModal
         open={modalOpen}
         onOpenChange={setModalOpen}
-        title={editing ? "Edit Category" : "Add Category"}
+        title={editing ? 'Edit Category' : 'Add Category'}
       >
         <div className="space-y-4">
           <div>
@@ -121,7 +173,7 @@ export default function CategoriesPage() {
                 setForm((f) => ({
                   ...f,
                   name: e.target.value,
-                  slug: e.target.value.toLowerCase().replace(/\s+/g, "-"),
+                  slug: e.target.value.toLowerCase().replace(/\s+/g, '-'),
                 }))
               }
               placeholder="Category name"
@@ -154,8 +206,14 @@ export default function CategoriesPage() {
             <Button variant="outline" onClick={() => setModalOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleSave}>
-              {editing ? "Update" : "Create"}
+            <Button onClick={handleSave} disabled={isUpdating}>
+              {editing
+                ? isUpdating
+                  ? 'Updating...'
+                  : 'Update'
+                : isCreating
+                  ? 'Creating...'
+                  : 'Create'}
             </Button>
           </div>
         </div>
