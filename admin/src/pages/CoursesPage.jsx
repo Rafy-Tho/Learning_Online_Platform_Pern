@@ -27,12 +27,16 @@ import {
 } from '../components/ui/select';
 import { DashboardSkeleton } from '../components/ui/skeleton';
 import { Textarea } from '../components/ui/textarea';
-import { mockUsers } from '../data/mockData';
 import useGetCategories from '../hooks/category/use-get-categories';
+import { useCreateCourse } from '../hooks/course/use-create-course';
 import { useGetCourses } from '../hooks/course/use-get-courses';
+import { useUpdateCourse } from '../hooks/course/use-update-course';
+import { toast } from '../hooks/use-toast';
 
 export default function CoursesPage() {
   const [searchParams] = useSearchParams();
+  const { updateCourse, isPending: isUpdating } = useUpdateCourse();
+  const { createCourse, isCreating } = useCreateCourse();
   const { data, isPending, error } = useGetCourses(searchParams);
   const { data: categoriesData } = useGetCategories();
   const navigate = useNavigate();
@@ -41,12 +45,11 @@ export default function CoursesPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
-  const instructors = mockUsers.filter((u) => u.role === 'INSTRUCTOR');
   const [form, setForm] = useState({
     name: '',
     slug: '',
     description: '',
-    instructor_id: '',
+    position: '',
     category_id: '',
     status: 'DRAFT',
     level: 'BEGINNER',
@@ -59,7 +62,7 @@ export default function CoursesPage() {
       name: '',
       slug: '',
       description: '',
-      instructor_id: '',
+      position: '',
       category_id: '',
       status: 'DRAFT',
       level: 'BEGINNER',
@@ -74,7 +77,7 @@ export default function CoursesPage() {
       name: course.name,
       slug: course.slug,
       description: course.description,
-      instructor_id: course.instructor_id,
+      position: course.position,
       category_id: course.category_id,
       status: course.status,
       level: course.level,
@@ -83,39 +86,63 @@ export default function CoursesPage() {
     setModalOpen(true);
   };
 
-  const handleSave = () => {
-    if (!form.name || !form.slug || !form.instructor_id || !form.category_id)
-      return;
-    const instructor = instructors.find((i) => i.id === form.instructor_id);
+  const handleSave = async () => {
+    if (!form.name || !form.slug || !form.category_id) return;
     const category = categories.find((c) => c.id === form.category_id);
+    const data = {
+      name: form.name,
+      slug: form.slug,
+      description: form.description,
+      position: form.position,
+      categoryId: form.category_id,
+      status: form.status,
+      level: form.level,
+      accessType: form.access_type,
+    };
     if (editing) {
-      setCourses((cs) =>
-        cs.map((c) =>
-          c.id === editing.id
-            ? {
-                ...c,
-                ...form,
-                instructor_name: instructor?.name,
-                category_name: category?.name,
-              }
-            : c,
-        ),
-      );
+      try {
+        await updateCourse({ id: editing.id, data });
+        setCourses((cs) =>
+          cs.map((c) =>
+            c.id === editing.id
+              ? {
+                  ...c,
+                  ...form,
+                }
+              : c,
+          ),
+        );
+        toast({
+          title: 'Success',
+          description: 'Course updated successfully',
+        });
+      } catch (error) {
+        toast({
+          title: 'Error',
+          description: error.message || 'Failed to update course',
+          variant: 'destructive',
+        });
+      } finally {
+        setModalOpen(false);
+      }
     } else {
-      setCourses((cs) => [
-        ...cs,
-        {
-          id: crypto.randomUUID(),
-          ...form,
-          instructor_name: instructor?.name,
-          category_name: category?.name,
-          modules_count: 0,
-          enrollments_count: 0,
-          created_at: new Date().toISOString(),
-        },
-      ]);
+      try {
+        const result = await createCourse(data);
+        setCourses((cs) => [result?.data, ...cs]);
+        toast({
+          title: 'Success',
+          description: 'Course created successfully',
+        });
+      } catch (error) {
+        toast({
+          title: 'Error',
+          description: error.message || 'Failed to create course',
+          variant: 'destructive',
+        });
+      } finally {
+        setModalOpen(false);
+      }
     }
-    setModalOpen(false);
   };
 
   const handleDelete = (id) => {
@@ -135,11 +162,10 @@ export default function CoursesPage() {
       render: (c) => (
         <div>
           <p className="font-medium text-foreground">{c.name}</p>
-          <p className="text-xs text-muted-foreground">{c.category_name}</p>
         </div>
       ),
     },
-    { key: 'instructor_name', header: 'Instructor' },
+
     {
       key: 'level',
       header: 'Level',
@@ -277,26 +303,22 @@ export default function CoursesPage() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-sm font-medium text-foreground">
-                Instructor
-              </label>
-              <Select
-                value={form.instructor_id}
-                onValueChange={(v) =>
-                  setForm((f) => ({ ...f, instructor_id: v }))
-                }
-              >
-                <SelectTrigger className="mt-1">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  {instructors.map((i) => (
-                    <SelectItem key={i.id} value={i.id}>
-                      {i.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div>
+                <label className="text-sm font-medium text-foreground">
+                  Position
+                </label>
+                <Input
+                  value={form.position}
+                  onChange={(e) =>
+                    setForm((f) => ({
+                      ...f,
+                      position: e.target.value,
+                    }))
+                  }
+                  placeholder="Position"
+                  className="mt-1"
+                />
+              </div>
             </div>
             <div>
               <label className="text-sm font-medium text-foreground">
@@ -382,7 +404,13 @@ export default function CoursesPage() {
               Cancel
             </Button>
             <Button onClick={handleSave}>
-              {editing ? 'Update' : 'Create'}
+              {editing
+                ? isUpdating
+                  ? 'Updating...'
+                  : 'Update'
+                : isCreating
+                  ? 'Creating...'
+                  : 'Create'}
             </Button>
           </div>
         </div>
