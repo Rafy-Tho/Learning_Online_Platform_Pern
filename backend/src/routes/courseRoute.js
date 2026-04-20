@@ -39,7 +39,7 @@ courseRoute
   .get(getAllCourses)
   .post(
     requireAuth,
-    authorize(INSTRUCTOR),
+    authorize(INSTRUCTOR, ADMIN),
     courseValidator,
     validateResult,
     createCourse,
@@ -62,12 +62,12 @@ courseRoute
   .get(getCourseDetails)
   .patch(
     requireAuth,
-    authorize(INSTRUCTOR),
+    authorize(INSTRUCTOR, ADMIN),
     courseValidator,
     validateResult,
     updateCourse,
   )
-  .delete(requireAuth, authorize(INSTRUCTOR), deleteCourse);
+  .delete(requireAuth, authorize(INSTRUCTOR, ADMIN), deleteCourse);
 courseRoute.get("/:id/learn", getCourseLearningData);
 
 export default courseRoute;

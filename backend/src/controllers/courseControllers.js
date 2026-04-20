@@ -1,3 +1,4 @@
+import { ADMIN } from "../constants/constants.js";
 import StatusCode from "../constants/StatusCode.js";
 import Course from "../repositories/CourseRepository.js";
 import Subscription from "../repositories/SubscriptionRepository.js";
@@ -97,6 +98,7 @@ export const getCoursesByInstructorId = asyncHandler(async (req, res, next) => {
 export const updateCourse = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const instructorId = req.session.user.id;
+  const role = req.session.user.role;
   const {
     categoryId,
     name,
@@ -112,7 +114,7 @@ export const updateCourse = asyncHandler(async (req, res, next) => {
   const course = await Course.findById(id);
   if (!course)
     return next(new ApiError(StatusCode.NOT_FOUND, "Course not found"));
-  if (course.instructor_id !== instructorId)
+  if (course.instructor_id !== instructorId && role !== ADMIN)
     return next(
       new ApiError(
         StatusCode.FORBIDDEN,

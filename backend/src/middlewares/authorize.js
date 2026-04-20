@@ -4,6 +4,7 @@ import ApiError from "../utils/ApiError.js";
 const authorize = (...roles) => {
   return (req, res, next) => {
     const user = req.session.user;
+    console.log(user);
     if (!user || !roles.includes(user.role)) {
       return next(
         new ApiError(

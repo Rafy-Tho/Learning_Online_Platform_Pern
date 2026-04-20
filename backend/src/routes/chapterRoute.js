@@ -7,7 +7,7 @@ import {
 } from "../controllers/chapterControllers.js";
 import requireAuth from "../middlewares/requireAuth.js";
 import authorize from "../middlewares/authorize.js";
-import { INSTRUCTOR } from "../constants/constants.js";
+import { ADMIN, INSTRUCTOR } from "../constants/constants.js";
 import { chapterValidators } from "../validators/chapterValidators.js";
 import { validateResult } from "../middlewares/validateResult.js";
 import lessonRoute from "./lessonRoute.js";
@@ -19,7 +19,7 @@ chapterRoute
   .get(getChapters)
   .post(
     requireAuth,
-    authorize(INSTRUCTOR),
+    authorize(INSTRUCTOR, ADMIN),
     chapterValidators,
     validateResult,
     createChapter,
@@ -27,7 +27,12 @@ chapterRoute
 chapterRoute
   .route("/:id")
   .get(getChapter)
-  .patch(requireAuth, authorize(INSTRUCTOR), chapterValidators, validateResult)
-  .delete(requireAuth, authorize(INSTRUCTOR), deleteChapter);
+  .patch(
+    requireAuth,
+    authorize(INSTRUCTOR, ADMIN),
+    chapterValidators,
+    validateResult,
+  )
+  .delete(requireAuth, authorize(INSTRUCTOR, ADMIN), deleteChapter);
 
 export default chapterRoute;
