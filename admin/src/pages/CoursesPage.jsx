@@ -27,14 +27,17 @@ import {
 } from '../components/ui/select';
 import { DashboardSkeleton } from '../components/ui/skeleton';
 import { Textarea } from '../components/ui/textarea';
-import { mockCategories, mockUsers } from '../data/mockData';
+import { mockUsers } from '../data/mockData';
+import useGetCategories from '../hooks/category/use-get-categories';
 import { useGetCourses } from '../hooks/course/use-get-courses';
 
 export default function CoursesPage() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const { data, isPending, error } = useGetCourses(searchParams);
+  const { data: categoriesData } = useGetCategories();
   const navigate = useNavigate();
   const [courses, setCourses] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
@@ -84,7 +87,7 @@ export default function CoursesPage() {
     if (!form.name || !form.slug || !form.instructor_id || !form.category_id)
       return;
     const instructor = instructors.find((i) => i.id === form.instructor_id);
-    const category = mockCategories.find((c) => c.id === form.category_id);
+    const category = categories.find((c) => c.id === form.category_id);
     if (editing) {
       setCourses((cs) =>
         cs.map((c) =>
@@ -205,8 +208,12 @@ export default function CoursesPage() {
     if (data?.data) {
       setCourses(data.data);
     }
-  }, [data]);
-  console.log(courses);
+  }, [data?.data]);
+  useEffect(() => {
+    if (categoriesData?.data) {
+      setCategories(categoriesData.data);
+    }
+  }, [categoriesData?.data]);
   if (isPending) return <DashboardSkeleton />;
   if (error) return <ErrorAlert message={error.message} />;
   return (
@@ -305,7 +312,7 @@ export default function CoursesPage() {
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
                 <SelectContent>
-                  {mockCategories.map((c) => (
+                  {categories.map((c) => (
                     <SelectItem key={c.id} value={c.id}>
                       {c.name}
                     </SelectItem>
