@@ -25,8 +25,18 @@ class SessionService {
   }
 
   validate(req) {
-    // to do: validate session
-    return req.session.user;
+    const user = req.session.user;
+    // 1. Session exists
+    if (!user) return null;
+    // 2. Required fields present
+    if (!user.id || !user.role) return null;
+    // 3. User-agent matches (prevents session hijacking)
+    if (user.userAgent !== req.headers["user-agent"]) return null;
+    return user;
+  }
+
+  touch(req) {
+    req.session.touch();
   }
 }
 

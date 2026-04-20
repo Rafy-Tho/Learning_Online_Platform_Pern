@@ -1,16 +1,12 @@
 import StatusCode from "../constants/StatusCode.js";
+import sessionService from "../services/SessionService.js";
 import ApiError from "../utils/ApiError.js";
 
 function requireAuth(req, res, next) {
-  if (!req.session.user) {
-    return next(
-      new ApiError(
-        StatusCode.UNAUTHORIZED,
-        "Authentication required. Please log in.",
-      ),
-    );
-  }
-  // to do: validate session
+  const user = sessionService.validate(req);
+  if (!user) return next(new ApiError(StatusCode.UNAUTHORIZED, "Unauthorized"));
+  req.user = user;
+  sessionService.touch(req); // keep DB expire in sync with rolling cookie
   next();
 }
 

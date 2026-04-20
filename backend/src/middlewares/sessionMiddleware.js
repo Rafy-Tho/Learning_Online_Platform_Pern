@@ -2,11 +2,7 @@ import connectPgSimple from "connect-pg-simple";
 import session from "express-session";
 import pgPool from "../configs/database.js";
 import ENV from "../configs/Env.js";
-import {
-  COOKIE_MAX_AGE_MSEC,
-  SESSION_INTERVAL_SEC,
-  SESSION_MAX_AGE_SEC,
-} from "../constants/constants.js";
+
 const pgSession = connectPgSimple(session);
 // your config values
 const sessionMiddleware = session({
@@ -14,8 +10,8 @@ const sessionMiddleware = session({
     pool: pgPool,
     tableName: "session",
     createTableIfMissing: true,
-    pruneSessionInterval: SESSION_INTERVAL_SEC,
-    ttl: SESSION_MAX_AGE_SEC,
+    pruneSessionInterval: 60 * 15,
+    ttl: 60 * 60 * 24 * 30,
   }),
   secret: ENV.SESSION_SECRET,
   resave: false,
@@ -27,8 +23,7 @@ const sessionMiddleware = session({
     httpOnly: true,
     secure: ENV.NODE_ENV === "production",
     sameSite: ENV.NODE_ENV === "production" ? "none" : "lax",
-    maxAge: COOKIE_MAX_AGE_MSEC,
-    // domain: ENV.NODE_ENV === "production" ? `.${ENV.ROOT_DOMAIN}` : undefined,
+    maxAge: 60 * 60 * 24 * 30 * 1000,
   },
 });
 export default sessionMiddleware;
