@@ -5,7 +5,7 @@ import User from "../repositories/UserRepository.js";
 import ApiError from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 // @desc Get dashboard data
-// @route GET /api/admin/dashboard
+// @route GET /api/v1/users/dashboard
 // @access Private
 export const getDashboardData = asyncHandler(async (req, res, next) => {
   const userId = req.session.user.id;

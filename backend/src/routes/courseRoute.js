@@ -6,6 +6,7 @@ import {
   getAllCourses,
   getCourseCompleted,
   getCourseDetails,
+  getCourseDetailsDashboard,
   getCourseInprogress,
   getCourseLearningData,
   getCoursesDashboard,
@@ -55,6 +56,12 @@ courseRoute.get(
   requireAuth,
   authorize(ADMIN, INSTRUCTOR),
   getCoursesDashboard,
+);
+courseRoute.get(
+  "/:id/dashboard-details",
+  requireAuth,
+  authorize(ADMIN, INSTRUCTOR),
+  getCourseDetailsDashboard,
 );
 // @desc Update a course
 courseRoute

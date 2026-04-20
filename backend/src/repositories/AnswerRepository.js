@@ -46,6 +46,20 @@ class AnswerRepository {
     );
     return result.rows[0];
   }
+  async getOptionsByCourseId(id) {
+    const query = `
+    SELECT qo.*
+    FROM quiz_options qo
+    JOIN quizzes qz ON qo.quiz_id = qz.id
+    JOIN lessons ls ON qz.lesson_id = ls.id
+    JOIN chapters ch ON ls.chapter_id = ch.id
+    JOIN modules m ON ch.module_id = m.id
+    WHERE m.course_id = $1
+    `;
+    const value = [id];
+    const result = await pgPool.query(query, value);
+    return result.rows;
+  }
 }
 
 const Answer = new AnswerRepository();

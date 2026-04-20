@@ -35,6 +35,17 @@ class ChapterRepository {
     );
     return result.rows[0];
   }
+
+  async getChaptersByCourseId(id) {
+    const result = await pgPool.query(
+      `SELECT ch.*
+       FROM chapters ch
+       JOIN modules m ON ch.module_id = m.id
+       WHERE m.course_id = $1`,
+      [id],
+    );
+    return result.rows;
+  }
 }
 const Chapter = new ChapterRepository();
 export default Chapter;

@@ -99,7 +99,6 @@ export const getFirstLesson = asyncHandler(async (req, res, next) => {
   const course = await Course.findById(id);
   if (!course)
     return next(new ApiError(StatusCode.NOT_FOUND, "Course not found"));
-
   const firstLesson = await Lesson.getFirstLesson(id);
   if (!firstLesson)
     return next(new ApiError(StatusCode.NOT_FOUND, "First lesson not found"));

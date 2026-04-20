@@ -48,6 +48,19 @@ class QuestionRepository {
     );
     return result.rows[0];
   }
+  async getQuestionsByCourseId(id) {
+    const query = `
+    SELECT qz.*
+    FROM quizzes qz 
+    JOIN lessons ls ON qz.lesson_id = ls.id
+    JOIN chapters ch ON ls.chapter_id = ch.id
+    JOIN modules m ON ch.module_id = m.id
+    WHERE m.course_id = $1
+    `;
+    const value = [id];
+    const result = await pgPool.query(query, value);
+    return result.rows;
+  }
 }
 
 const Question = new QuestionRepository();

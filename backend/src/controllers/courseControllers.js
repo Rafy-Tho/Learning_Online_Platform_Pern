@@ -1,6 +1,12 @@
 import { ADMIN } from "../constants/constants.js";
 import StatusCode from "../constants/StatusCode.js";
+import Answer from "../repositories/AnswerRepository.js";
+import Chapter from "../repositories/ChapterRepository.js";
 import Course from "../repositories/CourseRepository.js";
+import LessonContent from "../repositories/LessonContentRepository.js";
+import Lesson from "../repositories/LessonRepository.js";
+import Module from "../repositories/ModuleRepository.js";
+import Question from "../repositories/QuestionRepository.js";
 import Subscription from "../repositories/SubscriptionRepository.js";
 import User from "../repositories/UserRepository.js";
 import ApiError from "../utils/ApiError.js";
@@ -307,7 +313,9 @@ export const getCourseCompleted = asyncHandler(async (req, res, next) => {
     data: courses,
   });
 });
-
+// @desc Get dashboard data
+// @route GET /api/v1/courses/dashboard
+// @access Private
 export const getCoursesDashboard = asyncHandler(async (req, res, next) => {
   const userId = req.session.user.id;
   const { data, pagination } = await Course.getAllCoursesDashboard(req.query);
@@ -319,3 +327,35 @@ export const getCoursesDashboard = asyncHandler(async (req, res, next) => {
     pagination,
   });
 });
+// @desc Get dashboard data
+// @route GET /api/v1/courses/:id/dashboard-details
+// @access Private
+export const getCourseDetailsDashboard = asyncHandler(
+  async (req, res, next) => {
+    const courseId = req.params.id;
+    const course = await Course.findById(courseId);
+    if (!course)
+      return next(new ApiError(StatusCode.NOT_FOUND, "Course not found"));
+    const modules = await Module.getModulesByCourseId(courseId);
+    const chapters = await Chapter.getChaptersByCourseId(courseId);
+    const lessons = await Lesson.getLessonsByCourseId(courseId);
+    const lessonContents =
+      await LessonContent.getLessonContentsByCourseId(courseId);
+    const quizzes = await Question.getQuestionsByCourseId(courseId);
+    const options = await Answer.getOptionsByCourseId(courseId);
+    res.status(StatusCode.OK).json({
+      statusCode: StatusCode.OK,
+      success: true,
+      message: "Course details retrieved successfully",
+      data: {
+        course,
+        modules,
+        chapters,
+        lessons,
+        lessonContents,
+        quizzes,
+        options,
+      },
+    });
+  },
+);

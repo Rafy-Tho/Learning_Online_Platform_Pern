@@ -51,6 +51,20 @@ class LessonContentRepository {
     const result = await pgPool.query(query, values);
     return result.rows;
   }
+
+  async getLessonContentsByCourseId(id) {
+    const query = `
+    SELECT lc.*
+    FROM lesson_contents lc
+    JOIN lessons ls ON lc.lesson_id = ls.id
+    JOIN chapters ch ON ls.chapter_id = ch.id
+    JOIN modules m ON ch.module_id = m.id
+    WHERE m.course_id = $1
+    `;
+    const value = [id];
+    const result = await pgPool.query(query, value);
+    return result.rows;
+  }
 }
 
 const LessonContent = new LessonContentRepository();

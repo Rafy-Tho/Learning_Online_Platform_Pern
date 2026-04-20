@@ -1,4 +1,5 @@
 import pgPool from "../configs/database.js";
+import { getModule } from "../controllers/moduleControllers.js";
 
 class ModuleRepository {
   async create({ courseId, name, description, position, status }) {
@@ -41,6 +42,16 @@ class ModuleRepository {
       [moduleId],
     );
     return result.rows[0];
+  }
+  async getModulesByCourseId(courseId) {
+    const result = await pgPool.query(
+      `SELECT * 
+        FROM modules 
+        WHERE course_id = $1
+      `,
+      [courseId],
+    );
+    return result.rows;
   }
 }
 
