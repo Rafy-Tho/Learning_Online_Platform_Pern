@@ -1,9 +1,11 @@
 import { Eye, Pencil, Plus, Trash2 } from 'lucide-react';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { DataTable } from '../components/DataTable';
 import { FormModal } from '../components/FormModal';
+import PaginatedTable from '../components/PaginationTable';
 import { StatusBadge } from '../components/StatusBadge';
+import { ErrorAlert } from '../components/ui/alert';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,12 +25,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../components/ui/select';
+import { DashboardSkeleton } from '../components/ui/skeleton';
 import { Textarea } from '../components/ui/textarea';
-import { mockCategories, mockCourses, mockUsers } from '../data/mockData';
+import { mockCategories, mockUsers } from '../data/mockData';
+import { useGetCourses } from '../hooks/course/use-get-courses';
 
 export default function CoursesPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { data, isPending, error } = useGetCourses(searchParams);
   const navigate = useNavigate();
-  const [courses, setCourses] = useState(mockCourses);
+  const [courses, setCourses] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
@@ -43,7 +49,7 @@ export default function CoursesPage() {
     level: 'BEGINNER',
     access_type: 'FREE',
   });
-
+  const totalPage = data?.pagination.totalPages || 1;
   const openCreate = () => {
     setEditing(null);
     setForm({
@@ -195,7 +201,14 @@ export default function CoursesPage() {
       ),
     },
   ];
-
+  useEffect(() => {
+    if (data?.data) {
+      setCourses(data.data);
+    }
+  }, [data]);
+  console.log(courses);
+  if (isPending) return <DashboardSkeleton />;
+  if (error) return <ErrorAlert message={error.message} />;
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -367,6 +380,8 @@ export default function CoursesPage() {
           </div>
         </div>
       </FormModal>
+      {/* Pagination */}
+      {totalPage > 1 && <PaginatedTable totalPage={totalPage} />}
       {/* Delete Confirmation */}
       <AlertDialog
         open={!!deleteTarget}
