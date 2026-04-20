@@ -88,7 +88,6 @@ export default function CoursesPage() {
 
   const handleSave = async () => {
     if (!form.name || !form.slug || !form.category_id) return;
-    const category = categories.find((c) => c.id === form.category_id);
     const data = {
       name: form.name,
       slug: form.slug,

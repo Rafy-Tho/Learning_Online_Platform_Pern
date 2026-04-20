@@ -148,11 +148,12 @@ export const updateCourse = asyncHandler(async (req, res, next) => {
 export const deleteCourse = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const instructorId = req.session.user.id;
+  const role = req.session.user.role;
   // Check if the course exists
   const course = await Course.findById(id);
   if (!course)
     return next(new ApiError(StatusCode.NOT_FOUND, "Course not found"));
-  if (course.instructor_id !== instructorId)
+  if (course.instructor_id !== instructorId && role !== ADMIN)
     return next(
       new ApiError(
         StatusCode.FORBIDDEN,

@@ -30,8 +30,6 @@ class SessionService {
     if (!user) return null;
     // 2. Required fields present
     if (!user.id || !user.role) return null;
-    // 3. User-agent matches (prevents session hijacking)
-    if (user.userAgent !== req.headers["user-agent"]) return null;
     return user;
   }
 
