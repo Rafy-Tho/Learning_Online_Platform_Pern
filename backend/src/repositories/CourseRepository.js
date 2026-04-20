@@ -680,7 +680,7 @@ class CourseRepository {
      LEFT JOIN (
         SELECT 
           course_id,
-          COUNT(user_id) AS enrollment_count
+          COUNT(user_id) AS enrollments_count
         FROM enrollments en
         GROUP BY course_id
       ) AS en ON en.course_id = c.id
@@ -706,7 +706,7 @@ class CourseRepository {
 
     features.select = `
    c.*, 
-   COALESCE(en.enrollment_count, 0) AS enrollment_count
+   COALESCE(en.enrollments_count, 0) AS enrollments_count
   `;
 
     await features
