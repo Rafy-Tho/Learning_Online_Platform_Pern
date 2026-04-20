@@ -29,6 +29,7 @@ import { DashboardSkeleton } from '../components/ui/skeleton';
 import { Textarea } from '../components/ui/textarea';
 import useGetCategories from '../hooks/category/use-get-categories';
 import { useCreateCourse } from '../hooks/course/use-create-course';
+import { useDeleteCourse } from '../hooks/course/use-delete-course';
 import { useGetCourses } from '../hooks/course/use-get-courses';
 import { useUpdateCourse } from '../hooks/course/use-update-course';
 import { toast } from '../hooks/use-toast';
@@ -39,6 +40,7 @@ export default function CoursesPage() {
   const { createCourse, isCreating } = useCreateCourse();
   const { data, isPending, error } = useGetCourses(searchParams);
   const { data: categoriesData } = useGetCategories();
+  const { deleteCourse, isDeleting } = useDeleteCourse();
   const navigate = useNavigate();
   const [courses, setCourses] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -149,10 +151,24 @@ export default function CoursesPage() {
   };
 
   // Delete handler
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (!deleteTarget) return;
-    setCourses((cs) => cs.filter((c) => c.id !== deleteTarget));
-    setDeleteTarget(null);
+    try {
+      await deleteCourse(deleteTarget);
+      setCourses((cs) => cs.filter((c) => c.id !== deleteTarget));
+      toast({
+        title: 'Success',
+        description: 'Course deleted successfully',
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to delete course',
+        variant: 'destructive',
+      });
+    } finally {
+      setDeleteTarget(null);
+    }
   };
   const columns = [
     {
