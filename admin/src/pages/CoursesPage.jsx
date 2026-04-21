@@ -35,10 +35,10 @@ import { useUpdateCourse } from '../hooks/course/use-update-course';
 import { toast } from '../hooks/use-toast';
 
 export default function CoursesPage() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { updateCourse, isPending: isUpdating } = useUpdateCourse();
   const { createCourse, isCreating } = useCreateCourse();
-  const { data, isPending, error } = useGetCourses(searchParams);
+  const { data, isLoading, error } = useGetCourses(searchParams);
   const { data: categoriesData } = useGetCategories();
   const { deleteCourse, isDeleting } = useDeleteCourse();
   const navigate = useNavigate();
@@ -134,6 +134,9 @@ export default function CoursesPage() {
           title: 'Success',
           description: 'Course created successfully',
         });
+        const newSearchParams = new URLSearchParams(searchParams);
+        newSearchParams.delete('page');
+        setSearchParams(newSearchParams);
       } catch (error) {
         toast({
           title: 'Error',
@@ -255,7 +258,7 @@ export default function CoursesPage() {
       setCategories(categoriesData.data);
     }
   }, [categoriesData?.data]);
-  if (isPending) return <DashboardSkeleton />;
+  if (isLoading) return <DashboardSkeleton />;
   if (error) return <ErrorAlert message={error.message} />;
   return (
     <div className="space-y-6">

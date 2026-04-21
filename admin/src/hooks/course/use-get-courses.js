@@ -6,9 +6,9 @@ import parseQueryToString from '../../utils/parseQueryToString';
 export const useGetCourses = (params) => {
   const queryString = parseQueryToString(params);
   const queryObj = parseQueryToObject(params);
-  const { data, isPending, error } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ['courses', queryObj],
     queryFn: () => courseApi.getAllCourses(queryString),
   });
-  return { data, isPending, error };
+  return { data, isLoading, error };
 };

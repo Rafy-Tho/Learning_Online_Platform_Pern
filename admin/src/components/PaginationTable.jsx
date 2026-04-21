@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   Pagination,
@@ -12,10 +12,7 @@ import {
 
 function PaginatedTable({ totalPage = 3 }) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [currentPage, setCurrentPage] = useState(() => {
-    const page = searchParams.get('page');
-    return page ? parseInt(page) : 1;
-  });
+  const [currentPage, setCurrentPage] = useState(1);
   const totalPages = totalPage;
   const getPageNumbers = () => {
     const pages = [];
@@ -48,6 +45,10 @@ function PaginatedTable({ totalPage = 3 }) {
     params.set('page', page);
     setSearchParams(params);
   };
+  useEffect(() => {
+    const page = searchParams.get('page');
+    setCurrentPage(page ? parseInt(page) : 1);
+  }, [searchParams]);
   return (
     <>
       {/* Your content here */}
