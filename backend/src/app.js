@@ -25,7 +25,6 @@ import subscriptionRoute from "./routes/subscriptionRoute.js";
 import userRoute from "./routes/userRoute.js";
 import webhookRoute from "./routes/webhookRoute.js";
 import notFoundUrl from "./utils/notFoundUrl.js";
-import sessionService from "./services/SessionService.js";
 
 connectCloudinary();
 

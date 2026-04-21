@@ -8,7 +8,7 @@ class CourseObjectiveRepository {
       position
     )
     VALUES ($1, $2, $3)
-    RETURNING *
+    RETURNING * 
   `;
     const values = [courseId, content, position];
     const result = await pgPool.query(query, values);
@@ -57,6 +57,7 @@ class CourseObjectiveRepository {
   async getObjectivesByCourseId(id) {
     const query = `SELECT * FROM course_objectives co
       WHERE co.course_id = $1
+      ORDER BY co.position
     `;
     const values = [id];
     const result = await pgPool.query(query, values);
