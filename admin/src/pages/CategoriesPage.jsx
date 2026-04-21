@@ -14,7 +14,7 @@ import useGetCategories from '../hooks/category/use-get-categories';
 import { useUpdateCategory } from '../hooks/category/use-update-category';
 import { useToast } from '../hooks/use-toast';
 export default function CategoriesPage() {
-  const { data, isPending, error } = useGetCategories();
+  const { data, isLoading, error } = useGetCategories();
   const [categories, setCategories] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
@@ -143,7 +143,7 @@ export default function CategoriesPage() {
       setCategories([...data.data]);
     }
   }, [data]);
-  if (isPending) return <DashboardSkeleton />;
+  if (isLoading) return <DashboardSkeleton />;
   if (error) return <ErrorAlert message={error.message} />;
   return (
     <div className="space-y-6">

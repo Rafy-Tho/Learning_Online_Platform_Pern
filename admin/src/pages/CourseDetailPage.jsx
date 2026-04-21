@@ -26,15 +26,6 @@ import {
 } from '../components/ui/select';
 import { Switch } from '../components/ui/switch';
 import { Textarea } from '../components/ui/textarea';
-import {
-  mockChapters,
-  mockCourses,
-  mockLessonContents,
-  mockLessons,
-  mockModules,
-  mockQuizOptions,
-  mockQuizzes,
-} from '../data/mockData';
 
 import {
   ArrowLeft,
@@ -51,23 +42,26 @@ import {
   Trash2,
   X,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { ErrorAlert } from '../components/ui/alert';
+import { DashboardSkeleton } from '../components/ui/skeleton';
+import { useGetCourseDetails } from '../hooks/course/use-get-course-details';
 
 export default function CourseDetailPage() {
   const { courseId } = useParams();
   const navigate = useNavigate();
-  const course = mockCourses.find((c) => c.id === courseId);
+  const { data, isLoading, error } = useGetCourseDetails(courseId);
 
-  const [modules, setModules] = useState(
-    mockModules.filter((m) => m.course_id === courseId),
-  );
-  const [chapters, setChapters] = useState(mockChapters);
-  const [lessons, setLessons] = useState(mockLessons);
-  const [lessonContents, setLessonContents] = useState(mockLessonContents);
-  const [quizzes, setQuizzes] = useState(mockQuizzes);
-  const [quizOptions, setQuizOptions] = useState(mockQuizOptions);
-  const [objectives, setObjectives] = useState(course?.objectives ?? []);
+  const [course, setCourse] = useState({});
+  const [modules, setModules] = useState([]);
+  const [chapters, setChapters] = useState([]);
+  const [lessons, setLessons] = useState([]);
+  const [lessonContents, setLessonContents] = useState([]);
+  const [quizzes, setQuizzes] = useState([]);
+  const [quizOptions, setQuizOptions] = useState([]);
+
+  const [objectives, setObjectives] = useState([]);
   const [editingObjectiveIdx, setEditingObjectiveIdx] = useState(null);
   const [objectiveDraft, setObjectiveDraft] = useState('');
   const [addingObjective, setAddingObjective] = useState(false);
@@ -101,11 +95,13 @@ export default function CourseDetailPage() {
     description: '',
     status: 'DRAFT',
   });
+
   const [chapterForm, setChapterForm] = useState({
     name: '',
     description: '',
     status: 'DRAFT',
   });
+
   const [lessonForm, setLessonForm] = useState({
     name: '',
     description: '',
@@ -381,6 +377,7 @@ export default function CourseDetailPage() {
 
   const addOption = () =>
     setOptionsForm((f) => [...f, { text: '', is_correct: false }]);
+
   const removeOption = (i) =>
     setOptionsForm((f) => f.filter((_, idx) => idx !== i));
 
@@ -462,8 +459,67 @@ export default function CourseDetailPage() {
     }
     setDeleteDialog(null);
   };
+  const handleSaveEditObjective = (i) => {
+    if (!objectiveDraft.trim()) return;
+    setObjectives((os) =>
+      os.map((o, idx) =>
+        idx === i ? { ...o, content: objectiveDraft.trim() } : o,
+      ),
+    );
+    setEditingObjectiveIdx(null);
+  };
+  const handleEditKeyDown = (e, i) => {
+    if (e.key === 'Enter') {
+      handleSaveEditObjective(i);
+    } else if (e.key === 'Escape') {
+      setEditingObjectiveIdx(null);
+    }
+  };
+  const addObjective = () => {
+    if (!newObjective.trim()) return;
 
-  if (!course) {
+    setObjectives((os) => [...os, { content: newObjective }]);
+    setNewObjective('');
+    setAddingObjective(false);
+  };
+
+  const handleAddKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      addObjective();
+    } else if (e.key === 'Escape') {
+      setAddingObjective(false);
+    }
+  };
+  const handleDeleteObjective = (i) => {
+    setObjectives((os) => os.filter((_, idx) => idx !== i));
+  };
+  useEffect(() => {
+    if (data?.data) {
+      const {
+        course,
+        objectives,
+        modules,
+        chapters,
+        lessons,
+        lessonContents,
+        quizzes,
+        options,
+      } = data?.data || {};
+      setCourse(course);
+      setObjectives(objectives);
+      setModules(modules);
+      setChapters(chapters);
+      setLessons(lessons);
+      setLessonContents(lessonContents);
+      setQuizzes(quizzes);
+      setQuizOptions(options);
+    }
+  }, [data]);
+  if (isLoading) return <DashboardSkeleton />;
+
+  if (error) return <ErrorAlert message={error.message} />;
+
+  if (Object.keys(course).length === 0) {
     return (
       <div className="text-center py-12">
         <p className="text-muted-foreground">Course not found</p>
@@ -544,33 +600,14 @@ export default function CourseDetailPage() {
                     autoFocus
                     value={objectiveDraft}
                     onChange={(e) => setObjectiveDraft(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && objectiveDraft.trim()) {
-                        setObjectives((os) =>
-                          os.map((o, idx) =>
-                            idx === i ? objectiveDraft.trim() : o,
-                          ),
-                        );
-                        setEditingObjectiveIdx(null);
-                      } else if (e.key === 'Escape') {
-                        setEditingObjectiveIdx(null);
-                      }
-                    }}
+                    onKeyDown={(e) => handleEditKeyDown(e, i)}
                     className="h-8"
                   />
                   <Button
                     variant="ghost"
                     size="icon"
                     className="h-8 w-8 shrink-0"
-                    onClick={() => {
-                      if (!objectiveDraft.trim()) return;
-                      setObjectives((os) =>
-                        os.map((o, idx) =>
-                          idx === i ? objectiveDraft.trim() : o,
-                        ),
-                      );
-                      setEditingObjectiveIdx(null);
-                    }}
+                    onClick={() => handleSaveEditObjective(i)}
                   >
                     <Check className="h-4 w-4" />
                   </Button>
@@ -585,14 +622,14 @@ export default function CourseDetailPage() {
                 </>
               ) : (
                 <>
-                  <span className="flex-1 py-1">{obj}</span>
+                  <span className="flex-1 py-1">{obj.content}</span>
                   <Button
                     variant="ghost"
                     size="icon"
                     className="h-7 w-7 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
                     onClick={() => {
                       setEditingObjectiveIdx(i);
-                      setObjectiveDraft(obj);
+                      setObjectiveDraft(obj.content);
                     }}
                   >
                     <Pencil className="h-3.5 w-3.5" />
@@ -601,9 +638,7 @@ export default function CourseDetailPage() {
                     variant="ghost"
                     size="icon"
                     className="h-7 w-7 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive"
-                    onClick={() =>
-                      setObjectives((os) => os.filter((_, idx) => idx !== i))
-                    }
+                    onClick={() => handleDeleteObjective(i)}
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </Button>
@@ -620,15 +655,7 @@ export default function CourseDetailPage() {
               autoFocus
               value={newObjective}
               onChange={(e) => setNewObjective(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && newObjective.trim()) {
-                  setObjectives((os) => [...os, newObjective.trim()]);
-                  setNewObjective('');
-                  setAddingObjective(false);
-                } else if (e.key === 'Escape') {
-                  setAddingObjective(false);
-                }
-              }}
+              onKeyDown={(e) => handleAddKeyDown(e)}
               placeholder="e.g. Build production-ready React apps"
               className="h-8"
             />
@@ -636,12 +663,7 @@ export default function CourseDetailPage() {
               variant="ghost"
               size="icon"
               className="h-8 w-8 shrink-0"
-              onClick={() => {
-                if (!newObjective.trim()) return;
-                setObjectives((os) => [...os, newObjective.trim()]);
-                setNewObjective('');
-                setAddingObjective(false);
-              }}
+              onClick={addObjective}
             >
               <Check className="h-4 w-4" />
             </Button>

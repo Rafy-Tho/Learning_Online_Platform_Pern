@@ -61,6 +61,20 @@ class CourseApi {
     }
     return result;
   }
+  async getCourseDetails(id) {
+    const res = await fetch(`${this.baseUrl}/${id}/dashboard-details`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.message || 'Failed to fetch course details');
+    }
+    return result;
+  }
 }
 const courseApi = new CourseApi();
 export default courseApi;
