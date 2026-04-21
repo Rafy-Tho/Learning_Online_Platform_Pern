@@ -32,10 +32,6 @@ class SessionService {
     if (!user.id || !user.role) return null;
     return user;
   }
-
-  touch(req) {
-    req.session.touch();
-  }
 }
 
 const sessionService = new SessionService();

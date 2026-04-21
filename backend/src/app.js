@@ -25,6 +25,9 @@ import subscriptionRoute from "./routes/subscriptionRoute.js";
 import userRoute from "./routes/userRoute.js";
 import webhookRoute from "./routes/webhookRoute.js";
 import notFoundUrl from "./utils/notFoundUrl.js";
+import sessionService from "./services/SessionService.js";
+
+connectCloudinary();
 
 const app = express();
 
@@ -47,11 +50,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 app.use(globalLimiter);
 app.use(sessionMiddleware);
-connectCloudinary();
+
 // 6. Static + routes
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.use(express.static(path.join(__dirname, "../uploads")));
 // configure middleware routes
+// In your route handlers, touch the session to reset expiration
 app.use("/api/v1/users", userRoute);
 app.use("/api/v1/categories", categoryRoute);
 app.use("/api/v1/courses", courseRoute);

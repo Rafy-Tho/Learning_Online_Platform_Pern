@@ -6,7 +6,6 @@ function requireAuth(req, res, next) {
   const user = sessionService.validate(req);
   if (!user) return next(new ApiError(StatusCode.UNAUTHORIZED, "Unauthorized"));
   req.user = user;
-  sessionService.touch(req); // keep DB expire in sync with rolling cookie
   next();
 }
 
