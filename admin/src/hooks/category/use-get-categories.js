@@ -1,12 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
-import categoryApi from "../../services/CategoryApi";
+import { useQuery } from '@tanstack/react-query';
+import categoryApi from '../../services/CategoryApi';
 
 function useGetCategories() {
-  const { data, isPending, error } = useQuery({
-    queryKey: ["categories"],
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['categories'],
     queryFn: () => categoryApi.getCategories(),
   });
 
-  return { data, isPending, error };
+  return { data, isLoading, error };
 }
 export default useGetCategories;
