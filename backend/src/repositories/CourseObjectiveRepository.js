@@ -54,6 +54,14 @@ class CourseObjectiveRepository {
     const result = await pgPool.query(query, values);
     return result.rows[0];
   }
+  async getObjectivesByCourseId(id) {
+    const query = `SELECT * FROM course_objectives co
+      WHERE co.course_id = $1
+    `;
+    const values = [id];
+    const result = await pgPool.query(query, values);
+    return result.rows;
+  }
 }
 const CourseObjective = new CourseObjectiveRepository();
 export default CourseObjective;

@@ -2,6 +2,7 @@ import { ADMIN } from "../constants/constants.js";
 import StatusCode from "../constants/StatusCode.js";
 import Answer from "../repositories/AnswerRepository.js";
 import Chapter from "../repositories/ChapterRepository.js";
+import CourseObjective from "../repositories/CourseObjectiveRepository.js";
 import Course from "../repositories/CourseRepository.js";
 import LessonContent from "../repositories/LessonContentRepository.js";
 import Lesson from "../repositories/LessonRepository.js";
@@ -336,6 +337,7 @@ export const getCourseDetailsDashboard = asyncHandler(
     const course = await Course.findById(courseId);
     if (!course)
       return next(new ApiError(StatusCode.NOT_FOUND, "Course not found"));
+    const objectives = await CourseObjective.getObjectivesByCourseId(courseId);
     const modules = await Module.getModulesByCourseId(courseId);
     const chapters = await Chapter.getChaptersByCourseId(courseId);
     const lessons = await Lesson.getLessonsByCourseId(courseId);
@@ -349,6 +351,7 @@ export const getCourseDetailsDashboard = asyncHandler(
       message: "Course details retrieved successfully",
       data: {
         course,
+        objectives,
         modules,
         chapters,
         lessons,
