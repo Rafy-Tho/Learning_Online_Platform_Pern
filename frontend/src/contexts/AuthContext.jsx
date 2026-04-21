@@ -5,7 +5,7 @@ import { AuthContext } from "./context";
 
 function AuthProvider({ children }) {
   const queryClient = useQueryClient();
-  const { data, isPending } = useGetMe();
+  const { data, isLoading, error } = useGetMe();
   const [user, setUser] = useState(null);
 
   const saveAuth = (data) => {
@@ -27,7 +27,8 @@ function AuthProvider({ children }) {
     <AuthContext.Provider
       value={{
         user,
-        isPending,
+        isLoading,
+        error,
         saveAuth,
         clearAuth,
       }}

@@ -8,7 +8,6 @@ import PaymentSuccess from "./components/pricing/PaymentSuccess";
 import IsAuthenticate from "./components/redirectRoutes/IsAuthenticate";
 import ProtectRoute from "./components/redirectRoutes/ProtectRoute";
 import RedirectToFirstLesson from "./components/redirectRoutes/RedirectToFirstLesson";
-import useAuth from "./hooks/useAuth";
 import CompletedCourseDashboard from "./pages/CompletedCourseDashboard";
 import CourseDetailScreen from "./pages/CourseDetailScreen";
 import CourseLearningScreen from "./pages/CourseLearningScreen";
@@ -22,13 +21,10 @@ import PricingScreen from "./pages/PricingScreen";
 import RecentViewDashboard from "./pages/RecentViewDashboard";
 import ResetPasswordFlow from "./pages/ResetPasswordFlow";
 import Signup from "./pages/Signup";
-import FullScreenSkeletonLoader from "./ui/FullScreenSkeletonLoader";
-import NotFoundPage from "./ui/NotFoundPage";
 import UserSetting from "./pages/UserSetting";
+import NotFoundPage from "./ui/NotFoundPage";
 
 function App() {
-  const { isPending } = useAuth();
-  if (isPending) return <FullScreenSkeletonLoader />;
   return (
     <BrowserRouter>
       <Routes>
