@@ -47,11 +47,19 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ErrorAlert } from '../components/ui/alert';
 import { DashboardSkeleton } from '../components/ui/skeleton';
 import { useGetCourseDetails } from '../hooks/course/use-get-course-details';
+import { useCreateObjective } from '../hooks/objectives/use-create-objective';
+import { useDeleteObjective } from '../hooks/objectives/use-delete-objective';
+import { useUpdateObjective } from '../hooks/objectives/use-update-objective';
+import { toast } from '../hooks/use-toast';
 
 export default function CourseDetailPage() {
   const { courseId } = useParams();
   const navigate = useNavigate();
   const { data, isLoading, error } = useGetCourseDetails(courseId);
+
+  const { updateObjective, isUpdating } = useUpdateObjective();
+  const { deleteObjective, isDeleting } = useDeleteObjective();
+  const { createObjective, isCreating } = useCreateObjective();
 
   const [course, setCourse] = useState({});
   const [modules, setModules] = useState([]);
@@ -454,19 +462,41 @@ export default function CourseDetailPage() {
         setQuizzes((qs) => qs.filter((q) => q.id !== id));
         break;
       }
+      case 'objective': {
+        handleDeleteObjective(id);
+        break;
+      }
       default:
         break;
     }
     setDeleteDialog(null);
   };
-  const handleSaveEditObjective = (i) => {
+  const handleSaveEditObjective = async (i) => {
     if (!objectiveDraft.trim()) return;
-    setObjectives((os) =>
-      os.map((o, idx) =>
-        idx === i ? { ...o, content: objectiveDraft.trim() } : o,
-      ),
-    );
-    setEditingObjectiveIdx(null);
+    const data = objectives[i];
+    try {
+      await updateObjective({
+        objectiveId: data.id,
+        objectiveData: { ...data, content: objectiveDraft.trim() },
+      });
+      toast({
+        title: 'Success',
+        description: 'Objective updated successfully',
+      });
+      setObjectives((os) =>
+        os.map((o, idx) =>
+          idx === i ? { ...o, content: objectiveDraft.trim() } : o,
+        ),
+      );
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to update objective',
+        variant: 'destructive',
+      });
+    } finally {
+      setEditingObjectiveIdx(null);
+    }
   };
   const handleEditKeyDown = (e, i) => {
     if (e.key === 'Enter') {
@@ -477,7 +507,6 @@ export default function CourseDetailPage() {
   };
   const addObjective = () => {
     if (!newObjective.trim()) return;
-
     setObjectives((os) => [...os, { content: newObjective }]);
     setNewObjective('');
     setAddingObjective(false);
@@ -490,8 +519,26 @@ export default function CourseDetailPage() {
       setAddingObjective(false);
     }
   };
-  const handleDeleteObjective = (i) => {
-    setObjectives((os) => os.filter((_, idx) => idx !== i));
+  const confirmDeleteObjective = (o) =>
+    setDeleteDialog({ type: 'objective', id: o.id, name: o.content });
+
+  const handleDeleteObjective = async (id) => {
+    try {
+      await deleteObjective(id);
+      toast({
+        title: 'Success',
+        description: 'Objective delete successfully',
+      });
+      setObjectives((os) => os.filter((o) => o.id !== id));
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to delete objective',
+        variant: 'destructive',
+      });
+    } finally {
+      setDeleteDialog(null);
+    }
   };
   useEffect(() => {
     if (data?.data) {
@@ -638,7 +685,7 @@ export default function CourseDetailPage() {
                     variant="ghost"
                     size="icon"
                     className="h-7 w-7 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive"
-                    onClick={() => handleDeleteObjective(i)}
+                    onClick={() => confirmDeleteObjective(obj)}
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </Button>

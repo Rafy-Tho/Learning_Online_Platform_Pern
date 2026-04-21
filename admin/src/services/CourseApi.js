@@ -75,6 +75,21 @@ class CourseApi {
     }
     return result;
   }
+  async createObjective(id, data) {
+    const res = await fetch(`${this.baseUrl}/${id}/objectives`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify(data),
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.message || 'Failed to create objective');
+    }
+    return result;
+  }
 }
 const courseApi = new CourseApi();
 export default courseApi;
