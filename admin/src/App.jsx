@@ -1,21 +1,23 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import { Toaster as Sonner } from "./components/ui/sonner";
-import { Toaster } from "./components/ui/toaster";
-import { TooltipProvider } from "./components/ui/tooltip";
-import { AdminLayout } from "./components/AdminLayout";
-import { AuthProvider, useAuth } from "./contexts/AuthContext";
-import DashboardPage from "./pages/DashboardPage";
-import CategoriesPage from "./pages/CategoriesPage";
-import CoursesPage from "./pages/CoursesPage";
-import CourseDetailPage from "./pages/CourseDetailPage";
-import SubscriptionsPage from "./pages/SubscriptionsPage";
-import UsersPage from "./pages/UsersPage";
-import LoginPage from "./pages/LoginPage";
-import ProfilePage from "./pages/ProfilePage";
-import NotFound from "./pages/NotFound";
-import { useEffect } from "react";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { useEffect } from 'react';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { AdminLayout } from './components/AdminLayout';
+import { ErrorAlert } from './components/ui/alert';
+import { DashboardSkeleton } from './components/ui/skeleton';
+import { Toaster as Sonner } from './components/ui/sonner';
+import { Toaster } from './components/ui/toaster';
+import { TooltipProvider } from './components/ui/tooltip';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import CategoriesPage from './pages/CategoriesPage';
+import CourseDetailPage from './pages/CourseDetailPage';
+import CoursesPage from './pages/CoursesPage';
+import DashboardPage from './pages/DashboardPage';
+import LoginPage from './pages/LoginPage';
+import NotFound from './pages/NotFound';
+import ProfilePage from './pages/ProfilePage';
+import SubscriptionsPage from './pages/SubscriptionsPage';
+import UsersPage from './pages/UsersPage';
 
 const queryClient = new QueryClient();
 
@@ -52,7 +54,9 @@ function ProtectedRoutes() {
 }
 
 function AppRoutes() {
-  const { user } = useAuth();
+  const { user, isLoading, error } = useAuth();
+  if (isLoading) return <DashboardSkeleton />;
+  if (error) return <ErrorAlert message={error.message || 'Server error'} />;
   return (
     <Routes>
       <Route
@@ -66,7 +70,7 @@ function AppRoutes() {
 
 const App = () => {
   useEffect(() => {
-    document.documentElement.classList.add("dark");
+    document.documentElement.classList.add('dark');
   }, []);
 
   return (
