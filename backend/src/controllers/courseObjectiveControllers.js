@@ -1,3 +1,4 @@
+import { ADMIN } from "../constants/constants.js";
 import StatusCode from "../constants/StatusCode.js";
 import CourseObjective from "../repositories/CourseObjectiveRepository.js";
 import Course from "../repositories/CourseRepository.js";
@@ -10,12 +11,13 @@ export const createCourseObjective = asyncHandler(async (req, res, next) => {
   const courseId = req.params.id;
   const course = await Course.findById(courseId);
   const instructorId = req.session.user.id;
+  const role = req.session.user.role;
   const { content, position } = req.body;
 
   if (!course)
     return next(new ApiError(StatusCode.BAD_REQUEST, "Course  not found"));
 
-  if (course.instructor_id !== instructorId)
+  if (course.instructor_id !== instructorId && role !== ADMIN)
     return next(
       new ApiError(StatusCode.FORBIDDEN, "You are not authorized to do this"),
     );
@@ -34,11 +36,12 @@ export const createCourseObjective = asyncHandler(async (req, res, next) => {
   });
 });
 // @desc Update a course objective
-// @route PUT /api/v1/course-objectives/:id
+// @route PATCH /api/v1/objectives/:id
 // @access Private/Instructor
 export const updateCourseObjective = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const instructorId = req.session.user.id;
+  const role = req.session.user.role;
   const { content, position } = req.body;
   const courseObjective = await CourseObjective.findById(id);
 
@@ -47,7 +50,12 @@ export const updateCourseObjective = asyncHandler(async (req, res, next) => {
       new ApiError(StatusCode.BAD_REQUEST, "Course objective not found"),
     );
 
-  if (courseObjective.course.instructorId !== instructorId)
+  const course = await Course.findById(courseObjective.course_id);
+
+  if (!course)
+    return next(new ApiError(StatusCode.BAD_REQUEST, "Course  not found"));
+
+  if (course.instructor_id !== instructorId && role !== ADMIN)
     return next(
       new ApiError(StatusCode.FORBIDDEN, "You are not authorized to do this"),
     );
@@ -63,6 +71,39 @@ export const updateCourseObjective = asyncHandler(async (req, res, next) => {
     message: "Course objective updated successfully",
     status: StatusCode.OK,
     data: updatedCourseObjective,
+  });
+});
+// @desc Delete a course objective
+// @route DELETE /api/v1/objectives/:id
+// @access Private/Instructor
+export const deleteCourseObjective = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const instructorId = req.session.user.id;
+  const role = req.session.user.role;
+  const courseObjective = await CourseObjective.findById(id);
+
+  if (!courseObjective)
+    return next(
+      new ApiError(StatusCode.BAD_REQUEST, "Course objective not found"),
+    );
+
+  const course = await Course.findById(courseObjective.course_id);
+
+  if (!course)
+    return next(new ApiError(StatusCode.BAD_REQUEST, "Course  not found"));
+
+  if (course.instructor_id !== instructorId && role !== ADMIN)
+    return next(
+      new ApiError(StatusCode.FORBIDDEN, "You are not authorized to do this"),
+    );
+
+  const objective = await CourseObjective.delete(id);
+
+  res.status(StatusCode.OK).json({
+    success: true,
+    message: "Course objective delete successfully",
+    status: StatusCode.OK,
+    data: objective,
   });
 });
 // @desc Get course objectives by course id
