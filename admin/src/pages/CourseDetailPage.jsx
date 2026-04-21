@@ -514,7 +514,7 @@ export default function CourseDetailPage() {
       setQuizzes(quizzes);
       setQuizOptions(options);
     }
-  }, [data]);
+  }, [data?.data]);
   if (isLoading) return <DashboardSkeleton />;
 
   if (error) return <ErrorAlert message={error.message} />;

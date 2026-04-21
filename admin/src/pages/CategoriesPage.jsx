@@ -139,10 +139,10 @@ export default function CategoriesPage() {
     },
   ];
   useEffect(() => {
-    if (data) {
+    if (data?.data) {
       setCategories([...data.data]);
     }
-  }, [data]);
+  }, [data?.data]);
   if (isLoading) return <DashboardSkeleton />;
   if (error) return <ErrorAlert message={error.message} />;
   return (

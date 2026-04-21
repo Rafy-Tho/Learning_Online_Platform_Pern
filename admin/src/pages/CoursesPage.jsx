@@ -128,8 +128,8 @@ export default function CoursesPage() {
       }
     } else {
       try {
-        const result = await createCourse(data);
-        setCourses((cs) => [result?.data, ...cs]);
+        const response = await createCourse(data);
+        setCourses((cs) => [response?.data, ...cs]);
         toast({
           title: 'Success',
           description: 'Course created successfully',
