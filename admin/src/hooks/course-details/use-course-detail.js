@@ -1,0 +1,84 @@
+import { useChapterCrud } from './use-chapter-crud';
+import { useContentCrud } from './use-content-crud';
+import { useCourseData } from './use-course-data';
+import { useDeleteDialog } from './use-delete-dialog';
+import { useExpandCollapse } from './use-expand-collapse';
+import { useLessonCrud } from './use-lesson-crud';
+import { useModuleCrud } from './use-module-crud';
+import { useObjectiveActions } from './use-objective-actions';
+import { useQuizCrud } from './use-quiz-crud';
+
+export function useCourseDetail(data) {
+  const courseData = useCourseData(data);
+  const {
+    course,
+    objectives,
+    setObjectives,
+    modules,
+    setModules,
+    chapters,
+    setChapters,
+    lessons,
+    setLessons,
+    lessonContents,
+    setLessonContents,
+    quizzes,
+    setQuizzes,
+    quizOptions,
+    setQuizOptions,
+  } = courseData;
+
+  const expand = useExpandCollapse();
+
+  const objective = useObjectiveActions({ objectives, setObjectives });
+
+  const moduleCrud = useModuleCrud({ courseId: course?.id, setModules });
+  const chapterCrud = useChapterCrud({ chapters, setChapters });
+  const lessonCrud = useLessonCrud({ lessons, setLessons });
+  const contentCrud = useContentCrud({ lessonContents, setLessonContents });
+  const quizCrud = useQuizCrud({
+    quizzes,
+    setQuizzes,
+    quizOptions,
+    setQuizOptions,
+  });
+
+  const deleteDialog = useDeleteDialog({
+    chapters,
+    lessons,
+    lessonContents,
+    quizzes,
+    quizOptions,
+    setChapters,
+    setLessons,
+    setLessonContents,
+    setQuizzes,
+    setQuizOptions,
+    setModules,
+    onDeleteObjective: objective.remove,
+  });
+
+  return {
+    // Data
+    course,
+    modules,
+    chapters,
+    lessons,
+    lessonContents,
+    quizzes,
+    quizOptions,
+    // Expand / collapse
+    ...expand,
+    // Objectives
+    objectives,
+    objective,
+    // CRUD modals (modal state + handlers)
+    moduleCrud,
+    chapterCrud,
+    lessonCrud,
+    contentCrud,
+    quizCrud,
+    // Delete dialog
+    deleteDialog,
+  };
+}
