@@ -1,9 +1,15 @@
-import { SidebarProvider, SidebarTrigger } from "./ui/sidebar";
+import { SidebarProvider, SidebarTrigger } from './ui/sidebar';
 
-import { AdminSidebar } from "./AdminSidebar";
-import { Outlet } from "react-router-dom";
+import { Outlet } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { AdminSidebar } from './AdminSidebar';
+import { ErrorAlert } from './ui/alert';
+import { DashboardSkeleton } from './ui/skeleton';
 
 export function AdminLayout() {
+  const { isLoading, error } = useAuth();
+  if (isLoading) return <DashboardSkeleton />;
+  if (error) return <ErrorAlert message={error.message || 'Server error'} />;
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">

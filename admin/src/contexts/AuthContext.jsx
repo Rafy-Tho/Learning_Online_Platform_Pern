@@ -1,11 +1,11 @@
-import { createContext, useContext, useEffect, useState } from 'react';
-import useGetMe from '../hooks/user/useGetMe';
+import { createContext, useContext, useEffect, useState } from "react";
+import useGetMe from "../hooks/user/useGetMe";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const { data, isPending } = useGetMe();
+  const { data, isLoading, error } = useGetMe();
 
   const login = (data) => setUser(data.data);
   const logout = () => setUser(null);
@@ -17,7 +17,7 @@ export function AuthProvider({ children }) {
     }
   }, [data]);
   return (
-    <AuthContext.Provider value={{ user, login, logout, isPending }}>
+    <AuthContext.Provider value={{ user, login, logout, isLoading, error }}>
       {children}
     </AuthContext.Provider>
   );
@@ -25,6 +25,6 @@ export function AuthProvider({ children }) {
 
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used within AuthProvider');
+  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
   return ctx;
 };
