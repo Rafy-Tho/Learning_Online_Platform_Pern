@@ -199,6 +199,7 @@ export default function CourseDetailPage() {
         onRemoveOption={quizCrud.removeOption}
         onSave={quizCrud.save}
         isEditing={!!quizCrud.editing}
+        isLoading={quizCrud.isLoading}
       />
 
       <DeleteConfirmDialog

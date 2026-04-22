@@ -16,6 +16,7 @@ export function QuizModal({
   onRemoveOption,
   onSave,
   isEditing,
+  isLoading,
 }) {
   return (
     <FormModal
@@ -96,7 +97,15 @@ export function QuizModal({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={onSave}>{isEditing ? 'Update' : 'Create'}</Button>
+          <Button onClick={onSave}>
+            {isEditing
+              ? isLoading
+                ? 'Updating...'
+                : 'Update'
+              : isLoading
+                ? 'Creating...'
+                : 'Create'}
+          </Button>
         </div>
       </div>
     </FormModal>
