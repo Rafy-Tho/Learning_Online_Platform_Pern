@@ -90,6 +90,22 @@ class CourseApi {
     }
     return result;
   }
+
+  async createModule(id, data) {
+    const res = await fetch(`${this.baseUrl}/${id}/modules`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify(data),
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.message || 'Failed to create module');
+    }
+    return result;
+  }
 }
 const courseApi = new CourseApi();
 export default courseApi;
