@@ -33,6 +33,22 @@ class LessonApi {
     }
     return result;
   }
+
+  async createContent(id, data) {
+    const res = await fetch(`${this.baseUrl}/${id}/contents`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify(data),
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.message || 'Failed to create content');
+    }
+    return result;
+  }
 }
 const lessonApi = new LessonApi();
 export default lessonApi;
