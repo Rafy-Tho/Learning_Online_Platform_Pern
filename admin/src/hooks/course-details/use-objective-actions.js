@@ -18,6 +18,7 @@ export function useObjectiveActions({ objectives, setObjectives }) {
     setEditingIdx(i);
     setDraft(content);
   };
+
   const cancelEdit = () => setEditingIdx(null);
 
   const saveEdit = async (i) => {
@@ -56,10 +57,12 @@ export function useObjectiveActions({ objectives, setObjectives }) {
 
   const confirmAdd = async () => {
     if (!newText.trim()) return;
+    const lastPosition =
+      objectives.length > 0 ? objectives[objectives.length - 1].position : 1;
     try {
       const res = await createObjective({
         objectiveData: {
-          position: objectives.length + 1,
+          position: lastPosition + 1,
           content: newText.trim(),
         },
       });

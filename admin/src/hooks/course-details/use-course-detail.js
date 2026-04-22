@@ -32,7 +32,18 @@ export function useCourseDetail(data) {
 
   const objective = useObjectiveActions({ objectives, setObjectives });
 
-  const moduleCrud = useModuleCrud({ courseId: course?.id, setModules });
+  const moduleCrud = useModuleCrud({
+    setModules,
+    modules,
+    setChapters,
+    setLessons,
+    setQuizzes,
+    setLessonContents,
+    setQuizOptions,
+    chapters,
+    lessons,
+    quizzes,
+  });
   const chapterCrud = useChapterCrud({ chapters, setChapters });
   const lessonCrud = useLessonCrud({ lessons, setLessons });
   const contentCrud = useContentCrud({ lessonContents, setLessonContents });
@@ -56,6 +67,7 @@ export function useCourseDetail(data) {
     setQuizOptions,
     setModules,
     onDeleteObjective: objective.remove,
+    onDeleteModule: moduleCrud.remove,
   });
 
   return {

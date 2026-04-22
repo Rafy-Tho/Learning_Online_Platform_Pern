@@ -11,8 +11,8 @@ export function useDeleteDialog({
   setLessonContents,
   setQuizzes,
   setQuizOptions,
-  setModules,
   onDeleteObjective,
+  onDeleteModule,
 }) {
   const [deleteDialog, setDeleteDialog] = useState(null);
 
@@ -25,28 +25,10 @@ export function useDeleteDialog({
 
     if (type === 'objective') {
       onDeleteObjective(id);
-      cancel();
-      return;
     }
 
     if (type === 'module') {
-      const chapterIds = chapters
-        .filter((c) => c.module_id === id)
-        .map((c) => c.id);
-      const lessonIds = lessons
-        .filter((l) => chapterIds.includes(l.chapter_id))
-        .map((l) => l.id);
-      const quizIds = quizzes
-        .filter((q) => lessonIds.includes(q.lesson_id))
-        .map((q) => q.id);
-      setQuizOptions((os) => os.filter((o) => !quizIds.includes(o.quiz_id)));
-      setQuizzes((qs) => qs.filter((q) => !lessonIds.includes(q.lesson_id)));
-      setLessonContents((cs) =>
-        cs.filter((c) => !lessonIds.includes(c.lesson_id)),
-      );
-      setLessons((ls) => ls.filter((l) => !chapterIds.includes(l.chapter_id)));
-      setChapters((cs) => cs.filter((c) => c.module_id !== id));
-      setModules((ms) => ms.filter((m) => m.id !== id));
+      onDeleteModule(id);
     }
 
     if (type === 'chapter') {
