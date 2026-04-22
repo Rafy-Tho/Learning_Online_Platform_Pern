@@ -1,6 +1,5 @@
 import cors from "cors";
 import express from "express";
-import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
 import connectCloudinary from "./configs/cloudinary.js";
@@ -46,10 +45,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // 5. No cookieParser needed — session handles it
-app.use(morgan("dev"));
+if (process.env.NODE_ENV === "development") {
+  const { default: morgan } = await import("morgan");
+  app.use(morgan("dev"));
+}
 app.use(globalLimiter);
 app.use(sessionMiddleware);
-
 // 6. Static + routes
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.use(express.static(path.join(__dirname, "../uploads")));

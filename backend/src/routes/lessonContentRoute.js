@@ -1,11 +1,12 @@
 import express from "express";
 import requireAuth from "../middlewares/requireAuth.js";
 import authorize from "../middlewares/authorize.js";
-import { INSTRUCTOR } from "../constants/constants.js";
+import { ADMIN, INSTRUCTOR } from "../constants/constants.js";
 import { lessonContentValidator } from "../validators/lessonValidators.js";
 import { validateResult } from "../middlewares/validateResult.js";
 import {
   createLessonContent,
+  deleteLessonContent,
   getLessonContents,
   updateLessonContent,
 } from "../controllers/lessonContentControllers.js";
@@ -17,7 +18,7 @@ lessonContentRoute
   .get(getLessonContents)
   .post(
     requireAuth,
-    authorize(INSTRUCTOR),
+    authorize(INSTRUCTOR, ADMIN),
     lessonContentValidator,
     validateResult,
     createLessonContent,
@@ -27,10 +28,11 @@ lessonContentRoute
   .route("/:id")
   .patch(
     requireAuth,
-    authorize(INSTRUCTOR),
+    authorize(INSTRUCTOR, ADMIN),
     lessonContentValidator,
     validateResult,
     updateLessonContent,
-  );
+  )
+  .delete(requireAuth, authorize(INSTRUCTOR, ADMIN), deleteLessonContent);
 
 export default lessonContentRoute;

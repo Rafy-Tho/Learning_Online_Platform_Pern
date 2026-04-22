@@ -30,16 +30,14 @@ class LessonContentRepository {
     return result.rows[0];
   }
   async findById(id) {
-    const query = `SELECT * FROM lesson_contents WHERE id = $1`;
+    const query = `SELECT id FROM lesson_contents WHERE id = $1`;
     const values = [id];
     const result = await pgPool.query(query, values);
     return result.rows[0];
   }
   async delete(id) {
-    const query = `UPDATE lesson_contents
-      SET deleted_at = NOW()
-      WHERE id = 
-      RETURNING *
+    const query = `
+      DELETE FROM lesson_contents WHERE id = $1 RETURNING *
     `;
     const values = [id];
     const result = await pgPool.query(query, values);
@@ -64,6 +62,18 @@ class LessonContentRepository {
     const value = [id];
     const result = await pgPool.query(query, value);
     return result.rows;
+  }
+  async getInstructor(id) {
+    const query = `
+    SELECT c.instructor_id FROM courses c
+    JOIN modules m ON m.course_id = c.id 
+    JOIN  chapters ch ON ch.module_id = m.id
+    JOIN lessons ls ON ls.chapter_id = ch.id
+    JOIN lesson_contents lc ON lc.lesson_id = ls.id
+    WHERE lc.id = $1
+    `;
+    const result = await pgPool.query(query, [id]);
+    return result.rows[0];
   }
 }
 
