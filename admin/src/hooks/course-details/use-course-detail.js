@@ -74,6 +74,7 @@ export function useCourseDetail(data) {
     onDeleteChapter: chapterCrud.remove,
     onDeleteLesson: lessonCrud.remove,
     onDeleteContent: contentCrud.remove,
+    onDeleteQuiz: quizCrud.remove,
   });
 
   return {
