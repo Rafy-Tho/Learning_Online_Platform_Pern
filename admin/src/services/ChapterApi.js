@@ -33,6 +33,22 @@ class ChapterApi {
     }
     return result;
   }
+
+  async createLesson(id, data) {
+    const res = await fetch(`${this.baseUrl}/${id}/lessons`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify(data),
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.message || 'Failed to create lesson');
+    }
+    return result;
+  }
 }
 const chapterApi = new ChapterApi();
 export default chapterApi;
