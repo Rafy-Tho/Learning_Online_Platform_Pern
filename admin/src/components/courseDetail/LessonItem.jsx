@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { StatusBadge } from '../StatusBadge';
 import { Button } from '../ui/button';
+import { ContentItem } from './ContentItem';
 import { QuizItem } from './QuizItem';
 
 export function LessonItem({

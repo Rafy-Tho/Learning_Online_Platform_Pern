@@ -17,6 +17,8 @@ export function ModuleModal({
   onChange,
   onSave,
   isEditing,
+  isCreating,
+  isUpdating,
 }) {
   return (
     <FormModal
@@ -64,7 +66,15 @@ export function ModuleModal({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={onSave}>{isEditing ? 'Update' : 'Create'}</Button>
+          <Button onClick={onSave}>
+            {isEditing
+              ? isUpdating
+                ? 'Updating...'
+                : 'Update'
+              : isCreating
+                ? 'Creating...'
+                : 'Create'}
+          </Button>
         </div>
       </div>
     </FormModal>
