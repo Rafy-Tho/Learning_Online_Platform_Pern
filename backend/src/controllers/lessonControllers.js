@@ -1,3 +1,4 @@
+import { ADMIN } from "../constants/constants.js";
 import StatusCode from "../constants/StatusCode.js";
 import Chapter from "../repositories/ChapterRepository.js";
 import Course from "../repositories/CourseRepository.js";
@@ -10,6 +11,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 // @access Private
 export const createLesson = asyncHandler(async (req, res, next) => {
   const id = req.params.id;
+  const { id: instructorId, role } = req.session.user;
   const {
     name,
     description,
@@ -23,6 +25,13 @@ export const createLesson = asyncHandler(async (req, res, next) => {
   const chapter = await Chapter.findById(id);
   if (!chapter)
     return next(new ApiError(StatusCode.NOT_FOUND, "Chapter not found"));
+  // check if the user is the owner of the module or isAdmin
+  const instructor = Chapter.getInstructor(id);
+  if (instructor.instructor_id !== instructorId && role !== ADMIN)
+    return next(
+      new ApiError(StatusCode.FORBIDDEN, "You are not authorized to do this"),
+    );
+
   const lesson = await Lesson.create({
     name,
     description,
@@ -46,6 +55,7 @@ export const createLesson = asyncHandler(async (req, res, next) => {
 // @access Private
 export const updateLesson = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
+  const { id: instructorId, role } = req.session.user;
   const {
     name,
     description,
@@ -58,6 +68,13 @@ export const updateLesson = asyncHandler(async (req, res, next) => {
   const lesson = await Lesson.findById(id);
   if (!lesson)
     return next(new ApiError(StatusCode.NOT_FOUND, "Lesson not found"));
+  // check if the user is the owner of the module or isAdmin
+  const instructor = Lesson.getInstructor(id);
+  if (instructor.instructor_id !== instructorId && role !== ADMIN)
+    return next(
+      new ApiError(StatusCode.FORBIDDEN, "You are not authorized to do this"),
+    );
+
   const updatedLesson = await Lesson.update({
     id,
     name,
@@ -80,9 +97,17 @@ export const updateLesson = asyncHandler(async (req, res, next) => {
 // @access Private
 export const deleteLesson = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
+  const { id: instructorId, role } = req.session.user;
   const lesson = await Lesson.findById(id);
   if (!lesson)
     return next(new ApiError(StatusCode.NOT_FOUND, "Lesson not found"));
+  // check if the user is the owner of the module or isAdmin
+  const instructor = Lesson.getInstructor(id);
+  if (instructor.instructor_id !== instructorId && role !== ADMIN)
+    return next(
+      new ApiError(StatusCode.FORBIDDEN, "You are not authorized to do this"),
+    );
+
   await Lesson.delete(id);
   res.status(StatusCode.OK).json({
     success: true,

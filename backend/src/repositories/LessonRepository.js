@@ -61,7 +61,7 @@ class LessonRepository {
       status = $6,
       xp_points = $7,
       duration_minutes = $8,
-      access_type = $9,
+      access_type = $9
     WHERE
       id = $10
     RETURNING *
@@ -151,6 +151,17 @@ class LessonRepository {
     const value = [id];
     const result = await pgPool.query(query, value);
     return result.rows;
+  }
+  async getInstructor(id) {
+    const query = `
+    SELECT c.instructor_id FROM courses c
+    JOIN modules m ON m.course_id = c.id 
+    JOIN  chapters ch ON ch.module_id = m.id
+    JOIN lessons ls ON ls.chapter_id = ch.id
+    WHERE ls.id = $1
+    `;
+    const result = await pgPool.query(query, [id]);
+    return result.rows[0];
   }
 }
 const Lesson = new LessonRepository();
