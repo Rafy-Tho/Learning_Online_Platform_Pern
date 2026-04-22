@@ -17,6 +17,8 @@ export function ChapterModal({
   onChange,
   onSave,
   isEditing,
+  isUpdating,
+  isCreating,
 }) {
   return (
     <FormModal
@@ -31,6 +33,17 @@ export function ChapterModal({
             value={form.name}
             onChange={(e) => onChange('name', e.target.value)}
             placeholder="Chapter name"
+            className="mt-1"
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium text-foreground">
+            Position
+          </label>
+          <Input
+            value={form.position}
+            onChange={(e) => onChange('position', e.target.value)}
+            placeholder="Chapter position"
             className="mt-1"
           />
         </div>
@@ -64,7 +77,15 @@ export function ChapterModal({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={onSave}>{isEditing ? 'Update' : 'Create'}</Button>
+          <Button onClick={onSave}>
+            {isEditing
+              ? isUpdating
+                ? 'Updating...'
+                : 'Update'
+              : isCreating
+                ? 'Creating...'
+                : 'Create'}
+          </Button>
         </div>
       </div>
     </FormModal>

@@ -165,6 +165,8 @@ export default function CourseDetailPage() {
         onChange={chapterCrud.onChange}
         onSave={chapterCrud.save}
         isEditing={!!chapterCrud.editing}
+        isUpdating={chapterCrud.isUpdating}
+        isCreating={chapterCrud.isCreating}
       />
       <LessonModal
         open={lessonCrud.modal}
