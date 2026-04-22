@@ -1,6 +1,6 @@
-class LessonApi {
+class QuestionApi {
   constructor() {
-    this.baseUrl = import.meta.env.VITE_BASE_URL + '/lessons';
+    this.baseUrl = import.meta.env.VITE_BASE_URL + '/questions';
   }
 
   async update(id, data) {
@@ -14,7 +14,7 @@ class LessonApi {
     });
     const result = await res.json();
     if (!res.ok) {
-      throw new Error(result.message || 'Failed to update lesson');
+      throw new Error(result.message || 'Failed to update question');
     }
     return result;
   }
@@ -29,13 +29,13 @@ class LessonApi {
     });
     const result = await res.json();
     if (!res.ok) {
-      throw new Error(result.message || 'Failed to delete lesson');
+      throw new Error(result.message || 'Failed to delete question');
     }
     return result;
   }
 
-  async createContent(id, data) {
-    const res = await fetch(`${this.baseUrl}/${id}/contents`, {
+  async createOption(id, data) {
+    const res = await fetch(`${this.baseUrl}/${id}/options`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -45,25 +45,10 @@ class LessonApi {
     });
     const result = await res.json();
     if (!res.ok) {
-      throw new Error(result.message || 'Failed to create content');
-    }
-    return result;
-  }
-  async createQuestion(id, data) {
-    const res = await fetch(`${this.baseUrl}/${id}/questions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify(data),
-    });
-    const result = await res.json();
-    if (!res.ok) {
-      throw new Error(result.message || 'Failed to create question');
+      throw new Error(result.message || 'Failed to create option');
     }
     return result;
   }
 }
-const lessonApi = new LessonApi();
-export default lessonApi;
+const questionApi = new QuestionApi();
+export default questionApi;
