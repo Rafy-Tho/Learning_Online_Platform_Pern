@@ -5,6 +5,7 @@ export function useDeleteDialog({
   onDeleteModule,
   onDeleteChapter,
   onDeleteLesson,
+  onDeleteContent,
 }) {
   const [deleteDialog, setDeleteDialog] = useState(null);
 
@@ -31,12 +32,13 @@ export function useDeleteDialog({
       onDeleteLesson(id);
     }
 
-    if (type === 'content')
-      setLessonContents((cs) => cs.filter((c) => c.id !== id));
+    if (type === 'content') {
+      onDeleteContent(id);
+    }
 
     if (type === 'quiz') {
-      setQuizOptions((os) => os.filter((o) => o.quiz_id !== id));
-      setQuizzes((qs) => qs.filter((q) => q.id !== id));
+      // setQuizOptions((os) => os.filter((o) => o.quiz_id !== id));
+      // setQuizzes((qs) => qs.filter((q) => q.id !== id));
     }
 
     cancel();

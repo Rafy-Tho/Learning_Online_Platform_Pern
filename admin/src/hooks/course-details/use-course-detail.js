@@ -73,6 +73,7 @@ export function useCourseDetail(data) {
     onDeleteModule: moduleCrud.remove,
     onDeleteChapter: chapterCrud.remove,
     onDeleteLesson: lessonCrud.remove,
+    onDeleteContent: contentCrud.remove,
   });
 
   return {
