@@ -48,6 +48,17 @@ export function QuizModal({
           />
         </div>
         <div>
+          <label className="text-sm font-medium text-foreground">
+            Position
+          </label>
+          <Input
+            value={quizForm.position}
+            onChange={(e) => onQuizChange('position', e.target.value)}
+            placeholder="Quiz position"
+            className="mt-1"
+          />
+        </div>
+        <div>
           <div className="flex items-center justify-between mb-2">
             <label className="text-sm font-medium text-foreground">
               Options

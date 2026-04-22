@@ -237,6 +237,10 @@ export function useQuizCrud({
       await deleteQuestion(id);
       setQuizOptions((os) => os.filter((o) => o.quiz_id !== id));
       setQuizzes((qs) => qs.filter((q) => q.id !== id));
+      toast({
+        title: 'Quiz deleted successfully',
+        description: 'The quiz has been deleted successfully',
+      });
     } catch (err) {
       toast({
         title: 'Failed to delete quiz',
