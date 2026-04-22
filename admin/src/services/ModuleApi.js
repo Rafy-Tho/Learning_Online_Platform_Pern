@@ -33,6 +33,22 @@ class ModuleApi {
     }
     return result;
   }
+
+  async createChapter(id, data) {
+    const res = await fetch(`${this.baseUrl}/${id}/chapters`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify(data),
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.message || 'Failed to create chapter');
+    }
+    return result;
+  }
 }
 const moduleApi = new ModuleApi();
 export default moduleApi;
