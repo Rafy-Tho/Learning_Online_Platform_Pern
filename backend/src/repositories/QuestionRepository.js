@@ -32,14 +32,14 @@ class QuestionRepository {
   async deleteQuestion({ questionId }) {
     const result = await pgPool.query(
       `DELETE FROM quizzes
-      WHERE id = 
+      WHERE id = $1
       RETURNING *
       `,
       [questionId],
     );
     return result.rows[0];
   }
-  async findById({ questionId }) {
+  async findById(questionId) {
     const result = await pgPool.query(
       `SELECT * FROM quizzes
       WHERE id = $1
@@ -60,6 +60,18 @@ class QuestionRepository {
     const value = [id];
     const result = await pgPool.query(query, value);
     return result.rows;
+  }
+  async getInstructor(id) {
+    const query = `
+    SELECT c.instructor_id FROM courses c
+    JOIN modules m ON m.course_id = c.id 
+    JOIN  chapters ch ON ch.module_id = m.id
+    JOIN lessons ls ON ls.chapter_id = ch.id
+    JOIN quizzes qz ON qz.lesson_id = ls.id
+    WHERE qz.id = $1
+    `;
+    const result = await pgPool.query(query, [id]);
+    return result.rows[0];
   }
 }
 

@@ -36,13 +36,20 @@ class AnswerRepository {
     );
     return result.rows[0];
   }
-  async deleteAnswer({ answerId }) {
+  async deleteAnswer(answerId) {
     const result = await pgPool.query(
       `DELETE FROM quiz_options
       WHERE id = $1
       RETURNING *
       `,
       [answerId],
+    );
+    return result.rows[0];
+  }
+  async findById(id) {
+    const result = await pgPool.query(
+      `SELECT * FROM quiz_options WHERE id = $1`,
+      [id],
     );
     return result.rows[0];
   }

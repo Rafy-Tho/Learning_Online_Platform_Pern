@@ -66,7 +66,7 @@ app.use("/api/v1/lessons", lessonRoute);
 app.use("/api/v1/contents", lessonContentRoute);
 app.use("/api/v1/reviews", reviewRoute);
 app.use("/api/v1/questions", questionRoute);
-app.use("/api/v1/answers", answerRoute);
+app.use("/api/v1/options", answerRoute);
 app.use("/api/v1/enrollments", enrollmentRoute);
 app.use("/api/v1/progresses", learningProgressRoute);
 app.use("/api/v1/completions", lessonCompletionRoute);
