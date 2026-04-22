@@ -17,6 +17,8 @@ export function LessonModal({
   onChange,
   onSave,
   isEditing,
+  isUpdating,
+  isCreating,
 }) {
   return (
     <FormModal
@@ -34,6 +36,33 @@ export function LessonModal({
             className="mt-1"
           />
         </div>
+        <div>
+          <label className="text-sm font-medium text-foreground">
+            Position
+          </label>
+          <Input
+            value={form.position}
+            onChange={(e) => onChange('position', e.target.value)}
+            placeholder="Lesson position"
+            className="mt-1"
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium text-foreground">Access</label>
+          <Select
+            value={form.access_type}
+            onValueChange={(v) => onChange('access_type', v)}
+          >
+            <SelectTrigger className="mt-1">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="FREE">Free</SelectItem>
+              <SelectItem value="SUBSCRIPTION">Subscription</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
         <div>
           <label className="text-sm font-medium text-foreground">
             Description
@@ -111,7 +140,15 @@ export function LessonModal({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={onSave}>{isEditing ? 'Update' : 'Create'}</Button>
+          <Button onClick={onSave}>
+            {isEditing
+              ? isUpdating
+                ? 'Updating...'
+                : 'Update'
+              : isCreating
+                ? 'Creating...'
+                : 'Create'}
+          </Button>
         </div>
       </div>
     </FormModal>
