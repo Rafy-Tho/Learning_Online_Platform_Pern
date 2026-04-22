@@ -185,6 +185,8 @@ export default function CourseDetailPage() {
         onChange={contentCrud.onChange}
         onSave={contentCrud.save}
         isEditing={!!contentCrud.editing}
+        isUpdating={contentCrud.isUpdating}
+        isCreating={contentCrud.isCreating}
       />
       <QuizModal
         open={quizCrud.modal}

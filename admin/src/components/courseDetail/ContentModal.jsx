@@ -10,6 +10,8 @@ export function ContentModal({
   onChange,
   onSave,
   isEditing,
+  isCreating,
+  isUpdating,
 }) {
   return (
     <FormModal
@@ -28,6 +30,16 @@ export function ContentModal({
           />
         </div>
         <div>
+          <label className="text-sm font-medium text-foreground">
+            Position
+          </label>
+          <Input
+            value={form.position}
+            onChange={(e) => onChange('position', e.target.value)}
+            className="mt-1"
+          />
+        </div>
+        <div>
           <label className="text-sm font-medium text-foreground">Content</label>
           <Textarea
             value={form.content}
@@ -40,7 +52,15 @@ export function ContentModal({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={onSave}>{isEditing ? 'Update' : 'Create'}</Button>
+          <Button onClick={onSave}>
+            {isEditing
+              ? isUpdating
+                ? 'Update...'
+                : 'Update'
+              : isCreating
+                ? 'Create...'
+                : 'Create'}
+          </Button>
         </div>
       </div>
     </FormModal>
