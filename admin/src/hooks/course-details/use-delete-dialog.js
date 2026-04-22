@@ -1,14 +1,10 @@
 import { useState } from 'react';
 
 export function useDeleteDialog({
-  quizzes,
-  setLessons,
-  setLessonContents,
-  setQuizzes,
-  setQuizOptions,
   onDeleteObjective,
   onDeleteModule,
   onDeleteChapter,
+  onDeleteLesson,
 }) {
   const [deleteDialog, setDeleteDialog] = useState(null);
 
@@ -32,13 +28,7 @@ export function useDeleteDialog({
     }
 
     if (type === 'lesson') {
-      const quizIds = quizzes
-        .filter((q) => q.lesson_id === id)
-        .map((q) => q.id);
-      setQuizOptions((os) => os.filter((o) => !quizIds.includes(o.quiz_id)));
-      setQuizzes((qs) => qs.filter((q) => q.lesson_id !== id));
-      setLessonContents((cs) => cs.filter((c) => c.lesson_id !== id));
-      setLessons((ls) => ls.filter((l) => l.id !== id));
+      onDeleteLesson(id);
     }
 
     if (type === 'content')

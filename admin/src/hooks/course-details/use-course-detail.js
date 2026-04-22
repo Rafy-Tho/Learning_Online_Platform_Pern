@@ -53,7 +53,13 @@ export function useCourseDetail(data) {
     setLessonContents,
     setLessons,
   });
-  const lessonCrud = useLessonCrud({ lessons, setLessons });
+  const lessonCrud = useLessonCrud({
+    setLessons,
+    quizzes,
+    setQuizzes,
+    setLessonContents,
+    setQuizOptions,
+  });
   const contentCrud = useContentCrud({ lessonContents, setLessonContents });
   const quizCrud = useQuizCrud({
     quizzes,
@@ -63,20 +69,10 @@ export function useCourseDetail(data) {
   });
 
   const deleteDialog = useDeleteDialog({
-    chapters,
-    lessons,
-    lessonContents,
-    quizzes,
-    quizOptions,
-    setChapters,
-    setLessons,
-    setLessonContents,
-    setQuizzes,
-    setQuizOptions,
-    setModules,
     onDeleteObjective: objective.remove,
     onDeleteModule: moduleCrud.remove,
     onDeleteChapter: chapterCrud.remove,
+    onDeleteLesson: lessonCrud.remove,
   });
 
   return {
