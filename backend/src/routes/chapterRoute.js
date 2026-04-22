@@ -4,6 +4,7 @@ import {
   deleteChapter,
   getChapter,
   getChapters,
+  updateChapter,
 } from "../controllers/chapterControllers.js";
 import requireAuth from "../middlewares/requireAuth.js";
 import authorize from "../middlewares/authorize.js";
@@ -32,6 +33,7 @@ chapterRoute
     authorize(INSTRUCTOR, ADMIN),
     chapterValidators,
     validateResult,
+    updateChapter,
   )
   .delete(requireAuth, authorize(INSTRUCTOR, ADMIN), deleteChapter);
 

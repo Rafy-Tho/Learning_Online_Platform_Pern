@@ -1,3 +1,4 @@
+import { ADMIN } from "../constants/constants.js";
 import StatusCode from "../constants/StatusCode.js";
 import Chapter from "../repositories/ChapterRepository.js";
 import Module from "../repositories/ModuleRepository.js";
@@ -9,11 +10,18 @@ import asyncHandler from "../utils/asyncHandler.js";
 // @access Private/Instructor
 export const createChapter = asyncHandler(async (req, res, next) => {
   const moduleId = req.params.id;
+  const { id: instructorId, role } = req.session.user;
   const { name, description, position, status } = req.body;
   // Check if the course exists
   const module = await Module.findById(moduleId);
   if (!module)
     return next(new ApiError(StatusCode.NOT_FOUND, "Module not found"));
+  // check if the user is the owner of the module or isAdmin
+  const instructor = Module.getInstructor(module.id);
+  if (instructor.instructor_id !== instructorId && role !== ADMIN)
+    return next(
+      new ApiError(StatusCode.FORBIDDEN, "You are not authorized to do this"),
+    );
   // Create the chapter
   const chapter = await Chapter.create({
     moduleId,
@@ -54,11 +62,18 @@ export const getChapters = asyncHandler(async (req, res, next) => {
 // @access Private/Instructor
 export const updateChapter = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
+  const { id: instructorId, role } = req.session.user;
   const { name, description, position, status } = req.body;
   // Check if the chapter exists
   const chapter = await Chapter.findById(id);
   if (!chapter)
     return next(new ApiError(StatusCode.NOT_FOUND, "Chapter not found"));
+  // check if the user is the owner of the module or isAdmin
+  const instructor = Chapter.getInstructor(id);
+  if (instructor.instructor_id !== instructorId && role !== ADMIN)
+    return next(
+      new ApiError(StatusCode.FORBIDDEN, "You are not authorized to do this"),
+    );
   // Update the chapter
   const updatedChapter = await Chapter.update({
     id,
@@ -80,10 +95,17 @@ export const updateChapter = asyncHandler(async (req, res, next) => {
 // @access Private/Instructor
 export const deleteChapter = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
+  const { id: instructorId, role } = req.session.user;
   // Check if the chapter exists
   const chapter = await Chapter.findById(id);
   if (!chapter)
     return next(new ApiError(StatusCode.NOT_FOUND, "Chapter not found"));
+  // check if the user is the owner of the module or isAdmin
+  const instructor = Chapter.getInstructor(id);
+  if (instructor.instructor_id !== instructorId && role !== ADMIN)
+    return next(
+      new ApiError(StatusCode.FORBIDDEN, "You are not authorized to do this"),
+    );
   // Delete the chapter
   await Chapter.delete(id);
   // Send response
