@@ -38,6 +38,17 @@ export function ModuleModal({
         </div>
         <div>
           <label className="text-sm font-medium text-foreground">
+            Position
+          </label>
+          <Input
+            value={form.position}
+            onChange={(e) => onChange('position', e.target.value)}
+            placeholder="Module position"
+            className="mt-1"
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium text-foreground">
             Description
           </label>
           <Textarea

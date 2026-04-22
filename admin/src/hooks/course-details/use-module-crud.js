@@ -4,11 +4,15 @@ import { useDeleteModule } from '../modules/use-delete-module';
 import { useUpdateModule } from '../modules/use-update-module';
 import { toast } from '../use-toast';
 
-const DEFAULT_FORM = { name: '', description: '', status: 'DRAFT' };
+const DEFAULT_FORM = {
+  name: '',
+  description: '',
+  status: 'DRAFT',
+  position: '',
+};
 
 export function useModuleCrud({
   setModules,
-  modules,
   setChapters,
   setLessons,
   setQuizzes,
@@ -37,6 +41,7 @@ export function useModuleCrud({
       name: m.name,
       description: m.description || '',
       status: m.status,
+      position: m.position,
     });
     setModal(true);
   };
@@ -47,7 +52,7 @@ export function useModuleCrud({
       try {
         const response = await updateModule({
           id: editing.id,
-          data: { ...form, position: editing.position },
+          data: { ...form },
         });
         setModules((ms) =>
           ms.map((m) =>
@@ -68,14 +73,8 @@ export function useModuleCrud({
         setModal(false);
       }
     } else {
-      const lastPosition =
-        modules.length > 0 ? modules[modules.length - 1].position : 1;
-      const data = {
-        position: lastPosition + 1,
-        ...form,
-      };
       try {
-        const response = await createModule(data);
+        const response = await createModule(form);
         setModules((ms) => [...ms, response?.data]);
         toast({
           title: 'Success',
