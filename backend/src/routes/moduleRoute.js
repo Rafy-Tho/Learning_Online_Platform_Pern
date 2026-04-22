@@ -1,5 +1,5 @@
 import express from "express";
-import { INSTRUCTOR } from "../constants/constants.js";
+import { ADMIN, INSTRUCTOR } from "../constants/constants.js";
 import {
   createModule,
   deleteModule,
@@ -19,7 +19,7 @@ moduleRoute
   .route("/")
   .post(
     requireAuth,
-    authorize(INSTRUCTOR),
+    authorize(INSTRUCTOR, ADMIN),
     moduleValidators,
     validateResult,
     createModule,
@@ -30,11 +30,11 @@ moduleRoute
   .get(getModule)
   .patch(
     requireAuth,
-    authorize(INSTRUCTOR),
+    authorize(INSTRUCTOR, ADMIN),
     moduleValidators,
     validateResult,
     updateModule,
   )
-  .delete(requireAuth, authorize(INSTRUCTOR), deleteModule);
+  .delete(requireAuth, authorize(INSTRUCTOR, ADMIN), deleteModule);
 
 export default moduleRoute;
