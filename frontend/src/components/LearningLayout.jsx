@@ -18,10 +18,8 @@ function LearningLayout() {
         setSidebarOpen(true);
       }
     };
-    1;
     checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
-
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
   if (error) return <ErrorMessage message={error.message || 'Server error'} />;
