@@ -1,13 +1,15 @@
-import { CheckCircle2, Info } from "lucide-react";
+import { CheckCircle2, Info, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import useCreatePayment from "../../hooks/subscription/useCreatePayment";
 import useAuth from "../../hooks/useAuth";
 
 export default function PricingCard({ plan, activeSubscription }) {
   const { id, tier, price, description, features, highlighted = false } = plan;
-  const { mutate } = useCreatePayment();
+  const { mutateAsync } = useCreatePayment();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   // Check if this plan is the active subscription
   const isActivePlan = activeSubscription?.plan_id === id;
   // Check if user has ANY active subscription
@@ -23,7 +25,17 @@ export default function PricingCard({ plan, activeSubscription }) {
     }
     // Don't allow payment if there's already an active subscription
     if (hasActiveSubscription) return;
-    mutate(id);
+
+    setIsLoading(true);
+    try {
+      const data = await mutateAsync(id);
+      const paymentUrl = data?.session_url;
+      window.location.href = paymentUrl;
+    } catch (error) {
+      console.error("Error creating payment session:", error);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -123,25 +135,30 @@ export default function PricingCard({ plan, activeSubscription }) {
       </ul>
 
       <button
-        onClick={!hasActiveSubscription ? payment : undefined}
-        disabled={hasActiveSubscription}
+        onClick={!hasActiveSubscription && !isLoading ? payment : undefined}
+        disabled={hasActiveSubscription || isLoading}
         className={`
-          w-full py-3.5 rounded-xl text-sm font-semibold transition-all duration-200
-          ${!hasActiveSubscription ? "cursor-pointer" : "cursor-not-allowed"}
+          w-full py-3.5 rounded-xl text-sm font-semibold transition-all duration-200 inline-flex items-center justify-center gap-2
+          ${!hasActiveSubscription && !isLoading ? "cursor-pointer" : "cursor-not-allowed"}
           ${
             hasActiveSubscription
               ? "bg-gray-300 text-gray-500 dark:bg-slate-700 dark:text-slate-500"
-              : highlighted
-                ? "bg-gradient-to-r from-cyan-400 to-blue-500 text-white hover:from-cyan-300 hover:to-blue-400 shadow-lg shadow-cyan-500/25"
-                : "border border-gray-300 text-gray-900 hover:bg-gray-50 dark:border-slate-600 dark:text-white dark:hover:bg-slate-800"
+              : isLoading
+                ? "bg-gray-300 text-gray-500 dark:bg-slate-700 dark:text-slate-500"
+                : highlighted
+                  ? "bg-gradient-to-r from-cyan-400 to-blue-500 text-white hover:from-cyan-300 hover:to-blue-400 shadow-lg shadow-cyan-500/25"
+                  : "border border-gray-300 text-gray-900 hover:bg-gray-50 dark:border-slate-600 dark:text-white dark:hover:bg-slate-800"
           }
         `}
       >
+        {isLoading && <Loader2 className="animate-spin" size={16} />}
         {isActivePlan
           ? "Current Plan"
           : hasActiveSubscription
             ? "Not Available"
-            : "Get Started"}
+            : isLoading
+              ? "Redirecting..."
+              : "Get Started"}
       </button>
     </div>
   );

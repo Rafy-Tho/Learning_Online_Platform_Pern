@@ -4,34 +4,13 @@ import { Lock, Shield, X } from "lucide-react";
 import SectionCard from "./SectionCard";
 import useUpdatePassword from "../../hooks/user/useUpdatePassword";
 import { toast } from "react-toastify";
-const validateStrongPassword = (password) => {
-  const errors = [];
-
-  if (password.length < 8) {
-    errors.push("At least 8 characters");
-  }
-  if (!/[A-Z]/.test(password)) {
-    errors.push("One uppercase letter");
-  }
-  if (!/[a-z]/.test(password)) {
-    errors.push("One lowercase letter");
-  }
-  if (!/[0-9]/.test(password)) {
-    errors.push("One number");
-  }
-  if (!/[^A-Za-z0-9]/.test(password)) {
-    errors.push("One special character");
-  }
-
-  return errors;
-};
 function PasswordContainer() {
   const [passwords, setPasswords] = useState({
     current: "",
     newPass: "",
     confirm: "",
   });
-  const { updatePassword, isPending } = useUpdatePassword();
+  const { mutateAsync: updatePassword, isPending } = useUpdatePassword();
   const [pwError, setPwError] = useState({});
   const isEdit =
     passwords.current && passwords.newPass && passwords.confirm && !isPending;
@@ -137,7 +116,7 @@ function PasswordContainer() {
                 return (
                   <div
                     key={i}
-                    className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
+                    className={`h-2 flex-1 rounded-full transition-all duration-300 ${
                       i <= strength
                         ? strength <= 1
                           ? "bg-red-400"

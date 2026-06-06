@@ -1,6 +1,6 @@
 import { useState } from "react";
 import SectionCard from "./SectionCard";
-import { Check, Crown, Star, Zap } from "lucide-react";
+import { Check, Crown, Loader2 } from "lucide-react";
 import useCreatePayment from "../../hooks/subscription/useCreatePayment";
 import useAuth from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -49,8 +49,9 @@ const planConfig = {
 
 function Subscription() {
   const [plan, setPlan] = useState("1-Month");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { mutate } = useCreatePayment();
+  const { mutateAsync } = useCreatePayment();
   const { user } = useAuth();
   const planInfo = planConfig[plan];
   async function payment() {
@@ -61,7 +62,16 @@ function Subscription() {
       });
       return navigate("/login");
     }
-    mutate(planInfo.id);
+    setIsLoading(true);
+    try {
+      const data = await mutateAsync(planInfo.id);
+      const paymentUrl = data?.session_url;
+      window.location.href = paymentUrl;
+    } catch (error) {
+      console.error("Error creating payment session:", error);
+    } finally {
+      setIsLoading(false);
+    }
   }
   if (!planInfo) {
     return null;
@@ -96,9 +106,11 @@ function Subscription() {
           </ul>
           <button
             onClick={payment}
-            className="w-full px-4 py-3 rounded-xl text-sm font-medium text-white dark:text-slate-900 bg-slate-700 dark:bg-slate-200 mt-5"
+            disabled={isLoading}
+            className="w-full px-4 py-3 rounded-xl text-sm font-medium text-white dark:text-slate-900 bg-slate-700 dark:bg-slate-200 mt-5 inline-flex items-center justify-center gap-2 disabled:opacity-60"
           >
-            Get Started
+            {isLoading && <Loader2 className="animate-spin" size={16} />}
+            {isLoading ? "Redirecting..." : "Get Started"}
           </button>
         </div>
 

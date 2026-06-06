@@ -34,7 +34,7 @@ function UserProfile() {
   const [user, setUser] = useState(defaultUser);
   const [draft, setDraft] = useState(defaultUser);
   const { data, isPending, error } = useGetUserProfile();
-  const { updateProfile, isPending: isUpdatePending } = useUpdateUserProfile();
+  const { mutateAsync:updateProfile, isPending: isUpdatePending } = useUpdateUserProfile();
   const [errors, setErrors] = useState({});
   // ✅ Load data from API
   useEffect(() => {

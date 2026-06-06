@@ -343,6 +343,7 @@ export const createStripeSession = asyncHandler(async (req, res, next) => {
   if (!subscription) {
     return next(new ApiError(404, "Subscription not found"));
   }
+
   const activePlan = await Subscription.getActivePaidSubscription(userId);
   if (activePlan) {
     return next(
@@ -352,6 +353,7 @@ export const createStripeSession = asyncHandler(async (req, res, next) => {
       ),
     );
   }
+
   await Subscription.setUserSubscriptionStatusToExpired(userId);
   const session = await stripeInstance.checkout.sessions.create({
     payment_method_types: ["card"],
@@ -380,6 +382,6 @@ export const createStripeSession = asyncHandler(async (req, res, next) => {
     success: true,
     message: "Checkout session created successfully",
     statusCode: StatusCode.OK,
-    session_url: session.url,
+    data: { session_url: session.url },
   });
 });

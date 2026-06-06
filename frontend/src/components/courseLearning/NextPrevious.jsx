@@ -18,7 +18,7 @@ function NextPrevious() {
   } = useLessonNavigation();
 
   function handleCompleteLesson() {
-    if (completedLesson?.data) return;
+    if (completedLesson) return;
     completeLesson();
   }
   const goToNextPage = () => {
@@ -68,13 +68,13 @@ function NextPrevious() {
         Lesson {currentLessonIndex + 1} of {totalLessons}
       </div>
       <div className="flex items-center gap-2 w-full sm:w-auto">
-        {!completedLesson?.data && (
+        {!completedLesson && (
           <button
             onClick={handleCompleteLesson}
             className={`
                   flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-200 w-full sm:w-auto justify-center
                   ${
-                    !completedLesson?.data
+                    !completedLesson
                       ? "bg-orange-500 text-white hover:bg-orange-600 active:bg-orange-700 cursor-pointer"
                       : "bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-600 cursor-not-allowed"
                   }
