@@ -45,7 +45,7 @@ class EmailService {
           <h2>Password Reset</h2>
           <p>Your code:</p>
           <h1 style="color:green;">${code}</h1>
-          <p>Expires in 5 minutes</p>
+          <p>Expires in 10 minutes</p>
         </div>
       `,
     });

@@ -64,7 +64,7 @@ CREATE TABLE user_profiles (
   location     VARCHAR(255),
   phone        VARCHAR(20),
   date_birth   DATE,
-  gender   gender    VARCHAR(10),
+  gender   gender,
   created_at   TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at   TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -138,7 +138,7 @@ CREATE TABLE course_objectives (
   REFERENCES courses(id) ON DELETE CASCADE,
   content TEXT NOT NULL, -- the objective text
   position INTEGER DEFAULT 1, -- ordering
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 

@@ -53,7 +53,6 @@ const plans = [
 export default function PricingSection() {
   const { user } = useAuth();
   const { data, isPending } = useGetActiveSubscription();
-  console.log({ data, isPending });
   const activeSubscription = data?.data || null;
   if (user && isPending) return <SpinnerLoader />;
   return (

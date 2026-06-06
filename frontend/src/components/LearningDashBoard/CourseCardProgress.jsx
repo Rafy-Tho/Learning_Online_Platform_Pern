@@ -12,7 +12,7 @@ function CourseCardProgress({ course }) {
     <article
       className="flex shrink-0 flex-col rounded-xl border border-slate-100 bg-white p-6 shadow-sm transition hover:shadow-md dark:border-slate-800 dark:bg-slate-900 h-full w-full cursor-pointer"
       onClick={() =>
-        navigate(`/courses/${course.id}/lessons/${course.lesson_progress}`)
+        navigate(course.lesson_progress ? `/courses/${course.id}/lessons/${course.lesson_progress}` : `/courses/${course.id}`)
       }
     >
       <div className="mb-4 flex items-start justify-between">

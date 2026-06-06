@@ -18,7 +18,7 @@ export const createLessonContent = asyncHandler(async (req, res, next) => {
   if (!lesson)
     return next(new ApiError(StatusCode.NOT_FOUND, "Lesson not found"));
   // check if the user is the owner of the lesson or isAdmin
-  const instructor = Lesson.getInstructor(lessonId);
+  const instructor = await Lesson.getInstructor(lessonId);
   if (instructor.instructor_id !== instructorId && role !== ADMIN)
     return next(
       new ApiError(StatusCode.FORBIDDEN, "You are not authorized to do this"),
@@ -47,7 +47,7 @@ export const updateLessonContent = asyncHandler(async (req, res, next) => {
   if (!lessonContent)
     return next(new ApiError(StatusCode.NOT_FOUND, "Lesson content not found"));
   // check if the user is the owner of the lesson or isAdmin
-  const instructor = LessonContent.getInstructor(id);
+  const instructor = await LessonContent.getInstructor(id);
   if (instructor.instructor_id !== instructorId && role !== ADMIN)
     return next(
       new ApiError(StatusCode.FORBIDDEN, "You are not authorized to do this"),
@@ -76,7 +76,7 @@ export const deleteLessonContent = asyncHandler(async (req, res, next) => {
   if (!lessonContent)
     return next(new ApiError(StatusCode.NOT_FOUND, "Lesson content not found"));
   // check if the user is the owner of the lesson or isAdmin
-  const instructor = LessonContent.getInstructor(id);
+  const instructor = await LessonContent.getInstructor(id);
   if (instructor.instructor_id !== instructorId && role !== ADMIN)
     return next(
       new ApiError(StatusCode.FORBIDDEN, "You are not authorized to do this"),
@@ -95,12 +95,16 @@ export const deleteLessonContent = asyncHandler(async (req, res, next) => {
 // @route get GET /api/v1/lessons/:id/contents
 // @access public
 export const getLessonContents = asyncHandler(async (req, res, next) => {
-  const userId = req.session.user.id;
+  const userId = req?.session?.user?.id || null;
   const lessonId = req.params.id;
+  if (!lessonId)
+    return next(new ApiError(StatusCode.BAD_REQUEST, "Lesson ID is required"));
   const lesson = await Lesson.findById(lessonId);
   if (!lesson)
     return next(new ApiError(StatusCode.NOT_FOUND, "Lesson not found"));
   if (lesson.access_type === "SUBSCRIPTION") {
+    if (!userId)
+      return next(new ApiError(StatusCode.UNAUTHORIZED, "Unauthorized"));
     const activePlan = await Subscription.getActivePaidSubscription(userId);
     if (!activePlan)
       return next(

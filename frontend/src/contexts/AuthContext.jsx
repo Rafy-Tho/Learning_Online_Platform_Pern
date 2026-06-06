@@ -12,8 +12,10 @@ function AuthProvider({ children }) {
   });
 
   const saveAuth = (data) => {
-    localStorage.setItem('user', JSON.stringify(data.data));
-    setUser(data.data);
+    const userData = data?.data;
+    if (!userData) return;
+    localStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
   };
 
   const clearAuth = () => {

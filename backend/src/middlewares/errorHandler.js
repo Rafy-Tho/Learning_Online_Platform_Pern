@@ -1,3 +1,4 @@
+import ENV from '../configs/Env.js';
 import StatusCode from '../constants/StatusCode.js';
 function getUniqueMessage(err) {
   const field = err.detail?.match(/\((.*?)\)/)?.[1];
@@ -56,7 +57,7 @@ function errorHandler(err, req, res, next) {
         message = 'Something went wrong. Please try again later.';
     }
   }
-  const show = process.env.NODE_ENV === 'development';
+  const show = ENV.NODE_ENV === 'development';
   res.status(statusCode).json({
     success: false,
     statusCode,

@@ -12,7 +12,7 @@ export function CourseSidebar({ onClose }) {
   const [expanded, setExpanded] = useState([]);
   const { data, isPending, error } = useGetCourseLearningData();
   const course = data?.data || {};
-  const modules = useMemo(() => course.modules || [], [course.modules]);
+  const modules = useMemo(() => course.modules || [], [course?.modules]);
   const normalizedSearch = search.toLowerCase();
   const { lessonId } = useParams();
   const hasInitialized = useRef(false);

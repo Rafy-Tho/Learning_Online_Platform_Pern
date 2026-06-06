@@ -9,7 +9,7 @@ function CourseCardRecentReview({ course }) {
     <article
       className="flex shrink-0 flex-col rounded-xl border border-slate-100 bg-white p-6 shadow-sm transition hover:shadow-md dark:border-slate-800 dark:bg-slate-900 h-full w-full cursor-pointer"
       onClick={() =>
-        navigate(`/courses/${course.id}/lessons/${course.last_lesson}`)
+        navigate(course.last_lesson ? `/courses/${course.id}/lessons/${course.last_lesson}` : `/courses/${course.id}`)
       }
     >
       <div className="mb-4 flex items-start justify-between">

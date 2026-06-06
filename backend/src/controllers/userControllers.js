@@ -103,7 +103,6 @@ export const logout = asyncHandler(async (req, res, next) => {
 export const getMe = asyncHandler(async (req, res, next) => {
   const userId = req.session?.user?.id || null;
   //  check if user exists
-  console.log(req.session);
   const user = userId ? await User.findById(userId) : null;
   // delete password
   delete user?.password;
@@ -137,7 +136,6 @@ export const getProfile = asyncHandler(async (req, res, next) => {
 export const updateProfile = asyncHandler(async (req, res, next) => {
   const userId = req.session.user.id;
   const { name, email, bio, location, phone, dateBirth, gender } = req.body;
-  console.log(req.body);
   //  check if user exists
   const user = await User.findById(userId);
   if (!user) return next(new ApiError(StatusCode.NOT_FOUND, "User not found"));

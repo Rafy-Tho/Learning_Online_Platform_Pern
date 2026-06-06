@@ -5,7 +5,8 @@ import SpinnerLoader from "../../ui/SpinnerLoader";
 function LessonContent() {
   const { data, isPending, error } = useGetLessonContent();
 
-  const lessons = data?.data?.map((lesson) => lesson.content).join("");
+  const contents = Array.isArray(data?.data) ? data.data : [data?.data].filter(Boolean);
+  const lessons = contents.map((lesson) => lesson.content).join("");
   const cleanHTML = DOMPurify.sanitize(lessons, {
     ALLOWED_ATTR: ["class", "style"],
   });

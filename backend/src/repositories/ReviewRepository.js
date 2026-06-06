@@ -72,7 +72,7 @@ class ReviewRepository {
    WHERE course_id = $1;
     `;
     const result = await pgPool.query(query, [courseId]);
-    return result.rows;
+    return result.rows[0];
   }
 
   async createReview({ userId, courseId, rating, review }) {
@@ -100,14 +100,14 @@ class ReviewRepository {
     return result.rows[0];
   }
 
-  async updateReviewHelpfulVote({ reviewId, isHelpful }) {
+  async updateReviewHelpfulVote({ userId, reviewId, isHelpful }) {
     const query = `
     UPDATE review_helpful_votes
     SET is_helpful = $1
-    WHERE id = $2
+    WHERE user_id = $2 AND review_id = $3
     RETURNING is_helpful;
     `;
-    const result = await pgPool.query(query, [isHelpful, reviewId]);
+    const result = await pgPool.query(query, [isHelpful, userId, reviewId]);
     return result.rows[0];
   }
 

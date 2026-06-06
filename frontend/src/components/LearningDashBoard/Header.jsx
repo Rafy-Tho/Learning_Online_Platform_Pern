@@ -8,14 +8,14 @@ export default function Header() {
     <header className="mb-8 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
       <div className="flex gap-4">
         <img
-          src={user.image_url}
+          src={user?.image_url}
           alt=""
           className="size-14 shrink-0 rounded-full border border-slate-200 dark:border-slate-700"
         />
         <div>
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-2xl font-bold sm:text-3xl">
-              Welcome, {user.name}!
+              Welcome, {user?.name}!
             </h1>
           </div>
           <p className="mt-1 text-slate-600 dark:text-slate-400">

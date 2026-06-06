@@ -6,7 +6,7 @@ const Subscribed = ({ data }) => {
     price: data?.price || "",
     period: "/price",
     status: "Active",
-    nextBilling: new Date(data?.end_date).toDateString() || "" || "",
+    nextBilling: data?.end_date ? new Date(data.end_date).toDateString() : "",
     features: [
       "Unlimited projects",
       "Priority support",

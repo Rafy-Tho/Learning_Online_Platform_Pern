@@ -26,7 +26,7 @@ export const createLesson = asyncHandler(async (req, res, next) => {
   if (!chapter)
     return next(new ApiError(StatusCode.NOT_FOUND, "Chapter not found"));
   // check if the user is the owner of the module or isAdmin
-  const instructor = Chapter.getInstructor(id);
+  const instructor = await Chapter.getInstructor(id);
   if (instructor.instructor_id !== instructorId && role !== ADMIN)
     return next(
       new ApiError(StatusCode.FORBIDDEN, "You are not authorized to do this"),
@@ -69,7 +69,7 @@ export const updateLesson = asyncHandler(async (req, res, next) => {
   if (!lesson)
     return next(new ApiError(StatusCode.NOT_FOUND, "Lesson not found"));
   // check if the user is the owner of the module or isAdmin
-  const instructor = Lesson.getInstructor(id);
+  const instructor = await Lesson.getInstructor(id);
   if (instructor.instructor_id !== instructorId && role !== ADMIN)
     return next(
       new ApiError(StatusCode.FORBIDDEN, "You are not authorized to do this"),
@@ -102,7 +102,7 @@ export const deleteLesson = asyncHandler(async (req, res, next) => {
   if (!lesson)
     return next(new ApiError(StatusCode.NOT_FOUND, "Lesson not found"));
   // check if the user is the owner of the module or isAdmin
-  const instructor = Lesson.getInstructor(id);
+  const instructor = await Lesson.getInstructor(id);
   if (instructor.instructor_id !== instructorId && role !== ADMIN)
     return next(
       new ApiError(StatusCode.FORBIDDEN, "You are not authorized to do this"),

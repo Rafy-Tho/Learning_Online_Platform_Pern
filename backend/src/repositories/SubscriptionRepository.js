@@ -31,7 +31,25 @@ class SubscriptRepository {
   }
   async getActivePaidSubscription(userId) {
     const result = await pgPool.query(
-      `SELECT us.*, sp.*, p.*
+      `SELECT 
+        us.id AS subscription_id,
+        us.user_id,
+        us.plan_id,
+        us.start_date,
+        us.end_date,
+        us.status AS subscription_status,
+        us.created_at AS subscription_created_at,
+        us.updated_at AS subscription_updated_at,
+        sp.id AS payment_id,
+        sp.amount,
+        sp.payment_status,
+        sp.stripe_payment_intent_id,
+        sp.created_at AS payment_created_at,
+        p.id AS plan_id_ref,
+        p.name,
+        p.duration_days,
+        p.price,
+        p.created_at AS plan_created_at
      FROM user_subscriptions us
      JOIN subscription_plans p 
        ON us.plan_id = p.id

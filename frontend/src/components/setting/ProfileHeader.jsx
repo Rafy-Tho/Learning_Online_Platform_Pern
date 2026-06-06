@@ -52,7 +52,6 @@ function ProfileHeader({
               </label>
             )}
             <input
-              htmlFor="avatar"
               type="file"
               className="hidden"
               id="avatar"

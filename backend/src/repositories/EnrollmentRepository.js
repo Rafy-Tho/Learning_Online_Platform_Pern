@@ -5,7 +5,8 @@ class EnrollmentRepository {
     const result = await pgPool.query(
       `INSERT INTO enrollments 
       (course_id, user_id, access_type) 
-      VALUES ($1, $2, $3)`,
+      VALUES ($1, $2, $3)
+      RETURNING *`,
       [courseId, userId, accessType],
     );
     return result.rows[0];

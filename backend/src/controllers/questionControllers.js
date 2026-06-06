@@ -15,7 +15,7 @@ export const createQuestion = asyncHandler(async (req, res, next) => {
   if (!lesson)
     return next(new ApiError(StatusCode.NOT_FOUND, "Lesson not found"));
   // check if the user is the owner of the lesson or isAdmin
-  const instructor = Lesson.getInstructor(lessonId);
+  const instructor = await Lesson.getInstructor(lessonId);
 
   if (instructor.instructor_id !== instructorId && role !== ADMIN)
     return next(
@@ -47,7 +47,7 @@ export const updateQuestion = asyncHandler(async (req, res, next) => {
   if (!quiz)
     return next(new ApiError(StatusCode.NOT_FOUND, "Question not found"));
   // check if the user is the owner of the lesson or isAdmin
-  const instructor = Question.getInstructor(questionId);
+  const instructor = await Question.getInstructor(questionId);
 
   if (instructor.instructor_id !== instructorId && role !== ADMIN)
     return next(
@@ -61,10 +61,10 @@ export const updateQuestion = asyncHandler(async (req, res, next) => {
     position,
   });
 
-  res.status(StatusCode.CREATED).json({
+  res.status(StatusCode.OK).json({
     success: true,
-    statusCode: StatusCode.CREATED,
-    message: "Question created successfully",
+    statusCode: StatusCode.OK,
+    message: "Question updated successfully",
     data: result,
   });
 });
@@ -79,7 +79,7 @@ export const deleteQuestion = asyncHandler(async (req, res, next) => {
   if (!quiz)
     return next(new ApiError(StatusCode.NOT_FOUND, "Question not found"));
   // check if the user is the owner of the lesson or isAdmin
-  const instructor = Question.getInstructor(questionId);
+  const instructor = await Question.getInstructor(questionId);
 
   if (instructor.instructor_id !== instructorId && role !== ADMIN)
     return next(
@@ -88,10 +88,10 @@ export const deleteQuestion = asyncHandler(async (req, res, next) => {
 
   const result = await Question.deleteQuestion(questionId);
 
-  res.status(StatusCode.CREATED).json({
+  res.status(StatusCode.OK).json({
     success: true,
-    statusCode: StatusCode.CREATED,
-    message: "Question created successfully",
+    statusCode: StatusCode.OK,
+    message: "Question deleted successfully",
     data: result,
   });
 });

@@ -63,17 +63,17 @@ export const updateModule = asyncHandler(async (req, res, next) => {
   if (!module)
     return next(new ApiError(StatusCode.NOT_FOUND, "Module not found"));
   // check if the user is the owner of the module or isAdmin
-  const instructor = Module.getInstructor(module.id);
+  const instructor = await Module.getInstructor(module.id);
   if (instructor.instructor_id !== instructorId && role !== ADMIN)
     return next(
       new ApiError(StatusCode.FORBIDDEN, "You are not authorized to do this"),
     );
   // update module
-  await Module.update(moduleId, {
+  await Module.update({
+    id: moduleId,
     name,
     description,
     position,
-    iconName,
     status,
   });
 
@@ -95,7 +95,7 @@ export const deleteModule = asyncHandler(async (req, res, next) => {
   if (!module)
     return next(new ApiError(StatusCode.NOT_FOUND, "Module not found"));
   // check if the user is the owner of the module or isAdmin
-  const instructor = Module.getInstructor(module.id);
+  const instructor = await Module.getInstructor(module.id);
   if (instructor.instructor_id !== instructorId && role !== ADMIN)
     return next(
       new ApiError(StatusCode.FORBIDDEN, "You are not authorized to do this"),

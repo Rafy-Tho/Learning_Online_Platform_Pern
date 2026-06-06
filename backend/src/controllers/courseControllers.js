@@ -112,7 +112,6 @@ export const updateCourse = asyncHandler(async (req, res, next) => {
     slug,
     description,
     status,
-    price,
     position,
     level,
     accessType,
@@ -136,7 +135,6 @@ export const updateCourse = asyncHandler(async (req, res, next) => {
     slug,
     description,
     status,
-    price,
     position,
     level,
     accessType,
@@ -241,7 +239,7 @@ export const getRecentlyViewedCourses = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     statusCode: StatusCode.OK,
-    message: "Recently reviewed retrieved successfully",
+    message: "Recently viewed retrieved successfully",
     data: recentlyReviewed,
   });
 });

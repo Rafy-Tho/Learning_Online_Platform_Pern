@@ -11,14 +11,14 @@ class ModuleRepository {
     );
     return result.rows[0];
   }
-  async update({ id, courseId, name, description, position, status }) {
+  async update({ id, name, description, position, status }) {
     const result = await pgPool.query(
       `UPDATE modules
-        SET course_id=$1,name=$2,description=$3,position=$4,status=$5
-        WHERE id=$6
+        SET name=$1,description=$2,position=$3,status=$4
+        WHERE id=$5
         RETURNING *
       `,
-      [courseId, name, description, position, status, id],
+      [name, description, position, status, id],
     );
     return result.rows[0];
   }

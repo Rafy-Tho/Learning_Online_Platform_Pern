@@ -74,7 +74,6 @@ function Subscription() {
             <span
               className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full border ${planInfo.color} ${planInfo.darkColor}`}
             >
-              {planInfo.icon}
               {planInfo.label}
             </span>
           </div>

@@ -19,11 +19,11 @@ export default function LearningRoadmap({ sectionRef }) {
   const [expandedSections, setExpandedSections] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const { user } = useAuth();
-  const { data: progress } = useGetCourseProgress();
+  const { data: progress, isPending: progressPending } = useGetCourseProgress();
   const { mutate } = useCreateCourseProgress();
   const { data, isPending, error } = useGetCourseLearningData();
   const course = data?.data || {};
-  const modules = useMemo(() => course?.modules || [], [course.modules]);
+  const modules = useMemo(() => course?.modules || [], [course?.modules]);
   const filteredModules = useMemo(
     () =>
       modules
@@ -63,7 +63,7 @@ export default function LearningRoadmap({ sectionRef }) {
   };
   const handleProgress = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-    if (progress?.data || !user) return;
+    if (progressPending || progress?.data || !user) return;
     mutate();
   };
   useEffect(() => {

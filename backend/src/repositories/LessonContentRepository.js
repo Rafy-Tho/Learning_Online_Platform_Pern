@@ -30,7 +30,7 @@ class LessonContentRepository {
     return result.rows[0];
   }
   async findById(id) {
-    const query = `SELECT id FROM lesson_contents WHERE id = $1`;
+    const query = `SELECT * FROM lesson_contents WHERE id = $1`;
     const values = [id];
     const result = await pgPool.query(query, values);
     return result.rows[0];

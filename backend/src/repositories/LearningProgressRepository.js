@@ -5,7 +5,8 @@ class LearningProgressRepository {
     const result = await pgPool.query(
       `INSERT INTO learn_progress 
       (course_id, user_id, lesson_id) 
-      VALUES ($1, $2, $3)`,
+      VALUES ($1, $2, $3)
+      RETURNING *`,
       [courseId, userId, lessonId],
     );
     return result.rows[0];
@@ -14,7 +15,8 @@ class LearningProgressRepository {
     const result = await pgPool.query(
       `UPDATE learn_progress 
       SET lesson_id = $3
-      WHERE course_id = $1 AND user_id = $2`,
+      WHERE course_id = $1 AND user_id = $2
+      RETURNING *`,
       [courseId, userId, lessonId],
     );
     return result.rows[0];

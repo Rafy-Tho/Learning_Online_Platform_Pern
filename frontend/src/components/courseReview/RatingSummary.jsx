@@ -7,7 +7,7 @@ import NotSummary from "./NotSummary";
 export function RatingSummary() {
   const { data, isPending, error } = useGetReviewDetails();
 
-  const reviewSummary = data?.data[0].review_summary || {};
+  const reviewSummary = data?.data?.review_summary ?? {};
   const { total, average, ratings } = reviewSummary || {};
 
   const breakdown = [5, 4, 3, 2, 1].map((stars) => {
