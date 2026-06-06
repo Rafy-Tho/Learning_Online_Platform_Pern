@@ -1,16 +1,6 @@
-import { useMutation } from "@tanstack/react-query";
-import authApi from "../../services/AuthApi";
+import { useRegister as useRegisterMutation } from "../mutations/useAuthMutations";
 
-function useRegister() {
-  const {
-    mutateAsync: registerUser,
-    isPending,
-    error,
-  } = useMutation({
-    mutationKey: ["register"],
-    mutationFn: (data) => authApi.register(data),
-  });
+export default function useRegister() {
+  const { mutateAsync: registerUser, isPending, error } = useRegisterMutation();
   return { registerUser, isPending, error };
 }
-
-export default useRegister;

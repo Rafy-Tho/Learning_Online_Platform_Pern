@@ -8,8 +8,8 @@ import Pagination from "../components/Pagination";
 
 export default function InprogressDashboard() {
   const { data, isPending, error } = useGetCourseInProgress();
-  const courses = data?.data?.data || [];
-  const pagination = data?.data?.pagination || {};
+  const courses = data?.data || [];
+  const pagination = data?.pagination || {};
   if (isPending) return <SpinnerLoader />;
   if (error) return <ErrorMessage message={error.message} />;
 

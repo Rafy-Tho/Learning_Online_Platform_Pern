@@ -8,7 +8,7 @@ export function useLessonNavigation() {
   const { data } = useGetCourseLearningData();
 
   const flatLessons = useMemo(() => {
-    const modules = data?.data?.modules || [];
+    const modules = data?.modules || [];
     return modules.flatMap((m) => m.lessons || []);
   }, [data]);
   const currentIndex = flatLessons.findIndex((l) => l.id === lessonId);

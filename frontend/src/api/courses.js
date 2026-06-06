@@ -1,0 +1,28 @@
+import { api } from "./client";
+
+export const coursesApi = {
+  getAll: (queryString) => api.get(`/courses?${queryString}`),
+  getById: (id) => api.get(`/courses/${id}`),
+  getLearningData: (id) => api.get(`/courses/${id}/learn`),
+  getObjectives: (id) => api.get(`/courses/${id}/objectives`),
+  getFirstLesson: (id) => api.get(`/courses/${id}/lessons/first`),
+  getReviews: (queryString, courseId) => api.get(`/courses/${courseId}/reviews?${queryString}`),
+  getReviewDetails: (courseId) => api.get(`/courses/${courseId}/reviews/summary`),
+  createReview: ({ courseId, description, rating }) => api.post(`/courses/${courseId}/reviews`, { description, rating }),
+  getReview: (courseId) => api.get(`/courses/${courseId}/reviews/me`),
+  enrollCourse: (courseId) => api.post(`/courses/${courseId}/enrollments`),
+  getEnrollment: (courseId) => api.get(`/courses/${courseId}/enrollments`),
+  createCourseProgress: (courseId) => api.post(`/courses/${courseId}/progresses`),
+  getCourseProgress: (courseId) => api.get(`/courses/${courseId}/progresses`),
+  updateCourseProgress: (courseId, data) => api.patch(`/courses/${courseId}/progresses`, data),
+  getRecentlyViewed: () => api.get("/courses/recently-viewed"),
+  getRecommended: () => api.get("/courses/recommended"),
+  getPopular: () => api.get("/courses/popular"),
+  getInProgress: () => api.get("/courses/in-progress"),
+  getCompleted: () => api.get("/courses/completed"),
+  claimCertificate: (courseId) => api.post(`/courses/${courseId}/certificates`),
+  getCertificate: (courseId) => api.get(`/courses/${courseId}/certificates`),
+  checkCertificateEligibility: (courseId) => api.get(`/courses/${courseId}/certificates/check`),
+  getMyCertificates: () => api.get("/certificates/mine"),
+  getCertificateById: (id) => api.get(`/certificates/${id}`),
+};

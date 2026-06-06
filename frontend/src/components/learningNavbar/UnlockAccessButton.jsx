@@ -8,7 +8,7 @@ import useGetActiveSubscription from "../../hooks/subscription/useGetActiveSubsc
 function UnlockAccessButton({ fullWidth = false }) {
   const navigate = useNavigate();
   const { data } = useGetActiveSubscription();
-  const activeSubscription = data?.data || null;
+  const activeSubscription = data || null;
   const buttonClasses = fullWidth
     ? "relative w-full overflow-hidden rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 py-3 text-center text-sm font-semibold text-white shadow-md transition-all active:scale-95"
     : "group relative overflow-hidden rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:shadow-lg hover:scale-105 active:scale-95 dark:from-blue-500 dark:to-indigo-500 cursor-pointer";

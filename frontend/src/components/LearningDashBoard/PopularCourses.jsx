@@ -9,7 +9,7 @@ import ErrorMessage from "../../ui/ErrorMessage";
 
 export default function PopularCourses() {
   const { data, isPending, error } = useGetPopularCourse();
-  const courses = data?.data || [];
+  const courses = data || [];
   return (
     <section className="mb-14">
       <h2 className="mb-6 flex items-center gap-2 text-lg font-bold">

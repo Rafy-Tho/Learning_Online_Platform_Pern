@@ -38,11 +38,11 @@ function UserProfile() {
   const [errors, setErrors] = useState({});
   // ✅ Load data from API
   useEffect(() => {
-    if (!data?.data) return;
-    const mapped = mapUser(data.data);
+    if (!data) return;
+    const mapped = mapUser(data);
     setUser(mapped);
     setDraft(mapped);
-  }, [data?.data]);
+  }, [data]);
 
   const field = (key) => (editMode ? draft[key] : user[key]);
   const update = (key) =>

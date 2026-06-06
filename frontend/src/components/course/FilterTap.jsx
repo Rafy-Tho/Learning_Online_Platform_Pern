@@ -7,7 +7,7 @@ const all = { id: "all", name: "All" };
 export function FilterTab() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { data, isPending, error } = useGetCategories();
-  const tabs = [all, ...(data?.data || [])];
+  const tabs = [all, ...(data || [])];
   const activeTab = searchParams.get("category") || "all";
   const handleClick = (tab) => {
     const params = new URLSearchParams(searchParams.toString());

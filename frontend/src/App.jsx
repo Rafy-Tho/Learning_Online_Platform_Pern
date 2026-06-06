@@ -9,6 +9,7 @@ import IsAuthenticate from "./components/redirectRoutes/IsAuthenticate";
 import ProtectRoute from "./components/redirectRoutes/ProtectRoute";
 import RedirectToFirstLesson from "./components/redirectRoutes/RedirectToFirstLesson";
 import CompletedCourseDashboard from "./pages/CompletedCourseDashboard";
+import CertificateView from "./pages/CertificateView";
 import CourseDetailScreen from "./pages/CourseDetailScreen";
 import CourseLearningScreen from "./pages/CourseLearningScreen";
 import CoursePage from "./pages/CourseScreen";
@@ -53,6 +54,9 @@ function App() {
           <Route path="/courses" element={<CoursePage />} />
           <Route path="/courses/:courseId" element={<CourseDetailScreen />} />
           <Route path="/pricing" element={<PricingScreen />} />
+          <Route element={<ProtectRoute />}>
+            <Route path="/certificates/:id" element={<CertificateView />} />
+          </Route>
         </Route>
         {/* Learning Layout */}
         <Route element={<ProtectRoute />}>

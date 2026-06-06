@@ -19,6 +19,7 @@ import authorize from "../middlewares/authorize.js";
 import requireAuth from "../middlewares/requireAuth.js";
 import { validateResult } from "../middlewares/validateResult.js";
 import { courseValidator } from "../validators/courseValidators.js";
+import certificateRoute from "./certificateRoute.js";
 import courseObjectiveRoute from "./courseObjectiveRoute.js";
 import enrollmentRoute from "./enrollmentRoute.js";
 import learningProgressRoute from "./learningProgressRoute.js";
@@ -34,6 +35,7 @@ courseRoute.use("/:id/lessons", lessonRoute);
 courseRoute.use("/:id/reviews", reviewRoute);
 courseRoute.use("/:id/enrollments", enrollmentRoute);
 courseRoute.use("/:id/progresses", learningProgressRoute);
+courseRoute.use("/:id/certificates", certificateRoute);
 // @desc Create a course
 courseRoute
   .route("/")

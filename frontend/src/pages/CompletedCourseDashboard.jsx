@@ -8,8 +8,8 @@ import SpinnerLoader from "../ui/SpinnerLoader";
 
 export default function CompletedCourseDashboard() {
   const { data, isPending, error } = useGetCompletedCourse();
-  const courses = data?.data?.data || [];
-  const pagination = data?.data?.pagination || {};
+  const courses = data?.data || [];
+  const pagination = data?.pagination || {};
   if (isPending) return <SpinnerLoader />;
   if (error) return <ErrorMessage message={error.message} />;
 

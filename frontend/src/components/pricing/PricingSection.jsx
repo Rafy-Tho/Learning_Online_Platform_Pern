@@ -53,7 +53,7 @@ const plans = [
 export default function PricingSection() {
   const { user } = useAuth();
   const { data, isPending } = useGetActiveSubscription();
-  const activeSubscription = data?.data || null;
+  const activeSubscription = data || null;
   if (user && isPending) return <SpinnerLoader />;
   return (
     <section className="min-h-screen transition-colors duration-300 bg-gradient-to-br from-gray-50 to-blue-50/30 dark:from-slate-900 dark:to-slate-800">

@@ -34,7 +34,7 @@ export default function ActivitySection() {
               </div>
               <div>
                 <p className="text-2xl font-bold">
-                  {data?.data?.today_xp || 0}
+                  {data?.today_xp || 0}
                 </p>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
                   Current Streak
@@ -49,7 +49,7 @@ export default function ActivitySection() {
               </div>
               <div>
                 <p className="text-2xl font-bold">
-                  {data?.data?.total_xp || 0}
+                  {data?.total_xp || 0}
                 </p>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
                   Longest Streak

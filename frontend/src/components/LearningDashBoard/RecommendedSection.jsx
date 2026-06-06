@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 
 export default function RecommendedSection() {
   const { data, isPending, error } = useGetRecommendedCourse();
-  const courses = data?.data || [];
+  const courses = data || [];
   return (
     <section className="mb-14">
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

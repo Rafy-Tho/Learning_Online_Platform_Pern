@@ -1,16 +1,6 @@
-import { useMutation } from "@tanstack/react-query";
-import authApi from "../../services/AuthApi";
+import { useSendResetPasswordCode as useSendCode } from "../mutations/useAuthMutations";
 
-function useSendResetPasswordCode() {
-  const {
-    mutate: sendResetPasswordCode,
-    isPending,
-    error,
-  } = useMutation({
-    mutationKey: ["sendResetPasswordCode"],
-    mutationFn: (data) => authApi.sendResetPasswordCode(data),
-  });
+export default function useSendResetPasswordCode() {
+  const { mutate: sendResetPasswordCode, isPending, error } = useSendCode();
   return { sendResetPasswordCode, isPending, error };
 }
-
-export default useSendResetPasswordCode;

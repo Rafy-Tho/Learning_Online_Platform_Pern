@@ -10,7 +10,7 @@ function RedirectToFirstLesson() {
   if (error) return <ErrorMessage message={error.message} />;
   return (
     <Navigate
-      to={`/courses/${params.courseId}/lessons/${data?.data?.id}`}
+      to={`/courses/${params.courseId}/lessons/${data?.id}`}
       replace
     />
   );

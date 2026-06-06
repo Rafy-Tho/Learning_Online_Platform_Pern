@@ -11,7 +11,7 @@ export function CourseSidebar({ onClose }) {
   const [filter, setFilter] = useState("ALL");
   const [expanded, setExpanded] = useState([]);
   const { data, isPending, error } = useGetCourseLearningData();
-  const course = data?.data || {};
+  const course = data || {};
   const modules = useMemo(() => course.modules || [], [course?.modules]);
   const normalizedSearch = search.toLowerCase();
   const { lessonId } = useParams();

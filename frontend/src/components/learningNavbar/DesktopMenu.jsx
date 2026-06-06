@@ -18,7 +18,7 @@ function DesktopMenu({ setRatingOpen }) {
   } = useMenuState();
   const moreMenuId = useId();
   const { data } = useGetReview();
-  const reviews = data?.data;
+  const reviews = data;
   return (
     <div className="hidden min-w-0 flex-wrap items-center justify-end gap-2 sm:gap-2.5 md:flex md:shrink-0">
       {/* Unlock Full Access Button */}

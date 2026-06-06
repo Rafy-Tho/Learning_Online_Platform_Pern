@@ -16,7 +16,7 @@ export default function HeroSection({ scrollToSection }) {
   const { data: enrollmentsData } = useGetEnrollment();
   const { user } = useAuth();
   function handleEnroll() {
-    if (enrollmentsData?.data || !user) return;
+    if (enrollmentsData || !user) return;
     mutate();
     window.scrollTo({
       top: 0,
@@ -25,7 +25,7 @@ export default function HeroSection({ scrollToSection }) {
   }
   if (isPending) return <SpinnerLoader />;
   if (error) return <ErrorMessage message={error.message} />;
-  const course = data?.data || {};
+  const course = data || {};
   return (
     <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 rounded-b-[3rem] pb-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 lg:pt-20">

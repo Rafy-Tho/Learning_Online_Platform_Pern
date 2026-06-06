@@ -7,7 +7,7 @@ export default function PaymentSuccess() {
   const searchParams = new URLSearchParams(window.location.search);
   const sessionId = searchParams.get("session_id");
   const { data } = useGetSubscription();
-  const subscription = data?.data;
+  const subscription = data;
   const details = [
     { label: "Order ID", value: sessionId.slice(0, 15) },
     { label: "Transaction ID", value: sessionId.slice(15, 30) },

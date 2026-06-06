@@ -1,26 +1,19 @@
-import { useMutation } from "@tanstack/react-query";
-import authApi from "../../services/AuthApi";
-import { toast } from "react-toastify";
+import { useLogoutApi } from "../mutations/useAuthMutations";
 import useAuth from "../useAuth";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
-function useLogout() {
+export default function useLogout() {
   const { clearAuth } = useAuth();
   const navigate = useNavigate();
-
-  const mutation = useMutation({
-    mutationKey: ["logout"],
-    mutationFn: () => authApi.logout(),
-  });
+  const mutation = useLogoutApi();
 
   const logout = async () => {
     try {
-      await mutation.mutateAsync(); // ✅ wait for API
-
+      await mutation.mutateAsync();
       toast.success("Logout success");
-
-      clearAuth(); // clear AFTER API success
-      navigate("/login"); // navigate LAST
+      clearAuth();
+      navigate("/login");
     } catch (err) {
       toast.error(err.message || "Logout failed");
     }
@@ -28,5 +21,3 @@ function useLogout() {
 
   return { logout, isPending: mutation.isPending };
 }
-
-export default useLogout;

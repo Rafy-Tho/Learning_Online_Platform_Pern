@@ -1,16 +1,6 @@
-import { useMutation } from "@tanstack/react-query";
-import authApi from "../../services/AuthApi";
+import { useVerifyResetPasswordCode as useVerifyCode } from "../mutations/useAuthMutations";
 
-function useVerifyResetPasswordCode() {
-  const {
-    mutate: verifyResetPasswordCode,
-    isPending,
-    error,
-  } = useMutation({
-    mutationKey: ["verifyResetPasswordCode"],
-    mutationFn: (data) => authApi.verifyPasswordResetCode(data),
-  });
+export default function useVerifyResetPasswordCode() {
+  const { mutate: verifyResetPasswordCode, isPending, error } = useVerifyCode();
   return { verifyResetPasswordCode, isPending, error };
 }
-
-export default useVerifyResetPasswordCode;

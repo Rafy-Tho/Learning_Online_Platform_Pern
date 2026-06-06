@@ -15,7 +15,7 @@ const Quiz = () => {
   const [showResults, setShowResults] = useState(false);
   const [quizStarted, setQuizStarted] = useState(false);
   const { data, isPending, error } = useGetQuizzes();
-  const questions = data?.data || [];
+  const questions = data || [];
   const currentQuestion = questions[currentIndex];
   const isAnswered = answers[currentIndex] !== undefined;
 

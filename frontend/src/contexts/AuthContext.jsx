@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import useGetMe from '../hooks/user/useGetMe';
+import { useGetMe } from '../hooks/queries/useAuth';
 import { AuthContext } from './context';
 
 function AuthProvider({ children }) {
@@ -11,9 +11,8 @@ function AuthProvider({ children }) {
     return savedUser ? JSON.parse(savedUser) : null;
   });
 
-  const saveAuth = (data) => {
-    const userData = data?.data;
-    if (!userData) return;
+  const saveAuth = (userData) => {
+    if (!userData || !userData.id) return;
     localStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);
   };
@@ -25,13 +24,13 @@ function AuthProvider({ children }) {
   };
 
   useEffect(() => {
-    if (data?.data) {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (data) {
       saveAuth(data);
-    } else if (!data?.data && user) {
+    } else if (!data && user) {
       clearAuth();
     }
   }, [data, user]);
+
   return (
     <AuthContext.Provider
       value={{

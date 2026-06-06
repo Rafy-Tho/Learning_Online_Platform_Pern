@@ -4,11 +4,17 @@ import {
   ChevronUp,
   Circle,
   CircleQuestionMark,
+  ExternalLink,
   Lock,
   Search,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { useClaimCertificate } from "../../hooks/mutations/useCourseMutations";
+import {
+  useCertificate,
+  useCertificateEligibility,
+} from "../../hooks/queries/useCourses";
 import useCreateCourseProgress from "../../hooks/course/useCreateCourseProgress";
 import useGetCourseLearningData from "../../hooks/course/useGetCourseLearningData";
 import useGetCourseProgress from "../../hooks/course/useGetCourseProgress";
@@ -20,9 +26,12 @@ export default function LearningRoadmap({ sectionRef }) {
   const [searchQuery, setSearchQuery] = useState("");
   const { user } = useAuth();
   const { data: progress, isPending: progressPending } = useGetCourseProgress();
-  const { mutate } = useCreateCourseProgress();
+  const { mutate: createProgress } = useCreateCourseProgress();
   const { data, isPending, error } = useGetCourseLearningData();
-  const course = data?.data || {};
+  const { data: certificate, isLoading: certLoading } = useCertificate();
+  const { data: eligibility } = useCertificateEligibility();
+  const { mutate: claimCert, isPending: claiming } = useClaimCertificate();
+  const course = data || {};
   const modules = useMemo(() => course?.modules || [], [course?.modules]);
   const filteredModules = useMemo(
     () =>
@@ -63,9 +72,17 @@ export default function LearningRoadmap({ sectionRef }) {
   };
   const handleProgress = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-    if (progressPending || progress?.data || !user) return;
-    mutate();
+    if (progressPending || progress || !user) return;
+    createProgress();
   };
+
+  const handleClaimCertificate = () => {
+    if (claiming || certificate || !user) return;
+    claimCert();
+  };
+
+  const isComplete = eligibility?.isComplete;
+  const canClaim = isComplete && !certificate;
   useEffect(() => {
     if (!searchQuery) return;
     setExpandedSections((prev) => {
@@ -202,19 +219,54 @@ export default function LearningRoadmap({ sectionRef }) {
               </h3>
             </div>
             <p className="text-gray-600 dark:text-gray-400 mb-4">
-              Showcase your accomplishment by sharing your certificate of
-              completion.
+              {certificate
+                ? "Congratulations! You earned your certificate for this course."
+                : isComplete
+                  ? "You have completed all lessons. Claim your certificate now!"
+                  : "Complete all lessons to earn your certificate of completion."}
             </p>
-            <button className="px-6 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg text-gray-500 dark:text-gray-400 text-sm font-medium hover:bg-gray-50 transition-colors cursor-pointer">
-              Claim Certificate
-            </button>
+            {certificate ? (
+              <Link
+                to={`/certificates/${certificate.id}`}
+                className="inline-flex items-center gap-2 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium transition-colors"
+              >
+                <ExternalLink className="w-4 h-4" />
+                View Certificate
+              </Link>
+            ) : (
+              <button
+                onClick={handleClaimCertificate}
+                disabled={!canClaim || claiming}
+                className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+                  canClaim
+                    ? "bg-indigo-600 hover:bg-indigo-700 text-white"
+                    : "border border-gray-300 dark:border-gray-600 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                }`}
+              >
+                {claiming ? "Claiming..." : "Claim Certificate"}
+              </button>
+            )}
           </div>
           <div className="w-full lg:w-64 h-48 border-2 border-indigo-300 dark:border-indigo-800 rounded-lg bg-gradient-to-br from-indigo-50 dark:from-gray-700 to-purple-50 dark:to-gray-700 flex items-center justify-center">
             <div className="text-center">
-              <Lock className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-2" />
-              <p className="text-xs text-gray-400 dark:text-gray-500">
-                Certificate Preview
-              </p>
+              {certificate ? (
+                <>
+                  <Award className="w-12 h-12 text-indigo-600 dark:text-indigo-400 mx-auto mb-2" />
+                  <p className="text-xs text-indigo-600 dark:text-indigo-400 font-medium">
+                    Certificate Earned
+                  </p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                    {certificate.certificate_number}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <Lock className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-2" />
+                  <p className="text-xs text-gray-400 dark:text-gray-500">
+                    Certificate Preview
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </div>

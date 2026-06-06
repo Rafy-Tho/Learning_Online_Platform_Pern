@@ -2,12 +2,13 @@ import { useState } from "react";
 
 const ErrorMessage = ({
   message = "Something went wrong. Please try again.",
+  className = ""
 }) => {
   const [close, setClose] = useState(false);
   if (close) return null;
   return (
     <div
-      className={`bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 `}
+      className={`bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 ${className}`}
     >
       <div className="flex items-start gap-3 j">
         <div className="flex-shrink-0">

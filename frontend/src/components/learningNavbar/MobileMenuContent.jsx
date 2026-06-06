@@ -13,7 +13,7 @@ function MobileMenuContent({ menuId, setMenuOpen, setRatingOpen }) {
     setMenuOpen(false);
   };
   const { data } = useGetReview();
-  const reviews = data?.data;
+  const reviews = data;
   return (
     <div
       id={menuId}

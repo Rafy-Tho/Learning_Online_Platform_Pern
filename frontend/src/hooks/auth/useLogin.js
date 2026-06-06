@@ -1,16 +1,6 @@
-import { useMutation } from "@tanstack/react-query";
-import authApi from "../../services/AuthApi";
+import { useLogin as useLoginMutation } from "../mutations/useAuthMutations";
 
-function useLogin() {
-  const {
-    mutateAsync: login,
-    isPending,
-    error,
-  } = useMutation({
-    mutationKey: ["login"],
-    mutationFn: (data) => authApi.login(data),
-  });
+export default function useLogin() {
+  const { mutateAsync: login, isPending, error } = useLoginMutation();
   return { login, isPending, error };
 }
-
-export default useLogin;

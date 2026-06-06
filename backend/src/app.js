@@ -9,6 +9,9 @@ import { globalLimiter } from "./middlewares/rateLimitMiddlewares.js";
 import sessionMiddleware from "./middlewares/sessionMiddleware.js";
 import answerRoute from "./routes/answerRoute.js";
 import categoryRoute from "./routes/categoryRoute.js";
+import certificateRoute, {
+  standaloneCertificateRoute,
+} from "./routes/certificateRoute.js";
 import chapterRoute from "./routes/chapterRoute.js";
 import courseObjectiveRoute from "./routes/courseObjectiveRoute.js";
 import courseRoute from "./routes/courseRoute.js";
@@ -58,6 +61,7 @@ app.use(express.static(path.join(__dirname, "../uploads")));
 // In your route handlers, touch the session to reset expiration
 app.use("/api/v1/users", userRoute);
 app.use("/api/v1/categories", categoryRoute);
+app.use("/api/v1/certificates", standaloneCertificateRoute);
 app.use("/api/v1/courses", courseRoute);
 app.use("/api/v1/objectives", courseObjectiveRoute);
 app.use("/api/v1/modules", moduleRoute);

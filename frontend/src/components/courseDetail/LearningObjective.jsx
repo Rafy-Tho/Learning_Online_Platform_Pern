@@ -7,7 +7,7 @@ export default function LearningObjective() {
   const { data, isPending, error } = useGetCourseObjective();
   if (isPending) return <SpinnerLoader />;
   if (error) return <ErrorMessage message={error.message} />;
-  const objectives = data?.data || [];
+  const objectives = data || [];
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
       <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-6 sm:p-8 lg:p-10">

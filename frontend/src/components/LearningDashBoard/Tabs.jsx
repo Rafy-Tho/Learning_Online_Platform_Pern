@@ -4,7 +4,6 @@ const tabs = [
   { label: "Home", href: "/learning-dashboard" },
   { label: "Recently Viewed", href: "/learning-dashboard/recent-viewed" },
   { label: "In Progress", href: "/learning-dashboard/in-progress" },
-  { label: "Saved", href: "/learning-dashboard/saved" },
   { label: "Completed", href: "/learning-dashboard/completed" },
 ];
 export default function Tabs() {

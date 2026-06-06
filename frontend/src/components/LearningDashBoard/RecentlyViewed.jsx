@@ -7,7 +7,7 @@ import CourseCardRecentReview from "./CourseCardRecentReview";
 
 export default function RecentlyViewed() {
   const { data, isPending, error } = useGetRecentlyViewedCourses();
-  const courses = data?.data || [];
+  const courses = data || [];
   if (isPending) return <SpinnerLoader />;
   if (error) return <ErrorMessage message={error.message} />;
   return (
