@@ -1,27 +1,38 @@
-import { useQueryClient } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
-import { useGetMe } from '../hooks/queries/useAuth';
-import { AuthContext } from './context';
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useGetMe } from "../hooks/queries/useAuth";
+import { AuthContext } from "./context";
 
 function AuthProvider({ children }) {
   const queryClient = useQueryClient();
   const { data, isLoading, error } = useGetMe();
+
   const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem('user');
+    const savedUser = localStorage.getItem("user");
     return savedUser ? JSON.parse(savedUser) : null;
   });
 
   const saveAuth = (userData) => {
     if (!userData || !userData.id) return;
-    localStorage.setItem('user', JSON.stringify(userData));
+    saveLocal(userData);
     setUser(userData);
   };
 
   const clearAuth = () => {
     setUser(null);
     queryClient.clear();
-    localStorage.removeItem('user');
+    clearLocal();
   };
+
+  function saveLocal(userData) {
+    localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("isAuthenticated", "true");
+  }
+
+  function clearLocal() {
+    localStorage.removeItem("user");
+    localStorage.removeItem("isAuthenticated");
+  }
 
   useEffect(() => {
     if (data) {
