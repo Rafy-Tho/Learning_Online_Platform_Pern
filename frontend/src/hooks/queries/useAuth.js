@@ -7,19 +7,27 @@ function getUserLocal() {
 }
 
 function isAuthenticated() {
-  const isAuth = localStorage.getItem("isAuthenticated");
-  return isAuth === "true";
+  return localStorage.getItem("isAuthenticated") === "true";
 }
 
 export function useGetMe() {
   const localUser = getUserLocal();
-  const authStatus = isAuthenticated();
+  const hasLocalAuth = isAuthenticated() && !!localUser;
+
   return useQuery({
     queryKey: ["me"],
-    queryFn: () => usersApi.getMe(),
+    queryFn: async () => {
+      try {
+        return await usersApi.getMe();
+      } catch (err) {
+        if (err?.message === "Unauthorized") return null;
+        throw err;
+      }
+    },
     retry: false,
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
-    enabled: !!authStatus && localUser,
+    enabled: hasLocalAuth,
+    placeholderData: hasLocalAuth ? localUser : undefined,
   });
 }

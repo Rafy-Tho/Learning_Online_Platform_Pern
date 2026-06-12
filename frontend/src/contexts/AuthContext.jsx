@@ -1,56 +1,35 @@
+import { useCallback, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 import { useGetMe } from "../hooks/queries/useAuth";
 import { AuthContext } from "./context";
 
 function AuthProvider({ children }) {
   const queryClient = useQueryClient();
   const { data, isLoading, error } = useGetMe();
+  const user = data ?? null;
 
-  const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem("user");
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
-
-  const saveAuth = (userData) => {
+  const saveAuth = useCallback((userData) => {
     if (!userData || !userData.id) return;
-    saveLocal(userData);
-    setUser(userData);
-  };
-
-  const clearAuth = () => {
-    setUser(null);
-    queryClient.clear();
-    clearLocal();
-  };
-
-  function saveLocal(userData) {
     localStorage.setItem("user", JSON.stringify(userData));
     localStorage.setItem("isAuthenticated", "true");
-  }
+    queryClient.setQueryData(["me"], userData);
+  }, [queryClient]);
 
-  function clearLocal() {
+  const clearAuth = useCallback(() => {
     localStorage.removeItem("user");
     localStorage.removeItem("isAuthenticated");
-  }
+    queryClient.clear();
+  }, [queryClient]);
 
   useEffect(() => {
-    if (data) {
-      saveAuth(data);
-    } else if (!data && user) {
+    if (!isLoading && !user && localStorage.getItem("user")) {
       clearAuth();
     }
-  }, [data, user]);
+  }, [isLoading, user, clearAuth]);
 
   return (
     <AuthContext.Provider
-      value={{
-        user,
-        isLoading,
-        error,
-        saveAuth,
-        clearAuth,
-      }}
+      value={{ user, isLoading, error, saveAuth, clearAuth }}
     >
       {children}
     </AuthContext.Provider>
