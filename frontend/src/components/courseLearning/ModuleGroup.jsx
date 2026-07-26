@@ -9,14 +9,6 @@ import {
 import { NavLink, useParams } from "react-router-dom";
 
 function ModuleGroup({ module, isOpen, onToggle, index, completedIds }) {
-  console.log(
-    "ModuleGroup rendered with module:",
-    module,
-    "isOpen:",
-    isOpen,
-    "completedIds:",
-    completedIds,
-  );
   const { courseId } = useParams();
   const lessonIcons = {
     TEXT: Circle,

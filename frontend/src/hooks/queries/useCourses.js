@@ -83,7 +83,6 @@ export function useReviews(params) {
 
 export function useInfiniteReviews(filters = {}) {
   const { courseId } = useParams();
-  const { user } = useAuth();
   const limit = filters.limit || 5;
 
   return useInfiniteQuery({
