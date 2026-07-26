@@ -43,7 +43,6 @@ export default function ProfilePage() {
       formData.append("name", name);
       formData.append("email", email);
       const res = await updateProfile(formData);
-      console.log("Profile updated:", res);
       login(res);
       toast({
         title: "Success!",

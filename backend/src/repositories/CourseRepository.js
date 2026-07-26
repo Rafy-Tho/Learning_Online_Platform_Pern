@@ -251,6 +251,7 @@ class CourseRepository {
           ) AS lessons
         FROM chapters ch
         JOIN lessons l ON l.chapter_id = ch.id
+        WHERE l.status != 'DRAFT'
         GROUP BY ch.module_id
       ),
   
@@ -268,6 +269,7 @@ class CourseRepository {
           ) AS modules
         FROM modules m
         LEFT JOIN lesson_data ld ON ld.module_id = m.id
+        WHERE m.status != 'DRAFT'
         GROUP BY m.course_id
       ),
   
@@ -280,6 +282,7 @@ class CourseRepository {
         FROM modules m
         JOIN chapters ch ON ch.module_id = m.id
         JOIN lessons l ON l.chapter_id = ch.id
+        WHERE m.status != 'DRAFT' AND l.status != 'DRAFT'
         GROUP BY m.course_id
       )
       
@@ -292,7 +295,7 @@ class CourseRepository {
         COALESCE(md.modules, '[]') AS modules
         
       FROM courses c
-      LEFT JOIN module_data md ON md.course_id = c.id
+      LEFT JOIN module_data md ON md.course_id = c.id 
       LEFT JOIN duration_data d ON d.course_id = c.id
   
       WHERE c.id = $1;
