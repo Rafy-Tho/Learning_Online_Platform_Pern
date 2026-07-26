@@ -103,66 +103,26 @@ const AlertDialogCancel = React.forwardRef(({ className, ...props }, ref) => (
   />
 ));
 AlertDialogCancel.displayName = AlertDialogPrimitive.Cancel.displayName;
-// const DeleteButton = ({ onDelete, onSuccess, onError }) => {
-//   const [isOpen, setIsOpen] = React.useState(false);
-//   const [isDeleting, setIsDeleting] = React.useState(false);
 
-//   const handleDelete = async () => {
-//     setIsDeleting(true);
-//     try {
-//       // Wait for the delete action to complete
-//       await onDelete();
+const DeleteButton = ({ onDelete, onSuccess, onError }) => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [isDeleting, setIsDeleting] = React.useState(false);
 
-//       // Close dialog only after successful deletion
-//       setIsOpen(false);
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await onDelete();
+      setIsOpen(false);
+      onSuccess?.();
+    } catch (error) {
+      onError?.(error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
-//       // Call success callback if provided
-//       onSuccess?.();
-//     } catch (error) {
-//       console.error('Delete failed:', error);
-//       // Keep dialog open on error so user can retry
-//       onError?.(error);
-//     } finally {
-//       setIsDeleting(false);
-//     }
-//   };
-
-//   return (
-//     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-//       <AlertDialogTrigger asChild>
-//         <Button
-//           variant="ghost"
-//           size="icon"
-//           className="text-destructive hover:text-destructive"
-//         >
-//           <Trash2 className="h-4 w-4" />
-//         </Button>
-//       </AlertDialogTrigger>
-//       <AlertDialogContent>
-//         <AlertDialogHeader>
-//           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-//           <AlertDialogDescription>
-//             This action cannot be undone. This will permanently delete and
-//             remove your data from our servers.
-//           </AlertDialogDescription>
-//         </AlertDialogHeader>
-//         <AlertDialogFooter>
-//           <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
-//           <AlertDialogAction
-//             onClick={handleDelete}
-//             variant="destructive"
-//             disabled={isDeleting}
-//           >
-//             {isDeleting ? 'Deleting...' : 'Delete'}
-//           </AlertDialogAction>
-//         </AlertDialogFooter>
-//       </AlertDialogContent>
-//     </AlertDialog>
-//   );
-// };
-const DeleteButton = ({ onDelete }) => {
   return (
-    <AlertDialog>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
         <Button
           variant="ghost"
@@ -181,9 +141,13 @@ const DeleteButton = ({ onDelete }) => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={onDelete} variant="destructive">
-            Delete
+          <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={handleDelete}
+            variant="destructive"
+            disabled={isDeleting}
+          >
+            {isDeleting ? 'Deleting...' : 'Delete'}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

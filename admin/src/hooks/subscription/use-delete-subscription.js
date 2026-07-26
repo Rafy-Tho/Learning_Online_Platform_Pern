@@ -5,7 +5,7 @@ export const useDeleteSubscription = () => {
   const queryClient = useQueryClient();
   const { mutateAsync: deleteSubscription, isPending: isDeletingSubscription } =
     useMutation({
-      mutationFn: (id) => subscriptionApi.delete(id),
+      mutationFn: (id) => subscriptionApi.deleteSubscription(id),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['subscriptions'] });
       },

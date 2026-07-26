@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import useUpdateUserProfile from "../hooks/user/useUpdateUserProfile";
+import useUpdatePassword from "../hooks/user/useUpdatePassword";
 import {
   Card,
   CardContent,
@@ -12,26 +14,84 @@ import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Badge } from "../components/ui/badge";
-import { Save, User, Mail, Shield, Calendar } from "lucide-react";
-import { toast } from "sonner";
+import { Save, User, Mail, Shield, Calendar, Lock } from "lucide-react";
+import { useToast } from "../components/ui/use-toast";
 
 export default function ProfilePage() {
-  const { user, updateProfile } = useAuth();
+  const { user, login } = useAuth();
+  const { toast } = useToast();
+  const { updateProfile, isPending } = useUpdateUserProfile();
+  const { updatePassword, isPending: isUpdatingPassword } = useUpdatePassword();
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   if (!user) return null;
 
-  const initials = user.name
-    .split(" ")
+  const initials = user?.name
+    ?.split(" ")
     .map((n) => n[0])
     .join("")
     .toUpperCase();
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    updateProfile({ name, email });
-    toast.success("Profile updated successfully");
+    try {
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("email", email);
+      const res = await updateProfile(formData);
+      console.log("Profile updated:", res);
+      login(res);
+      toast({
+        title: "Success!",
+        description: "Profile updated successfully.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error!",
+        description: error.message || "Failed to update profile.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      toast({
+        title: "Error!",
+        description: "New passwords do not match.",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (newPassword.length < 6) {
+      toast({
+        title: "Error!",
+        description: "Password must be at least 6 characters.",
+        variant: "destructive",
+      });
+      return;
+    }
+    try {
+      await updatePassword({ oldPassword, newPassword });
+      toast({
+        title: "Success!",
+        description: "Password updated successfully.",
+      });
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (error) {
+      toast({
+        title: "Error!",
+        description: error.message || "Failed to update password.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -136,9 +196,78 @@ export default function ProfilePage() {
               </div>
 
               <div className="pt-2">
-                <Button type="submit">
+                <Button type="submit" disabled={isPending}>
                   <Save className="h-4 w-4 mr-2" />
-                  Save Changes
+                  {isPending ? "Saving..." : "Save Changes"}
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+
+        {/* Password Change Card */}
+        <Card className="md:col-span-2">
+          <CardHeader>
+            <CardTitle className="text-lg">Change Password</CardTitle>
+            <CardDescription>Update your account password</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handlePasswordChange} className="space-y-4">
+              <div className="space-y-2">
+                <Label
+                  htmlFor="oldPassword"
+                  className="flex items-center gap-2"
+                >
+                  <Lock className="h-3.5 w-3.5 text-muted-foreground" />
+                  Current Password
+                </Label>
+                <Input
+                  id="oldPassword"
+                  type="password"
+                  value={oldPassword}
+                  onChange={(e) => setOldPassword(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label
+                  htmlFor="newPassword"
+                  className="flex items-center gap-2"
+                >
+                  <Lock className="h-3.5 w-3.5 text-muted-foreground" />
+                  New Password
+                </Label>
+                <Input
+                  id="newPassword"
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label
+                  htmlFor="confirmPassword"
+                  className="flex items-center gap-2"
+                >
+                  <Lock className="h-3.5 w-3.5 text-muted-foreground" />
+                  Confirm New Password
+                </Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="pt-2">
+                <Button type="submit" disabled={isUpdatingPassword}>
+                  <Lock className="h-4 w-4 mr-2" />
+                  {isUpdatingPassword ? "Updating..." : "Update Password"}
                 </Button>
               </div>
             </form>

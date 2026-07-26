@@ -5,7 +5,7 @@ export const useCreateSubscription = () => {
   const queryClient = useQueryClient();
   const { mutateAsync: createSubscription, isPending: isCreatingSubscription } =
     useMutation({
-      mutationFn: (data) => subscriptionApi.create(data),
+      mutationFn: (data) => subscriptionApi.createSubscription(data),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['subscriptions'] });
       },

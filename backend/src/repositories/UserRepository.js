@@ -5,7 +5,7 @@ class UserRepository {
     const query = `
       INSERT INTO users (email, password, name, image_url)
       VALUES ($1, $2, $3, $4)
-      RETURNING id, email, role, name, image_url, created_at, updated_at
+      RETURNING id, email, role, status, name, image_url, created_at, updated_at
     `;
 
     const result = await pgPool.query(query, [email, password, name, imageUrl]);
@@ -154,6 +154,55 @@ class UserRepository {
     `;
     const result = await pgPool.query(query);
     return result.rows;
+  }
+
+  async findAll({ role, page = 1, limit = 20 } = {}) {
+    let whereClause = "";
+    const params = [];
+    if (role) {
+      whereClause = "WHERE role = $1";
+      params.push(role);
+    }
+    const offset = (page - 1) * limit;
+    const query = `
+      SELECT id, email, name, role, status, last_login, created_at, updated_at
+      FROM users
+      ${whereClause}
+      ORDER BY created_at DESC
+      LIMIT $${params.length + 1} OFFSET $${params.length + 2}
+    `;
+    params.push(limit, offset);
+    const result = await pgPool.query(query, params);
+    return result.rows;
+  }
+
+  async findAllCount(role) {
+    let whereClause = "";
+    const params = [];
+    if (role) {
+      whereClause = "WHERE role = $1";
+      params.push(role);
+    }
+    const query = `SELECT COUNT(*) AS total FROM users ${whereClause}`;
+    const result = await pgPool.query(query, params);
+    return parseInt(result.rows[0].total);
+  }
+
+  async updateById({ id, name, email, role, status }) {
+    const query = `
+      UPDATE users
+      SET name = $1, email = $2, role = $3, status = $4
+      WHERE id = $5
+      RETURNING *
+    `;
+    const result = await pgPool.query(query, [name, email, role, status, id]);
+    return result.rows[0];
+  }
+
+  async deleteById(id) {
+    const query = `DELETE FROM users WHERE id = $1 RETURNING id`;
+    const result = await pgPool.query(query, [id]);
+    return result.rows[0];
   }
 }
 const User = new UserRepository();

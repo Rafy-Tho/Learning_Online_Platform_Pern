@@ -1,3 +1,4 @@
+import { Skeleton } from "./ui/skeleton";
 import {
   Table,
   TableBody,
@@ -7,7 +8,40 @@ import {
   TableRow,
 } from "./ui/table";
 
-export function DataTable({ columns, data, onRowClick }) {
+function TableSkeleton({ columns, rows = 5 }) {
+  return (
+    <div className="rounded-xl border border-border bg-card overflow-hidden">
+      <Table>
+        <TableHeader>
+          <TableRow className="bg-muted/50 hover:bg-muted/50">
+            {columns.map((col) => (
+              <TableHead key={col.key} className="font-semibold text-foreground">
+                {col.header}
+              </TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {Array.from({ length: rows }).map((_, i) => (
+            <TableRow key={i}>
+              {columns.map((col) => (
+                <TableCell key={col.key}>
+                  <Skeleton className="h-4 w-24" />
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
+}
+
+export function DataTable({ columns, data, onRowClick, isLoading }) {
+  if (isLoading) {
+    return <TableSkeleton columns={columns} />;
+  }
+
   return (
     <div className="rounded-xl border border-border bg-card overflow-hidden">
       <Table>

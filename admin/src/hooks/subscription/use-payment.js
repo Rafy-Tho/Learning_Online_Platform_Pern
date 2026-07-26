@@ -1,19 +1,56 @@
 import { useState } from 'react';
-import { mockSubscriptionPayments } from '../../data/mockData';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import subscriptionApi from '../../services/SubscriptionApi';
+import { useToast } from '../../components/ui/use-toast';
 
 export function usePayments() {
-  const [payments, setPayments] = useState(mockSubscriptionPayments);
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({
     user_subscription_id: '',
     amount: 0,
-    payment_status: 'PENDING',
+    payment_status: 'COMPLETED',
+    stripe_payment_intent_id: '',
+  });
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['admin-payments'],
+    queryFn: () => subscriptionApi.getPayments(),
+  });
+  const payments = data?.data || [];
+
+  const createMutation = useMutation({
+    mutationFn: (data) => subscriptionApi.createPayment(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-payments'] });
+      toast({ title: 'Success!', description: 'Payment created successfully.' });
+    },
+    onError: (err) => {
+      toast({ title: 'Error!', description: err.message, variant: 'destructive' });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => subscriptionApi.deletePayment(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-payments'] });
+      toast({ title: 'Success!', description: 'Payment deleted successfully.' });
+    },
+    onError: (err) => {
+      toast({ title: 'Error!', description: err.message, variant: 'destructive' });
+    },
   });
 
   const openCreate = () => {
     setEditing(null);
-    setForm({ user_subscription_id: '', amount: 0, payment_status: 'PENDING' });
+    setForm({
+      user_subscription_id: '',
+      amount: 0,
+      payment_status: 'COMPLETED',
+      stripe_payment_intent_id: '',
+    });
     setModalOpen(true);
   };
 
@@ -23,45 +60,30 @@ export function usePayments() {
       user_subscription_id: p.user_subscription_id,
       amount: p.amount,
       payment_status: p.payment_status,
+      stripe_payment_intent_id: p.stripe_payment_intent_id || '',
     });
     setModalOpen(true);
   };
 
-  const save = (subscriptions) => {
+  const save = async () => {
     if (!form.user_subscription_id || form.amount <= 0) return;
-    const sub = subscriptions.find((s) => s.id === form.user_subscription_id);
-    if (editing) {
-      setPayments((ps) =>
-        ps.map((p) =>
-          p.id === editing.id
-            ? {
-                ...p,
-                ...form,
-                user_name: sub?.user_name,
-                plan_name: sub?.plan_name,
-              }
-            : p,
-        ),
-      );
-    } else {
-      setPayments((ps) => [
-        ...ps,
-        {
-          id: crypto.randomUUID(),
-          ...form,
-          user_name: sub?.user_name,
-          plan_name: sub?.plan_name,
-          created_at: new Date().toISOString(),
-        },
-      ]);
-    }
+    if (editing) return;
+    await createMutation.mutateAsync({
+      user_subscription_id: form.user_subscription_id,
+      amount: form.amount,
+      payment_status: form.payment_status,
+      stripe_payment_intent_id: form.stripe_payment_intent_id || undefined,
+    });
     setModalOpen(false);
   };
 
-  const remove = (id) => setPayments((ps) => ps.filter((p) => p.id !== id));
+  const remove = async (id) => {
+    await deleteMutation.mutateAsync(id);
+  };
 
   return {
     payments,
+    isLoading,
     modalOpen,
     setModalOpen,
     editing,

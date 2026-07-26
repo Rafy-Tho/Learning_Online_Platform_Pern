@@ -1,41 +1,42 @@
-import { Pencil, Plus, Trash2 } from 'lucide-react';
-import { DataTable } from '../DataTable';
-import { StatusBadge } from '../StatusBadge';
-import { Button } from '../ui/button';
+import { Pencil, Plus, Trash2 } from "lucide-react";
+import { DataTable } from "../DataTable";
+import { StatusBadge } from "../StatusBadge";
+import { Button } from "../ui/button";
 
 export function PaymentsTab({ payments, onAdd, onEdit, onDelete }) {
+  console.log(payments);
   const columns = [
     {
-      key: 'user_name',
-      header: 'User',
+      key: "user_name",
+      header: "User",
       render: (p) => (
         <span className="font-medium text-foreground">{p.user_name}</span>
       ),
     },
     {
-      key: 'plan_name',
-      header: 'Plan',
+      key: "plan_name",
+      header: "Plan",
       render: (p) => (
         <span className="text-sm text-muted-foreground">{p.plan_name}</span>
       ),
     },
     {
-      key: 'amount',
-      header: 'Amount',
+      key: "amount",
+      header: "Amount",
       render: (p) => (
         <span className="text-sm font-semibold text-foreground">
-          ${p.amount.toFixed(2)}
+          ${Number(p.amount).toFixed(2)}
         </span>
       ),
     },
     {
-      key: 'payment_status',
-      header: 'Status',
+      key: "payment_status",
+      header: "Status",
       render: (p) => <StatusBadge status={p.payment_status} />,
     },
     {
-      key: 'created_at',
-      header: 'Date',
+      key: "created_at",
+      header: "Date",
       render: (p) => (
         <span className="text-sm text-muted-foreground">
           {new Date(p.created_at).toLocaleDateString()}
@@ -43,8 +44,8 @@ export function PaymentsTab({ payments, onAdd, onEdit, onDelete }) {
       ),
     },
     {
-      key: 'actions',
-      header: 'Actions',
+      key: "actions",
+      header: "Actions",
       render: (p) => (
         <div className="flex gap-1">
           <Button

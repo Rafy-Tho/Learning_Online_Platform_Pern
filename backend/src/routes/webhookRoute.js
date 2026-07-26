@@ -2,6 +2,8 @@ import express from "express";
 import Stripe from "stripe";
 import ENV from "../configs/Env.js";
 import Subscription from "../repositories/SubscriptionRepository.js";
+import User from "../repositories/UserRepository.js";
+import emailService from "../services/EmailService.js";
 
 const webhookRoute = express.Router();
 const stripe = new Stripe(ENV.STRIPE_SECRET_KEY);
@@ -22,7 +24,6 @@ webhookRoute.post(
         ENV.STRIPE_WEBHOOK_SECRET,
       );
     } catch (err) {
-      console.log("Signature failed:", err.message);
       return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
@@ -58,6 +59,20 @@ webhookRoute.post(
           amount: subscription.price,
           stripePaymentIntentId: session.payment_intent,
         });
+
+        const user = await User.findById(userId);
+        if (user?.email) {
+          emailService
+            .sendPaymentConfirmation(user.email, {
+              planName: subscription.name,
+              amount: subscription.price,
+              startDate,
+              endDate,
+            })
+            .catch((err) =>
+              console.error("Failed to send payment email:", err.message),
+            );
+        }
       }
       // ✅ success
       res.status(200).json({ received: true });

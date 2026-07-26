@@ -1,19 +1,19 @@
-import { Pencil, Plus, Trash2 } from 'lucide-react';
-import { DataTable } from '../DataTable';
-import { Button } from '../ui/button';
+import { Pencil, Plus, Trash2 } from "lucide-react";
+import { DataTable } from "../DataTable";
+import { Button } from "../ui/button";
 
 export function PlansTab({ plans, onAdd, onEdit, onDelete }) {
   const columns = [
     {
-      key: 'name',
-      header: 'Plan Name',
+      key: "name",
+      header: "Plan Name",
       render: (p) => (
         <span className="font-medium text-foreground">{p.name}</span>
       ),
     },
     {
-      key: 'duration_days',
-      header: 'Duration',
+      key: "duration_days",
+      header: "Duration",
       render: (p) => (
         <span className="text-sm text-muted-foreground">
           {p.duration_days} days
@@ -21,17 +21,17 @@ export function PlansTab({ plans, onAdd, onEdit, onDelete }) {
       ),
     },
     {
-      key: 'price',
-      header: 'Price',
+      key: "price",
+      header: "Price",
       render: (p) => (
         <span className="text-sm font-semibold text-foreground">
-          ${p.price.toFixed(2)}
+          ${Number(p.price).toFixed(2)}
         </span>
       ),
     },
     {
-      key: 'actions',
-      header: 'Actions',
+      key: "actions",
+      header: "Actions",
       render: (p) => (
         <div className="flex gap-1">
           <Button

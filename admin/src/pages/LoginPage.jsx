@@ -18,8 +18,8 @@ import { useToast } from "../components/ui/use-toast";
 export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState("rafytho30@gmail.com");
-  const [password, setPassword] = useState("Password123!");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const { login: loginHook, isPending } = useLogin();
   const { toast } = useToast();
   const handleSubmit = async (e) => {

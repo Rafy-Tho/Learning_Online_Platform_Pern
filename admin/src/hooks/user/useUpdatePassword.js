@@ -8,7 +8,7 @@ function useUpdatePassword() {
     error,
   } = useMutation({
     mutationKey: ["update-password"],
-    mutationFn: async (data) => userApi.changePassword(data),
+    mutationFn: async (data) => userApi.updatePassword(data),
   });
   return { updatePassword, isPending, error };
 }

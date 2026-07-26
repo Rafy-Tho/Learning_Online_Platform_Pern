@@ -1,8 +1,11 @@
 import { useState } from 'react';
-import { mockUserSubscriptions } from '../../data/mockData';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import subscriptionApi from '../../services/SubscriptionApi';
+import { useToast } from '../../components/ui/use-toast';
 
 export function useSubscriptions() {
-  const [subscriptions, setSubscriptions] = useState(mockUserSubscriptions);
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({
@@ -11,6 +14,45 @@ export function useSubscriptions() {
     start_date: '',
     end_date: '',
     status: 'ACTIVE',
+  });
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['admin-user-subscriptions'],
+    queryFn: () => subscriptionApi.getUserSubscriptions(),
+  });
+  const subscriptions = data?.data || [];
+
+  const createMutation = useMutation({
+    mutationFn: (data) => subscriptionApi.createUserSubscription(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-user-subscriptions'] });
+      toast({ title: 'Success!', description: 'Subscription created successfully.' });
+    },
+    onError: (err) => {
+      toast({ title: 'Error!', description: err.message, variant: 'destructive' });
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }) => subscriptionApi.updateUserSubscription(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-user-subscriptions'] });
+      toast({ title: 'Success!', description: 'Subscription updated successfully.' });
+    },
+    onError: (err) => {
+      toast({ title: 'Error!', description: err.message, variant: 'destructive' });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => subscriptionApi.deleteUserSubscription(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-user-subscriptions'] });
+      toast({ title: 'Success!', description: 'Subscription deleted successfully.' });
+    },
+    onError: (err) => {
+      toast({ title: 'Error!', description: err.message, variant: 'destructive' });
+    },
   });
 
   const openCreate = () => {
@@ -30,45 +72,30 @@ export function useSubscriptions() {
     setForm({
       user_id: s.user_id,
       plan_id: s.plan_id,
-      start_date: s.start_date.slice(0, 10),
-      end_date: s.end_date.slice(0, 10),
+      start_date: s.start_date?.slice(0, 10) || '',
+      end_date: s.end_date?.slice(0, 10) || '',
       status: s.status,
     });
     setModalOpen(true);
   };
 
-  const save = (learners, plans) => {
+  const save = async () => {
     if (!form.user_id || !form.plan_id) return;
-    const user = learners.find((u) => u.id === form.user_id);
-    const plan = plans.find((p) => p.id === form.plan_id);
     if (editing) {
-      setSubscriptions((ss) =>
-        ss.map((s) =>
-          s.id === editing.id
-            ? { ...s, ...form, user_name: user?.name, plan_name: plan?.name }
-            : s,
-        ),
-      );
+      await updateMutation.mutateAsync({ id: editing.id, data: form });
     } else {
-      setSubscriptions((ss) => [
-        ...ss,
-        {
-          id: crypto.randomUUID(),
-          ...form,
-          user_name: user?.name,
-          plan_name: plan?.name,
-          created_at: new Date().toISOString(),
-        },
-      ]);
+      await createMutation.mutateAsync(form);
     }
     setModalOpen(false);
   };
 
-  const remove = (id) =>
-    setSubscriptions((ss) => ss.filter((s) => s.id !== id));
+  const remove = async (id) => {
+    await deleteMutation.mutateAsync(id);
+  };
 
   return {
     subscriptions,
+    isLoading,
     modalOpen,
     setModalOpen,
     editing,

@@ -6,7 +6,7 @@ import { ErrorAlert } from '../components/ui/alert';
 import { DeleteButton } from '../components/ui/alert-dialog';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
-import { DashboardSkeleton } from '../components/ui/skeleton';
+import { CategoriesPageSkeleton } from '../components/ui/skeleton';
 import { Textarea } from '../components/ui/textarea';
 import { useCreateCategory } from '../hooks/category/use-create-category';
 import useDeleteCategory from '../hooks/category/use-delete-category';
@@ -143,7 +143,7 @@ export default function CategoriesPage() {
       setCategories([...data.data]);
     }
   }, [data?.data]);
-  if (isLoading) return <DashboardSkeleton />;
+  if (isLoading) return <CategoriesPageSkeleton />;
   if (error) return <ErrorAlert message={error.message} />;
   return (
     <div className="space-y-6">

@@ -26,6 +26,8 @@ import reviewRoute from "./routes/reviewRoute.js";
 import subscriptionRoute from "./routes/subscriptionRoute.js";
 import userRoute from "./routes/userRoute.js";
 import webhookRoute from "./routes/webhookRoute.js";
+import adminUserRoute from "./routes/admin/adminUserRoute.js";
+import adminSubscriptionRoute from "./routes/admin/adminSubscriptionRoute.js";
 import notFoundUrl from "./utils/notFoundUrl.js";
 
 connectCloudinary();
@@ -75,6 +77,8 @@ app.use("/api/v1/enrollments", enrollmentRoute);
 app.use("/api/v1/progresses", learningProgressRoute);
 app.use("/api/v1/completions", lessonCompletionRoute);
 app.use("/api/v1/subscriptions", subscriptionRoute);
+app.use("/api/v1/admin/users", adminUserRoute);
+app.use("/api/v1/admin/subscriptions", adminSubscriptionRoute);
 // configure middleware handle error
 app.use(notFoundUrl);
 app.use(errorHandler);

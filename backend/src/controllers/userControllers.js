@@ -39,6 +39,8 @@ export const register = asyncHandler(async (req, res, next) => {
   await User.createProfile(user.id);
   // create session
   await sessionService.create(req, user);
+  // send welcome email (fire-and-forget)
+  emailService.sendWelcome(email, name).catch((err) => console.error("Failed to send welcome email:", err.message));
   // send response
   res.status(StatusCode.CREATED).json({
     success: true,
@@ -156,7 +158,7 @@ export const updateProfile = asyncHandler(async (req, res, next) => {
     });
   }
   //  update user info
-  await User.update({
+  const updatedUser = await User.update({
     userId,
     name: name || user.name,
     email: email || user.email,
@@ -173,12 +175,16 @@ export const updateProfile = asyncHandler(async (req, res, next) => {
     dateBirth: dateBirth || userProfile.dateBirth,
     gender: gender || userProfile.gender,
   });
+  const data = {
+    ...updatedUser,
+    ...updateProfile,
+  };
   //  send response
   res.status(StatusCode.OK).json({
     success: true,
     statusCode: StatusCode.OK,
     message: "User info updated successfully",
-    data: updateProfile,
+    data: data,
   });
 });
 

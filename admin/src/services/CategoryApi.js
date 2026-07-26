@@ -3,7 +3,11 @@ class CategoryApi {
     this.baseUrl = import.meta.env.VITE_BASE_URL + '/categories';
   }
   async getCategories() {
-    const res = await fetch(`${this.baseUrl}`);
+    const res = await fetch(`${this.baseUrl}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+    });
     const result = await res.json();
 
     if (!res.ok) {

@@ -1,43 +1,45 @@
-import { useState } from 'react';
-import { DeleteConfirmDialog } from '../components/subscriptions/DeleteConfirmDialog';
-import { PaymentModal } from '../components/subscriptions/PaymentModal';
-import { PaymentsTab } from '../components/subscriptions/PaymentsTab';
-import { PlanModal } from '../components/subscriptions/PlanModal';
-import { PlansTab } from '../components/subscriptions/PlansTab';
-import { SubscriptionModal } from '../components/subscriptions/SubscriptionModal';
-import { SubscriptionsTab } from '../components/subscriptions/SubscriptionsTab';
-import { SubscriptionStats } from '../components/subscriptions/SubscriptionStats';
+import { useState } from "react";
+import { DeleteConfirmDialog } from "../components/subscriptions/DeleteConfirmDialog";
+import { PaymentModal } from "../components/subscriptions/PaymentModal";
+import { PaymentsTab } from "../components/subscriptions/PaymentsTab";
+import { PlanModal } from "../components/subscriptions/PlanModal";
+import { PlansTab } from "../components/subscriptions/PlansTab";
+import { SubscriptionModal } from "../components/subscriptions/SubscriptionModal";
+import { SubscriptionsTab } from "../components/subscriptions/SubscriptionsTab";
+import { SubscriptionStats } from "../components/subscriptions/SubscriptionStats";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from '../components/ui/tabs';
-import { mockUsers } from '../data/mockData';
-import { usePayments } from '../hooks/subscription/use-payment';
-import { usePlans } from '../hooks/subscription/use-plan';
-import { useSubscriptions } from '../hooks/subscription/use-subscription';
-
-const learners = mockUsers.filter((u) => u.role === 'LEARNER');
+} from "../components/ui/tabs";
+import { usePayments } from "../hooks/subscription/use-payment";
+import { usePlans } from "../hooks/subscription/use-plan";
+import { useSubscriptions } from "../hooks/subscription/use-subscription";
+import useGetUsers from "../hooks/user/useGetUsers";
 
 export default function SubscriptionsPage() {
   const planHook = usePlans();
   const subHook = useSubscriptions();
   const payHook = usePayments();
+  const { data: learnersData } = useGetUsers({ role: "LEARNER" });
+  const learners = learnersData?.data?.users || [];
   const [deleteTarget, setDeleteTarget] = useState(null);
 
   const activeCount = subHook.subscriptions.filter(
-    (s) => s.status === 'ACTIVE',
+    (s) => s.status === "ACTIVE",
   ).length;
-  const totalRevenue = payHook.payments
-    .filter((p) => p.payment_status === 'COMPLETED')
-    .reduce((a, p) => a + p.amount, 0);
 
-  const handleDelete = () => {
+  console.log("hi", payHook.payments);
+  const totalRevenue = payHook.payments
+    .filter((p) => p.payment_status === "COMPLETED")
+    .reduce((a, p) => a + Number(p.amount), 0);
+
+  const handleDelete = async () => {
     if (!deleteTarget) return;
-    if (deleteTarget.type === 'plan') planHook.remove(deleteTarget.id);
-    if (deleteTarget.type === 'sub') subHook.remove(deleteTarget.id);
-    if (deleteTarget.type === 'pay') payHook.remove(deleteTarget.id);
+    if (deleteTarget.type === "plan") await planHook.remove(deleteTarget.id);
+    if (deleteTarget.type === "sub") await subHook.remove(deleteTarget.id);
+    if (deleteTarget.type === "pay") await payHook.remove(deleteTarget.id);
     setDeleteTarget(null);
   };
 
@@ -67,7 +69,7 @@ export default function SubscriptionsPage() {
             plans={planHook.plans}
             onAdd={planHook.openCreate}
             onEdit={planHook.openEdit}
-            onDelete={(id) => setDeleteTarget({ type: 'plan', id })}
+            onDelete={(id) => setDeleteTarget({ type: "plan", id })}
           />
         </TabsContent>
         <TabsContent value="subscriptions">
@@ -75,7 +77,7 @@ export default function SubscriptionsPage() {
             subscriptions={subHook.subscriptions}
             onAdd={subHook.openCreate}
             onEdit={subHook.openEdit}
-            onDelete={(id) => setDeleteTarget({ type: 'sub', id })}
+            onDelete={(id) => setDeleteTarget({ type: "sub", id })}
           />
         </TabsContent>
         <TabsContent value="payments">
@@ -83,7 +85,7 @@ export default function SubscriptionsPage() {
             payments={payHook.payments}
             onAdd={payHook.openCreate}
             onEdit={payHook.openEdit}
-            onDelete={(id) => setDeleteTarget({ type: 'pay', id })}
+            onDelete={(id) => setDeleteTarget({ type: "pay", id })}
           />
         </TabsContent>
       </Tabs>
@@ -103,7 +105,7 @@ export default function SubscriptionsPage() {
         editing={subHook.editing}
         form={subHook.form}
         setForm={subHook.setForm}
-        onSave={() => subHook.save(learners, planHook.plans)}
+        onSave={subHook.save}
         learners={learners}
         plans={planHook.plans}
       />
@@ -114,7 +116,7 @@ export default function SubscriptionsPage() {
         editing={payHook.editing}
         form={payHook.form}
         setForm={payHook.setForm}
-        onSave={() => payHook.save(subHook.subscriptions)}
+        onSave={payHook.save}
         subscriptions={subHook.subscriptions}
       />
 

@@ -1,4 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import authApi from "../services/AuthApi";
 import useGetMe from "../hooks/user/useGetMe";
 
 const AuthContext = createContext(null);
@@ -6,9 +8,19 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const { data, isLoading, error } = useGetMe();
+  const queryClient = useQueryClient();
 
   const login = (data) => setUser(data.data);
-  const logout = () => setUser(null);
+
+  const logout = async () => {
+    try {
+      await authApi.logout();
+    } catch {
+      // proceed with local logout even if API call fails
+    }
+    setUser(null);
+    queryClient.clear();
+  };
 
   useEffect(() => {
     if (data?.data) {

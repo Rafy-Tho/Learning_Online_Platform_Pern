@@ -1,5 +1,5 @@
-import { CreditCard, DollarSign, Users } from 'lucide-react';
-import { StatsCard } from '../StatsCard';
+import { CreditCard, DollarSign, Users } from "lucide-react";
+import { StatsCard } from "../StatsCard";
 
 export function SubscriptionStats({ planCount, activeCount, totalRevenue }) {
   return (
@@ -12,7 +12,7 @@ export function SubscriptionStats({ planCount, activeCount, totalRevenue }) {
       />
       <StatsCard
         title="Total Revenue"
-        value={`$${totalRevenue.toFixed(2)}`}
+        value={`$${Number(totalRevenue).toFixed(2)}`}
         icon={DollarSign}
       />
     </div>

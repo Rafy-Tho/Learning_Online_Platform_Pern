@@ -4,11 +4,11 @@ import { Outlet } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { AdminSidebar } from './AdminSidebar';
 import { ErrorAlert } from './ui/alert';
-import { DashboardSkeleton } from './ui/skeleton';
+import { PageLoader } from './ui/skeleton';
 
 export function AdminLayout() {
   const { isLoading, error } = useAuth();
-  if (isLoading) return <DashboardSkeleton />;
+  if (isLoading) return <PageLoader />;
   if (error) return <ErrorAlert message={error.message || 'Server error'} />;
   return (
     <SidebarProvider>

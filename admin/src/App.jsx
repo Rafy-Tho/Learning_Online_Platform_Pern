@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AdminLayout } from './components/AdminLayout';
 import { ErrorAlert } from './components/ui/alert';
-import { DashboardSkeleton } from './components/ui/skeleton';
+import { PageLoader } from './components/ui/skeleton';
 import { Toaster as Sonner } from './components/ui/sonner';
 import { Toaster } from './components/ui/toaster';
 import { TooltipProvider } from './components/ui/tooltip';
@@ -55,7 +55,7 @@ function ProtectedRoutes() {
 
 function AppRoutes() {
   const { user, isLoading, error } = useAuth();
-  if (isLoading) return <DashboardSkeleton />;
+  if (isLoading) return <PageLoader />;
   if (error) return <ErrorAlert message={error.message || 'Server error'} />;
   return (
     <Routes>
@@ -70,7 +70,12 @@ function AppRoutes() {
 
 const App = () => {
   useEffect(() => {
-    document.documentElement.classList.add('dark');
+    const saved = localStorage.getItem("theme");
+    if (saved === "light") {
+      document.documentElement.classList.remove("dark");
+    } else {
+      document.documentElement.classList.add("dark");
+    }
   }, []);
 
   return (

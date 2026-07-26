@@ -11,7 +11,7 @@ import { ObjectivesCard } from '../components/courseDetail/ObjectivesCard';
 import { QuizModal } from '../components/courseDetail/QuizModal';
 import { ErrorAlert } from '../components/ui/alert';
 import { Button } from '../components/ui/button';
-import { DashboardSkeleton } from '../components/ui/skeleton';
+import { CourseDetailPageSkeleton } from '../components/ui/skeleton';
 import { useCourseDetail } from '../hooks/course-details/use-course-detail';
 import { useGetCourseDetails } from '../hooks/course/use-get-course-details';
 
@@ -44,7 +44,7 @@ export default function CourseDetailPage() {
     deleteDialog,
   } = useCourseDetail(data);
 
-  if (isLoading) return <DashboardSkeleton />;
+  if (isLoading) return <CourseDetailPageSkeleton />;
   if (error) return <ErrorAlert message={error.message} />;
   if (Object.keys(course).length === 0) {
     return (

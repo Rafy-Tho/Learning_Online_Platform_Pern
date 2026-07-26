@@ -25,7 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../components/ui/select';
-import { DashboardSkeleton } from '../components/ui/skeleton';
+import { CoursesPageSkeleton } from '../components/ui/skeleton';
 import { Textarea } from '../components/ui/textarea';
 import useGetCategories from '../hooks/category/use-get-categories';
 import { useCreateCourse } from '../hooks/course/use-create-course';
@@ -58,6 +58,13 @@ export default function CoursesPage() {
     access_type: 'FREE',
   });
   const totalPage = data?.pagination.totalPages || 1;
+  const currentPage = parseInt(searchParams.get('page')) || 1;
+
+  const handlePageChange = (page) => {
+    const params = new URLSearchParams(searchParams);
+    params.set('page', page);
+    setSearchParams(params);
+  };
   const openCreate = () => {
     setEditing(null);
     setForm({
@@ -258,7 +265,7 @@ export default function CoursesPage() {
       setCategories(categoriesData.data);
     }
   }, [categoriesData?.data]);
-  if (isLoading) return <DashboardSkeleton />;
+  if (isLoading) return <CoursesPageSkeleton />;
   if (error) return <ErrorAlert message={error.message} />;
   return (
     <div className="space-y-6">
@@ -434,7 +441,7 @@ export default function CoursesPage() {
         </div>
       </FormModal>
       {/* Pagination */}
-      {totalPage > 1 && <PaginatedTable totalPage={totalPage} />}
+      {totalPage > 1 && <PaginatedTable totalPage={totalPage} currentPage={currentPage} onPageChange={handlePageChange} />}
       {/* Delete Confirmation */}
       <AlertDialog
         open={!!deleteTarget}

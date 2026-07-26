@@ -5,7 +5,12 @@ import { Input } from "../components/ui/input";
 import { DataTable } from "../components/DataTable";
 import { FormModal } from "../components/FormModal";
 import { StatusBadge } from "../components/StatusBadge";
-import { mockUsers } from "../data/mockData";
+import PaginatedTable from "../components/PaginationTable";
+import useGetUsers from "../hooks/user/useGetUsers";
+import useCreateUser from "../hooks/user/useCreateUser";
+import useUpdateUser from "../hooks/user/useUpdateUser";
+import useDeleteUser from "../hooks/user/useDeleteUser";
+import { useToast } from "../components/ui/use-toast";
 import {
   Select,
   SelectContent,
@@ -14,10 +19,18 @@ import {
   SelectValue,
 } from "../components/ui/select";
 
+const PAGE_SIZE = 10;
+
 export default function UsersPage({ filterRole, title, subtitle }) {
-  const [users, setUsers] = useState(
-    filterRole ? mockUsers.filter((u) => u.role === filterRole) : mockUsers,
-  );
+  const { toast } = useToast();
+  const [page, setPage] = useState(1);
+  const { data, isPending } = useGetUsers({ role: filterRole, page, limit: PAGE_SIZE });
+  const { createUser, isPending: isCreating } = useCreateUser();
+  const { updateUser, isPending: isUpdating } = useUpdateUser();
+  const { deleteUser, isPending: isDeleting } = useDeleteUser();
+  const users = data?.data?.users || [];
+  const total = data?.data?.total || 0;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({
@@ -49,26 +62,40 @@ export default function UsersPage({ filterRole, title, subtitle }) {
     setModalOpen(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!form.name || !form.email) return;
-    if (editing) {
-      setUsers((us) =>
-        us.map((u) => (u.id === editing.id ? { ...u, ...form } : u)),
-      );
-    } else {
-      setUsers((us) => [
-        ...us,
-        {
-          id: crypto.randomUUID(),
-          ...form,
-          created_at: new Date().toISOString(),
-        },
-      ]);
+    try {
+      if (editing) {
+        await updateUser({ id: editing.id, data: form });
+        toast({ title: "Success!", description: "User updated successfully." });
+      } else {
+        await createUser(form);
+        toast({ title: "Success!", description: "User created successfully." });
+      }
+      setModalOpen(false);
+      setPage(1);
+    } catch (error) {
+      toast({
+        title: "Error!",
+        description: error.message || "Something went wrong.",
+        variant: "destructive",
+      });
     }
-    setModalOpen(false);
   };
 
-  const handleDelete = (id) => setUsers((us) => us.filter((u) => u.id !== id));
+  const handleDelete = async (id) => {
+    try {
+      await deleteUser(id);
+      toast({ title: "Success!", description: "User deleted successfully." });
+      if (users.length === 1 && page > 1) setPage((p) => p - 1);
+    } catch (error) {
+      toast({
+        title: "Error!",
+        description: error.message || "Failed to delete user.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const columns = [
     {
@@ -132,6 +159,7 @@ export default function UsersPage({ filterRole, title, subtitle }) {
               handleDelete(u.id);
             }}
             className="text-destructive hover:text-destructive"
+            disabled={isDeleting}
           >
             <Trash2 className="h-4 w-4" />
           </Button>
@@ -155,7 +183,11 @@ export default function UsersPage({ filterRole, title, subtitle }) {
         </Button>
       </div>
 
-      <DataTable columns={columns} data={users} />
+      <DataTable columns={columns} data={users} isLoading={isPending} />
+
+      {totalPages > 1 && (
+        <PaginatedTable totalPage={totalPages} onPageChange={setPage} currentPage={page} />
+      )}
 
       <FormModal
         open={modalOpen}
@@ -224,7 +256,7 @@ export default function UsersPage({ filterRole, title, subtitle }) {
             <Button variant="outline" onClick={() => setModalOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleSave}>
+            <Button onClick={handleSave} disabled={isCreating || isUpdating}>
               {editing ? "Update" : "Create"}
             </Button>
           </div>

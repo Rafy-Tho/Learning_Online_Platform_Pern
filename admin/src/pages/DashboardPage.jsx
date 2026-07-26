@@ -3,9 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { StatsCard } from "../components/StatsCard";
 import { StatusBadge } from "../components/StatusBadge";
 import { ErrorAlert } from "../components/ui/alert";
-import { DashboardSkeleton } from "../components/ui/skeleton";
+import { DashboardPageSkeleton } from "../components/ui/skeleton";
 import useGetDashboardData from "../hooks/dashboard-data/use-get-dashboard-data";
-import { DeleteButton } from "../components/ui/alert-dialog";
 export default function DashboardPage() {
   const navigate = useNavigate();
   const { data, isPending, error } = useGetDashboardData();
@@ -13,7 +12,7 @@ export default function DashboardPage() {
   const totalUsers = data?.data?.totalStudents || 0;
   const totalInstructors = data?.data?.totalInstructors || 0;
   const totalEnrollments = data?.data?.totalEnrollments || 0;
-  if (isPending) return <DashboardSkeleton />;
+  if (isPending) return <DashboardPageSkeleton />;
   if (error) return <ErrorAlert message={error.message} />;
   return (
     <div className="space-y-8">
