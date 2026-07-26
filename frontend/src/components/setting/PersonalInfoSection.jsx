@@ -5,10 +5,8 @@ import SelectField from "./SelectField";
 
 function PersonalInfoSection({ editMode, field, update, errors }) {
   const genderOptions = [
-    { value: "male", label: "Male" },
-    { value: "female", label: "Female" },
-    { value: "nonbinary", label: "Non-binary" },
-    { value: "prefer_not", label: "Prefer not to say" },
+    { value: "Male", label: "Male" },
+    { value: "Female", label: "Female" },
   ];
 
   return (

@@ -34,7 +34,8 @@ function UserProfile() {
   const [user, setUser] = useState(defaultUser);
   const [draft, setDraft] = useState(defaultUser);
   const { data, isPending, error } = useGetUserProfile();
-  const { mutateAsync:updateProfile, isPending: isUpdatePending } = useUpdateUserProfile();
+  const { mutateAsync: updateProfile, isPending: isUpdatePending } =
+    useUpdateUserProfile();
   const [errors, setErrors] = useState({});
   // ✅ Load data from API
   useEffect(() => {
@@ -65,9 +66,7 @@ function UserProfile() {
     Object.entries(draft).forEach(([key, value]) => {
       formData.append(key, value ?? "");
     });
-    for (let [k, v] of formData.entries()) {
-      console.log(k, v);
-    }
+
     try {
       await updateProfile(formData);
       toast.success("Profile updated successfully");
@@ -75,7 +74,6 @@ function UserProfile() {
       setEditMode(false);
     } catch (error) {
       toast.error(error.message || "Failed to update profile");
-      console.log(error);
     }
   };
 
