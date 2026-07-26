@@ -2,6 +2,7 @@ import { Search, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ModuleGroup from "./ModuleGroup";
 import useGetCourseLearningData from "../../hooks/course/useGetCourseLearningData";
+import useGetCourseLessonCompletions from "../../hooks/course/useGetCourseLessonCompletions";
 import SpinnerLoader from "../../ui/SpinnerLoader";
 import ErrorMessage from "../../ui/ErrorMessage";
 import { useParams } from "react-router-dom";
@@ -11,6 +12,11 @@ export function CourseSidebar({ onClose }) {
   const [filter, setFilter] = useState("ALL");
   const [expanded, setExpanded] = useState([]);
   const { data, isPending, error } = useGetCourseLearningData();
+  const { data: completionsData } = useGetCourseLessonCompletions();
+  const completedIds = useMemo(
+    () => new Set(completionsData || []),
+    [completionsData],
+  );
   const course = data || {};
   const modules = useMemo(() => course.modules || [], [course?.modules]);
   const normalizedSearch = search.toLowerCase();
@@ -153,6 +159,7 @@ export function CourseSidebar({ onClose }) {
             isOpen={expanded.includes(module.id)}
             onToggle={() => toggle(module.id)}
             index={index}
+            completedIds={completedIds}
           />
         ))}
       </nav>

@@ -35,8 +35,22 @@ export const createLessonCompletion = asyncHandler(async (req, res, next) => {
     data: completion,
   });
 });
-// @desc create lesson completion
-// @route post /api/v1/lessons/:id/completions
+// @desc get all completed lesson IDs for a course
+// @route get /api/v1/courses/:id/lesson-completions
+// @access private
+export const getCourseLessonCompletions = asyncHandler(async (req, res, next) => {
+  const courseId = req.params.id;
+  const userId = req.session.user.id;
+  const completedIds = await LessonCompletion.getCourseCompletions(courseId, userId);
+  res.status(StatusCode.OK).json({
+    success: true,
+    statusCode: StatusCode.OK,
+    message: "Course lesson completions fetched successfully",
+    data: completedIds,
+  });
+});
+// @desc get lesson completion for a single lesson
+// @route get /api/v1/lessons/:id/completions
 // @access private
 export const getLessonCompletion = asyncHandler(async (req, res, next) => {
   const lessonId = req.params.id;

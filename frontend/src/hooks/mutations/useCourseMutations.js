@@ -6,9 +6,13 @@ import { toast } from "react-toastify";
 
 export function useEnrollCourse() {
   const { courseId } = useParams();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ["enroll-course", courseId],
     mutationFn: () => coursesApi.enrollCourse(courseId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["enrolled", courseId] });
+    },
     onError: (error) => {
       toast.error(error.message || "Enrollment failed");
     },
@@ -78,6 +82,7 @@ export function useCreateCompletedLesson() {
     onSuccess: () => {
       toast.success("Lesson completed successfully");
       queryClient.invalidateQueries({ queryKey: ["get-completed-lesson", lessonId] });
+      queryClient.invalidateQueries({ queryKey: ["course-lesson-completions"] });
     },
   });
 }

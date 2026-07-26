@@ -56,9 +56,13 @@ export const updateLearningProgress = asyncHandler(async (req, res, next) => {
   // check if lesson exists
   const progress = await LearningProgress.findOne({ courseId, userId });
   if (!progress) {
-    return next(
-      new ApiError(StatusCode.NOT_FOUND, "Learning progress not found"),
-    );
+    const created = await LearningProgress.create({ courseId, userId, lessonId });
+    return res.status(StatusCode.CREATED).json({
+      success: true,
+      statusCode: StatusCode.CREATED,
+      message: "Learning progress created successfully",
+      data: created,
+    });
   }
   const updatedProgress = await LearningProgress.update({
     courseId,

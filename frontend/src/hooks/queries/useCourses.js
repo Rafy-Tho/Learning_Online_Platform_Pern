@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { coursesApi } from "../../api/courses";
 import parseQueryToObject from "../../utils/parseQueryToObject";
@@ -81,6 +81,31 @@ export function useReviews(params) {
   });
 }
 
+export function useInfiniteReviews(filters = {}) {
+  const { courseId } = useParams();
+  const { user } = useAuth();
+  const limit = filters.limit || 5;
+
+  return useInfiniteQuery({
+    queryKey: ["reviews-infinite", courseId, filters],
+    queryFn: ({ pageParam = 1 }) => {
+      const params = new URLSearchParams();
+      params.set("page", pageParam);
+      params.set("limit", limit);
+      if (filters.rating && filters.rating !== "All") params.set("rating", filters.rating);
+      if (filters.search) params.set("search", filters.search);
+      return coursesApi.getReviews(params.toString(), courseId);
+    },
+    getNextPageParam: (lastPage) => {
+      const { pagination } = lastPage;
+      if (pagination?.next) return pagination.next;
+      return undefined;
+    },
+    initialPageParam: 1,
+    enabled: !!courseId,
+  });
+}
+
 export function useReviewDetails() {
   const { courseId } = useParams();
   return useQuery({
@@ -149,6 +174,16 @@ export function useCertificateEligibility() {
     queryKey: ["certificate-eligibility", courseId],
     queryFn: () => coursesApi.checkCertificateEligibility(courseId),
     enabled: !!courseId,
+  });
+}
+
+export function useCourseLessonCompletions() {
+  const { courseId } = useParams();
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["course-lesson-completions", courseId],
+    queryFn: () => coursesApi.getCourseLessonCompletions(courseId),
+    enabled: !!courseId && !!user,
   });
 }
 

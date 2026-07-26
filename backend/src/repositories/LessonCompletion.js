@@ -19,6 +19,14 @@ class LessonCompletionRepository {
     );
     return result.rows[0];
   }
+  async getCourseCompletions(courseId, userId) {
+    const result = await pgPool.query(
+      `SELECT lesson_id FROM lesson_completion 
+      WHERE course_id = $1 AND user_id = $2`,
+      [courseId, userId],
+    );
+    return result.rows.map((r) => r.lesson_id);
+  }
 }
 const LessonCompletion = new LessonCompletionRepository();
 

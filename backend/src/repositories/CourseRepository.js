@@ -506,11 +506,8 @@ class CourseRepository {
         LEFT JOIN lesson_completion lc 
           ON lc.lesson_id = l.id 
           AND lc.user_id = $1
-        LEFT JOIN learn_progress lp 
-          ON lp.course_id = c.id 
-          AND lp.user_id = $1
         WHERE c.deleted_at IS NULL
-        GROUP BY c.id, c.name, lp.updated_at, lp.lesson_id
+        GROUP BY c.id
         HAVING COUNT(DISTINCT lc.lesson_id) > 0
            AND COUNT(DISTINCT lc.lesson_id) < COUNT(DISTINCT l.id)
       ) sub;
@@ -549,11 +546,11 @@ class CourseRepository {
           ON lp.course_id = c.id 
           AND lp.user_id = $1
         WHERE c.deleted_at IS NULL
-        GROUP BY c.id, c.name, lp.updated_at, lp.lesson_id
+        GROUP BY c.id, lp.id
         HAVING COUNT(DISTINCT lc.lesson_id) > 0
            AND COUNT(DISTINCT lc.lesson_id) < COUNT(DISTINCT l.id)
       ) sub
-      ORDER BY sub.last_activity ${sortDirection}
+      ORDER BY COALESCE(sub.last_activity, sub.created_at) ${sortDirection}
       LIMIT $2 OFFSET $3;
     `;
 
@@ -592,11 +589,8 @@ class CourseRepository {
         LEFT JOIN lesson_completion lc 
           ON lc.lesson_id = l.id 
           AND lc.user_id = $1
-        LEFT JOIN learn_progress lp 
-          ON lp.course_id = c.id 
-          AND lp.user_id = $1
         WHERE c.deleted_at IS NULL
-        GROUP BY c.id, lp.updated_at, lp.lesson_id
+        GROUP BY c.id
         HAVING COUNT(DISTINCT lc.lesson_id) = COUNT(DISTINCT l.id)
            AND COUNT(DISTINCT l.id) > 0
       ) sub;
@@ -638,14 +632,14 @@ class CourseRepository {
           AND lp.user_id = $1
   
         WHERE c.deleted_at IS NULL
-  
-        GROUP BY c.id, lp.updated_at, lp.lesson_id
-  
+
+        GROUP BY c.id, lp.id
+
         HAVING COUNT(DISTINCT lc.lesson_id) = COUNT(DISTINCT l.id)
            AND COUNT(DISTINCT l.id) > 0
       ) sub
-  
-      ORDER BY sub.last_activity ${sortDirection}
+
+      ORDER BY COALESCE(sub.last_activity, sub.created_at) ${sortDirection}
       LIMIT $2 OFFSET $3;
     `;
 

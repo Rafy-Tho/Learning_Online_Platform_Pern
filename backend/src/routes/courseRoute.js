@@ -15,6 +15,7 @@ import {
   getRecommendedCourses,
   updateCourse,
 } from "../controllers/courseControllers.js";
+import { getCourseLessonCompletions } from "../controllers/lessonCompletionControllers.js";
 import authorize from "../middlewares/authorize.js";
 import requireAuth from "../middlewares/requireAuth.js";
 import { validateResult } from "../middlewares/validateResult.js";
@@ -78,5 +79,6 @@ courseRoute
   )
   .delete(requireAuth, authorize(INSTRUCTOR, ADMIN), deleteCourse);
 courseRoute.get("/:id/learn", getCourseLearningData);
+courseRoute.get("/:id/lesson-completions", requireAuth, getCourseLessonCompletions);
 
 export default courseRoute;

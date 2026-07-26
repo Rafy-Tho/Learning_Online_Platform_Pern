@@ -1,5 +1,6 @@
 import {
   Award,
+  CheckCircle2,
   ChevronDown,
   ChevronUp,
   Circle,
@@ -14,6 +15,7 @@ import { useClaimCertificate } from "../../hooks/mutations/useCourseMutations";
 import {
   useCertificate,
   useCertificateEligibility,
+  useCourseLessonCompletions,
 } from "../../hooks/queries/useCourses";
 import useCreateCourseProgress from "../../hooks/course/useCreateCourseProgress";
 import useGetCourseLearningData from "../../hooks/course/useGetCourseLearningData";
@@ -30,9 +32,19 @@ export default function LearningRoadmap({ sectionRef }) {
   const { data, isPending, error } = useGetCourseLearningData();
   const { data: certificate, isLoading: certLoading } = useCertificate();
   const { data: eligibility } = useCertificateEligibility();
+  const { data: completionsData } = useCourseLessonCompletions();
   const { mutate: claimCert, isPending: claiming } = useClaimCertificate();
   const course = data || {};
   const modules = useMemo(() => course?.modules || [], [course?.modules]);
+  const completedIds = useMemo(
+    () => new Set(completionsData || []),
+    [completionsData],
+  );
+  const totalLessons = modules.reduce(
+    (acc, m) => acc + (m.lessons || []).length,
+    0,
+  );
+  const completedCount = completedIds.size;
   const filteredModules = useMemo(
     () =>
       modules
@@ -90,7 +102,7 @@ export default function LearningRoadmap({ sectionRef }) {
       return [...new Set([...prev, ...ids])];
     });
   }, [searchQuery, filteredModules]);
-
+  console.log({ completionsData });
   if (isPending) return <SpinnerLoader />;
   if (error) return <ErrorMessage message={error.message} />;
   return (
@@ -103,6 +115,11 @@ export default function LearningRoadmap({ sectionRef }) {
             </h2>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               {`${course?.total_lessons} Lessons • ${course?.total_quizzes} Quizzes`}
+              {completedCount > 0 && (
+                <span className="ml-2 text-green-600 dark:text-green-400 font-medium">
+                  • {completedCount}/{totalLessons} completed
+                </span>
+              )}
             </p>
           </div>
         </div>
@@ -166,11 +183,14 @@ export default function LearningRoadmap({ sectionRef }) {
             {expandedSections.includes(module.id) && (
               <div className="px-6 pb-5 space-y-3">
                 {module.lessons.map((lesson, index) => {
+                  const isCompleted = completedIds.has(lesson.id);
                   const lessonIcons = {
                     TEXT: Circle,
                     QUIZ: CircleQuestionMark,
                   };
-                  const Icon = lessonIcons[lesson.type] || Circle;
+                  const Icon = isCompleted
+                    ? CheckCircle2
+                    : lessonIcons[lesson.type] || Circle;
                   const isLocked = lesson.access_type === "SUBSCRIPTION";
                   const isQuiz = lesson.type === "QUIZ";
                   const link = isLocked
@@ -188,14 +208,18 @@ export default function LearningRoadmap({ sectionRef }) {
                       {isLocked ? (
                         <Lock className="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0 " />
                       ) : (
-                        <Icon className="w-4 h-4 text-gray-900 dark:text-white shrink-0 cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" />
+                        <Icon
+                          className={`w-4 h-4 shrink-0 cursor-pointer transition-colors ${isCompleted ? "text-green-500 dark:text-green-400" : "text-gray-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400"}`}
+                        />
                       )}
 
                       <span
                         className={
                           isLocked
                             ? "text-gray-500 dark:text-gray-400"
-                            : "text-gray-900 dark:text-white cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                            : isCompleted
+                              ? "text-gray-500 dark:text-gray-400 line-through"
+                              : "text-gray-900 dark:text-white cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                         }
                       >
                         {lesson.name}

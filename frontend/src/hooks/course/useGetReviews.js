@@ -1,2 +1,2 @@
-import { useReviews } from "../queries/useCourses";
-export default useReviews;
+import { useInfiniteReviews } from "../queries/useCourses";
+export default useInfiniteReviews;

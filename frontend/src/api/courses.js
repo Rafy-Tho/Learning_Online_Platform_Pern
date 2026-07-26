@@ -23,6 +23,7 @@ export const coursesApi = {
   claimCertificate: (courseId) => api.post(`/courses/${courseId}/certificates`),
   getCertificate: (courseId) => api.get(`/courses/${courseId}/certificates`),
   checkCertificateEligibility: (courseId) => api.get(`/courses/${courseId}/certificates/check`),
+  getCourseLessonCompletions: (courseId) => api.get(`/courses/${courseId}/lesson-completions`),
   getMyCertificates: () => api.get("/certificates/mine"),
   getCertificateById: (id) => api.get(`/certificates/${id}`),
 };

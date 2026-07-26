@@ -1,12 +1,14 @@
 import { useNavigate, useParams } from "react-router-dom";
 import useCreateCompletedLesson from "../../hooks/course/useCreateCompletedLesson";
 import { useGetCompletedLesson } from "../../hooks/course/useGetCompletedLesson";
+import useUpdateCourseProgress from "../../hooks/course/useUpdateCourseProgress";
 import { useLessonNavigation } from "../../hooks/course/useLessonNavigation";
 
 function NextPrevious() {
-  const { courseId } = useParams();
+  const { courseId, lessonId } = useParams();
   const navigate = useNavigate();
   const { mutate: completeLesson } = useCreateCompletedLesson();
+  const { mutate: updateProgress } = useUpdateCourseProgress();
   const { data: completedLesson } = useGetCompletedLesson();
   const {
     currentLessonIndex,
@@ -20,6 +22,7 @@ function NextPrevious() {
   function handleCompleteLesson() {
     if (completedLesson) return;
     completeLesson();
+    updateProgress({ lessonId });
   }
   const goToNextPage = () => {
     if (!nextLessonId) return;

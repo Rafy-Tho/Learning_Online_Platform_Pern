@@ -9,40 +9,38 @@ export function StudentFeedback() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterRating, setFilterRating] = useState("All");
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
-  const [visibleReviews, setVisibleReviews] = useState(5);
   const [submittedSearch, setSubmittedSearch] = useState("");
   const selectRef = useRef(null);
-  // Build query string for useGetReviews
 
-  const param = new URLSearchParams();
+  const filters = {
+    rating: filterRating,
+    search: submittedSearch || undefined,
+    limit: 5,
+  };
 
-  param.set("limit", visibleReviews);
+  const {
+    data,
+    isPending,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useGetReviews(filters);
 
-  if (filterRating === "All") param.delete("rating");
-  else param.set("rating", filterRating);
-
-  if (submittedSearch.trim()) param.set("search", submittedSearch);
-  else param.delete("search");
-
-  const { data, isPending, error } = useGetReviews(param);
-
-  const reviews = data?.data || [];
-  const pagination = data?.pagination || {};
+  const reviews = data?.pages?.flatMap((page) => page.data) || [];
+  const totalItems = data?.pages?.[0]?.pagination?.totalItems || 0;
 
   const getFilterLabel = () => {
     if (filterRating === "All") return "All ratings";
     return `${filterRating} star${filterRating > 1 ? "s" : ""}`;
   };
 
-  // Handle search submission
   const handleSearch = (e) => {
     e.preventDefault();
     if (!searchQuery) return;
-    setVisibleReviews(5);
-    setSubmittedSearch(searchQuery); // update submitted search
+    setSubmittedSearch(searchQuery);
   };
 
-  // Close filter dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (selectRef.current && !selectRef.current.contains(event.target)) {
@@ -53,11 +51,9 @@ export function StudentFeedback() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Clear submitted search when search query changes
   useEffect(() => {
     if (searchQuery.trim() !== "") return;
     setSubmittedSearch("");
-    setVisibleReviews(5);
   }, [searchQuery]);
 
   return (
@@ -96,7 +92,6 @@ export function StudentFeedback() {
               <button
                 onClick={() => {
                   setFilterRating("All");
-                  setVisibleReviews(5);
                   setShowFilterDropdown(false);
                 }}
                 className="w-full px-4 py-2 text-left hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-900 dark:text-slate-100"
@@ -108,7 +103,6 @@ export function StudentFeedback() {
                   key={rating}
                   onClick={() => {
                     setFilterRating(rating);
-                    setVisibleReviews(5);
                     setShowFilterDropdown(false);
                   }}
                   className="w-full px-4 py-2 text-left hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-900 dark:text-slate-100"
@@ -126,23 +120,24 @@ export function StudentFeedback() {
         {error && <ErrorMessage message={error.message} />}
         {!isPending &&
           !error &&
-          reviews
-            .slice(0, visibleReviews)
-            .map((review) => <ReviewCard key={review.id} review={review} />)}
+          reviews.map((review) => (
+            <ReviewCard key={review.id} review={review} />
+          ))}
       </div>
 
-      {visibleReviews < pagination?.totalItems && (
+      {hasNextPage && (
         <div className="mt-8">
           <button
-            onClick={() => setVisibleReviews((prev) => prev + 5)}
-            className="w-full px-6 py-3 border-2 border-violet-500 dark:border-violet-400 text-violet-600 dark:text-violet-400 font-medium rounded-lg hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-colors"
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
+            className="w-full px-6 py-3 border-2 border-violet-500 dark:border-violet-400 text-violet-600 dark:text-violet-400 font-medium rounded-lg hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            See more reviews
+            {isFetchingNextPage ? "Loading..." : "See more reviews"}
           </button>
         </div>
       )}
 
-      {reviews?.length === 0 && (
+      {reviews.length === 0 && !isPending && !error && (
         <div className="text-center py-12 text-slate-600 dark:text-slate-400">
           No reviews found matching your criteria.
         </div>
