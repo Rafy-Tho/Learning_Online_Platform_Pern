@@ -1,12 +1,15 @@
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { avatarMenuItems } from "../../constants/avatarMenuItems";
 import useAuth from "../../hooks/useAuth";
 import ThemeSelector from "../ThemSelector";
 import useLogout from "../../hooks/auth/useLogout";
+import ConfirmDialog from "../../ui/ConfirmDialog";
 
 function Avatar({ avatarOpen, toggleAvatar, closeAll }) {
   const { logout } = useLogout();
   const { user } = useAuth();
+  const [showConfirm, setShowConfirm] = useState(false);
   if (!user) return null;
   return (
     <div className="relative">
@@ -60,7 +63,7 @@ function Avatar({ avatarOpen, toggleAvatar, closeAll }) {
             <button
               onClick={() => {
                 closeAll();
-                logout();
+                setShowConfirm(true);
               }}
               className={`flex items-center gap-3 px-4 py-2.5 text-sm transition-colors  text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20`}
             >
@@ -72,6 +75,18 @@ function Avatar({ avatarOpen, toggleAvatar, closeAll }) {
           </div>
         </div>
       )}
+      <ConfirmDialog
+        open={showConfirm}
+        onCancel={() => setShowConfirm(false)}
+        onConfirm={() => {
+          setShowConfirm(false);
+          logout();
+        }}
+        title="Logout"
+        message="Are you sure you want to logout?"
+        confirmText="OK"
+        cancelText="Cancel"
+      />
     </div>
   );
 }
