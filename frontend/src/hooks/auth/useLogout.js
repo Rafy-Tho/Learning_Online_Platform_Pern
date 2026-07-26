@@ -13,7 +13,8 @@ export default function useLogout() {
       await mutation.mutateAsync();
       toast.success("Logout success");
       clearAuth();
-      navigate("/login");
+      console.log("Logout success");
+      window.location.href = "/login";
     } catch (err) {
       toast.error(err.message || "Logout failed");
     }

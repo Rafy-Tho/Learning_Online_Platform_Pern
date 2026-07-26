@@ -8,7 +8,6 @@ import ConfirmDialog from "../../ui/ConfirmDialog";
 
 function Avatar({ avatarOpen, toggleAvatar, closeAll }) {
   const { logout } = useLogout();
-  const { clearAuth } = useAuth();
   const { user } = useAuth();
   const [showConfirm, setShowConfirm] = useState(false);
   if (!user) return null;
@@ -82,7 +81,6 @@ function Avatar({ avatarOpen, toggleAvatar, closeAll }) {
         onConfirm={() => {
           setShowConfirm(false);
           logout();
-          clearAuth();
         }}
         title="Logout"
         message="Are you sure you want to logout?"

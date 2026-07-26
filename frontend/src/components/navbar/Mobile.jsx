@@ -16,7 +16,6 @@ function Mobile({
   toggleAvatar,
 }) {
   const { user } = useAuth();
-  const { clearAuth } = useAuth();
   const { logout } = useLogout();
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -119,7 +118,6 @@ function Mobile({
         onConfirm={() => {
           setShowConfirm(false);
           logout();
-          clearAuth();
         }}
         title="Logout"
         message="Are you sure you want to logout?"

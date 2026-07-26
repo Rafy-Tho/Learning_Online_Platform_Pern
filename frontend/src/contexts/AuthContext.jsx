@@ -8,17 +8,20 @@ function AuthProvider({ children }) {
   const { data, isLoading, error } = useGetMe();
   const user = data ?? null;
 
-  const saveAuth = useCallback((userData) => {
-    if (!userData || !userData.id) return;
-    localStorage.setItem("user", JSON.stringify(userData));
-    localStorage.setItem("isAuthenticated", "true");
-    queryClient.setQueryData(["me"], userData);
-  }, [queryClient]);
+  const saveAuth = useCallback(
+    (userData) => {
+      if (!userData || !userData.id) return;
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("isAuthenticated", "true");
+      queryClient.setQueryData(["me"], userData);
+    },
+    [queryClient],
+  );
 
   const clearAuth = useCallback(() => {
     localStorage.removeItem("user");
     localStorage.removeItem("isAuthenticated");
-    queryClient.clear();
+    queryClient.removeQueries();
   }, [queryClient]);
 
   useEffect(() => {
