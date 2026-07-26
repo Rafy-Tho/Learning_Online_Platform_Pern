@@ -29,8 +29,6 @@ export default function SubscriptionsPage() {
   const activeCount = subHook.subscriptions.filter(
     (s) => s.status === "ACTIVE",
   ).length;
-
-  console.log("hi", payHook.payments);
   const totalRevenue = payHook.payments
     .filter((p) => p.payment_status === "COMPLETED")
     .reduce((a, p) => a + Number(p.amount), 0);

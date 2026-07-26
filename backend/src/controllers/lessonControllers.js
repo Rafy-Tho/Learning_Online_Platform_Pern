@@ -64,6 +64,7 @@ export const updateLesson = asyncHandler(async (req, res, next) => {
     durationMinutes,
     position,
     type,
+    accessType,
   } = req.body;
   const lesson = await Lesson.findById(id);
   if (!lesson)
@@ -76,7 +77,8 @@ export const updateLesson = asyncHandler(async (req, res, next) => {
     );
 
   const updatedLesson = await Lesson.update({
-    id,
+    lessonId: id,
+    chapterId: lesson.chapter_id,
     name,
     description,
     status,
@@ -84,6 +86,7 @@ export const updateLesson = asyncHandler(async (req, res, next) => {
     durationMinutes,
     position,
     type,
+    accessType,
   });
   res.status(StatusCode.OK).json({
     success: true,

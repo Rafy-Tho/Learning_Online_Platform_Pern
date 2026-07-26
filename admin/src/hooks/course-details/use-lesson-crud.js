@@ -1,19 +1,19 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-import { useCreateLesson } from '../lessons/use-create-lesson';
-import { useDeleteLesson } from '../lessons/use-delete-lesson';
-import { useUpdateLesson } from '../lessons/use-update-lesson';
-import { toast } from '../use-toast';
+import { useCreateLesson } from "../lessons/use-create-lesson";
+import { useDeleteLesson } from "../lessons/use-delete-lesson";
+import { useUpdateLesson } from "../lessons/use-update-lesson";
+import { toast } from "../use-toast";
 
 const DEFAULT_FORM = {
-  name: '',
-  description: '',
-  type: 'TEXT',
-  status: 'DRAFT',
+  name: "",
+  description: "",
+  type: "TEXT",
+  status: "DRAFT",
   xp_points: 10,
   duration_minutes: 15,
-  position: '',
-  access_type: 'FREE',
+  position: "",
+  access_type: "FREE",
 };
 
 export function useLessonCrud({
@@ -25,7 +25,7 @@ export function useLessonCrud({
 }) {
   const [modal, setModal] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [parentId, setParentId] = useState('');
+  const [parentId, setParentId] = useState("");
   const [form, setForm] = useState(DEFAULT_FORM);
   const { createLesson, isCreating } = useCreateLesson();
   const { deleteLesson } = useDeleteLesson();
@@ -42,7 +42,7 @@ export function useLessonCrud({
     setEditing(l);
     setForm({
       name: l.name,
-      description: l.description || '',
+      description: l.description || "",
       type: l.type,
       status: l.status,
       xp_points: l.xp_points,
@@ -55,6 +55,7 @@ export function useLessonCrud({
 
   const save = async () => {
     if (!form.name) return;
+
     if (editing) {
       try {
         await updateLesson({
@@ -74,14 +75,14 @@ export function useLessonCrud({
           ls.map((l) => (l.id === editing.id ? { ...l, ...form } : l)),
         );
         toast({
-          title: 'Success',
-          description: 'The lesson has been updated successfully.',
+          title: "Success",
+          description: "The lesson has been updated successfully.",
         });
       } catch (error) {
         toast({
-          title: 'Error',
-          description: error?.message || 'Failed to update lesson',
-          variant: 'destructive',
+          title: "Error",
+          description: error?.message || "Failed to update lesson",
+          variant: "destructive",
         });
       } finally {
         setModal(false);
@@ -103,14 +104,14 @@ export function useLessonCrud({
         });
         setLessons((ls) => [...ls, response?.data]);
         toast({
-          title: 'Success',
-          description: 'The lesson has been created successfully.',
+          title: "Success",
+          description: "The lesson has been created successfully.",
         });
       } catch (error) {
         toast({
-          title: 'Error',
-          description: error?.message || 'Failed to create lesson',
-          variant: 'destructive',
+          title: "Error",
+          description: error?.message || "Failed to create lesson",
+          variant: "destructive",
         });
       } finally {
         setModal(false);
@@ -131,14 +132,14 @@ export function useLessonCrud({
       setLessonContents((cs) => cs.filter((c) => c.lesson_id !== id));
       setLessons((ls) => ls.filter((l) => l.id !== id));
       toast({
-        title: 'Success',
-        description: 'The lesson has been deleted successfully.',
+        title: "Success",
+        description: "The lesson has been deleted successfully.",
       });
     } catch (error) {
       toast({
-        title: 'Error',
-        description: error?.message || 'Failed to delete lesson',
-        variant: 'destructive',
+        title: "Error",
+        description: error?.message || "Failed to delete lesson",
+        variant: "destructive",
       });
     }
   };

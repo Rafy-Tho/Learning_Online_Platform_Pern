@@ -4,7 +4,6 @@ import { StatusBadge } from "../StatusBadge";
 import { Button } from "../ui/button";
 
 export function PaymentsTab({ payments, onAdd, onEdit, onDelete }) {
-  console.log(payments);
   const columns = [
     {
       key: "user_name",

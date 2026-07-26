@@ -14,7 +14,6 @@ export default function HeroSection({ scrollToSection }) {
   const { data, isPending, error } = useGetCourseDetails();
   const { mutate } = useEnrollment();
   const { data: enrollmentsData } = useGetEnrollment();
-  console.log({ enrollmentsData });
   const { user } = useAuth();
   function handleEnroll() {
     if (enrollmentsData || !user) return;
