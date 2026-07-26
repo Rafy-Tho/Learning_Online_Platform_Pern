@@ -154,6 +154,7 @@ class CourseRepository {
   `;
 
     await features
+      .addCondition(`c.status != 'DRAFT'`)
       .filter()
       .search(["c.name", "c.description"])
       .sort()

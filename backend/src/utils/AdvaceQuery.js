@@ -197,6 +197,11 @@ class AdvancedQuery {
       pagination: this.pagination,
     };
   }
+
+  addCondition(condition) {
+    this.where.push(condition);
+    return this;
+  }
 }
 
 export default AdvancedQuery;
