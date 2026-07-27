@@ -13,6 +13,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "../components/ui/tabs";
+import { SubscriptionsPageSkeleton } from "../components/ui/skeleton";
 import { usePayments } from "../hooks/subscription/use-payment";
 import { usePlans } from "../hooks/subscription/use-plan";
 import { useSubscriptions } from "../hooks/subscription/use-subscription";
@@ -25,6 +26,9 @@ export default function SubscriptionsPage() {
   const { data: learnersData } = useGetUsers({ role: "LEARNER" });
   const learners = learnersData?.data?.users || [];
   const [deleteTarget, setDeleteTarget] = useState(null);
+
+  const isLoading = planHook.isLoading || subHook.isLoading || payHook.isLoading;
+  if (isLoading) return <SubscriptionsPageSkeleton />;
 
   const activeCount = subHook.subscriptions.filter(
     (s) => s.status === "ACTIVE",

@@ -332,6 +332,38 @@ function DashboardPageSkeleton() {
   );
 }
 
+function SubscriptionsPageSkeleton() {
+  return (
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <Skeleton className="h-8 w-48" />
+        <Skeleton className="h-4 w-64" />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="glass-card rounded-xl p-6 space-y-3">
+            <div className="flex items-center justify-between">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-12 w-12 rounded-xl" />
+            </div>
+            <Skeleton className="h-7 w-16" />
+          </div>
+        ))}
+      </div>
+
+      <div className="space-y-4">
+        <div className="flex gap-2 bg-muted/50 p-1 rounded-lg w-fit">
+          <Skeleton className="h-9 w-20 rounded-md" />
+          <Skeleton className="h-9 w-36 rounded-md" />
+          <Skeleton className="h-9 w-20 rounded-md" />
+        </div>
+        <TableSkeleton columns={5} rows={5} />
+      </div>
+    </div>
+  );
+}
+
 function CourseDetailPageSkeleton() {
   return (
     <div className="space-y-6">
@@ -405,6 +437,7 @@ export {
   TableSkeleton,
   CategoriesPageSkeleton,
   CoursesPageSkeleton,
+  SubscriptionsPageSkeleton,
   RecentActivitySkeleton,
   TopPerformersSkeleton,
   QuickActionsSkeleton,
