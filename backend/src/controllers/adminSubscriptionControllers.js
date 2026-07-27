@@ -181,6 +181,30 @@ export const createPayment = asyncHandler(async (req, res, next) => {
   });
 });
 
+export const updatePayment = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const { amount, payment_status, stripe_payment_intent_id } = req.body;
+  const payments = await Subscription.findAllPayments();
+  const existing = payments.find((p) => p.id === id);
+  if (!existing) {
+    return next(new ApiError(StatusCode.NOT_FOUND, "Payment not found"));
+  }
+  const payment = await Subscription.updatePayment(id, {
+    amount: amount !== undefined ? amount : existing.amount,
+    paymentStatus: payment_status || existing.payment_status,
+    stripePaymentIntentId:
+      stripe_payment_intent_id !== undefined
+        ? stripe_payment_intent_id
+        : existing.stripe_payment_intent_id,
+  });
+  res.status(StatusCode.OK).json({
+    success: true,
+    statusCode: StatusCode.OK,
+    message: "Payment updated successfully",
+    data: payment,
+  });
+});
+
 export const deletePayment = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   await Subscription.deletePayment(id);

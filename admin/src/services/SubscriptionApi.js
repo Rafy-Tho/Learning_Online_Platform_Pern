@@ -150,6 +150,20 @@ class SubscriptionApi {
     }
     return result;
   }
+
+  async updatePayment(id, data) {
+    const response = await fetch(`${this.baseUrl}/payments/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(data),
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.message || 'Failed to update payment');
+    }
+    return result;
+  }
 }
 
 const subscriptionApi = new SubscriptionApi();

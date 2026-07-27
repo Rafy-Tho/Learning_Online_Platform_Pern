@@ -1,13 +1,13 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import subscriptionApi from '../../services/SubscriptionApi';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import subscriptionApi from "../../services/SubscriptionApi";
 
 export const useDeleteSubscription = () => {
   const queryClient = useQueryClient();
   const { mutateAsync: deleteSubscription, isPending: isDeletingSubscription } =
     useMutation({
-      mutationFn: (id) => subscriptionApi.deleteSubscription(id),
+      mutationFn: (id) => subscriptionApi.deleteUserSubscription(id),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['subscriptions'] });
+        queryClient.invalidateQueries({ queryKey: ["subscriptions"] });
       },
     });
   return { deleteSubscription, isDeletingSubscription };

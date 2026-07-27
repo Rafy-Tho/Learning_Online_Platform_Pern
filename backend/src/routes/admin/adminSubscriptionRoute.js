@@ -10,6 +10,7 @@ import {
   deleteUserSubscription,
   getPayments,
   createPayment,
+  updatePayment,
   deletePayment,
 } from "../../controllers/adminSubscriptionControllers.js";
 import requireAuth from "../../middlewares/requireAuth.js";
@@ -36,6 +37,6 @@ adminSubscriptionRoute
 
 // Payment routes
 adminSubscriptionRoute.route("/payments").get(getPayments).post(createPayment);
-adminSubscriptionRoute.route("/payments/:id").delete(deletePayment);
+adminSubscriptionRoute.route("/payments/:id").patch(updatePayment).delete(deletePayment);
 
 export default adminSubscriptionRoute;

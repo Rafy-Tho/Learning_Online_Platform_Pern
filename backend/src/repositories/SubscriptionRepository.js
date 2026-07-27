@@ -195,6 +195,17 @@ class SubscriptRepository {
     return result.rows[0];
   }
 
+  async updatePayment(id, { amount, paymentStatus, stripePaymentIntentId }) {
+    const result = await pgPool.query(
+      `UPDATE subscription_payments
+       SET amount = $1, payment_status = $2, stripe_payment_intent_id = $3
+       WHERE id = $4
+       RETURNING *`,
+      [amount, paymentStatus, stripePaymentIntentId || null, id],
+    );
+    return result.rows[0];
+  }
+
   async deletePayment(id) {
     const result = await pgPool.query(
       "DELETE FROM subscription_payments WHERE id = $1 RETURNING id",
