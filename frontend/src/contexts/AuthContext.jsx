@@ -35,10 +35,10 @@ function AuthProvider({ children }) {
   }, [isLoading, user, clearAuth]);
 
   useEffect(() => {
-    if (!isLoading && data) {
+    if (data) {
       saveAuth(data);
     }
-  }, []);
+  }, [data, saveAuth]);
   return (
     <AuthContext.Provider
       value={{ user, isLoading, error, saveAuth, clearAuth }}
