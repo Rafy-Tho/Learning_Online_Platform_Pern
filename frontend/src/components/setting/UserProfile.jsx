@@ -6,6 +6,7 @@ import SpinnerLoader from "../../ui/SpinnerLoader";
 import ErrorMessage from "../../ui/ErrorMessage";
 import useUpdateUserProfile from "../../hooks/user/useUpdateUserProfile";
 import { toast } from "react-toastify";
+import useAuth from "../../hooks/useAuth";
 
 const defaultUser = {
   name: "",
@@ -33,6 +34,7 @@ function UserProfile() {
   const [editMode, setEditMode] = useState(false);
   const [user, setUser] = useState(defaultUser);
   const [draft, setDraft] = useState(defaultUser);
+  const { saveAuth } = useAuth();
   const { data, isPending, error } = useGetUserProfile();
   const { mutateAsync: updateProfile, isPending: isUpdatePending } =
     useUpdateUserProfile();
@@ -68,7 +70,8 @@ function UserProfile() {
     });
 
     try {
-      await updateProfile(formData);
+      const updatedUser = await updateProfile(formData);
+      saveAuth(updatedUser);
       toast.success("Profile updated successfully");
       setUser(draft);
       setEditMode(false);
